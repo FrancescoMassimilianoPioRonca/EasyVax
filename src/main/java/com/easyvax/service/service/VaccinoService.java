@@ -14,10 +14,10 @@ public interface VaccinoService {
 
     /**
      * Riservato agli admin
-     * @param vaccino
+     * @param
      * @return
      */
-    VaccinoDTO insertVaccino(VaccinoDTO vaccino);
+    VaccinoDTO insertVaccino(VaccinoDTO vaccinoDTO);
     List<VaccinoDTO> deleteVaccino(Long id);
     List<VaccinoDTO> updateVaccino(VaccinoDTO vaccino);
 

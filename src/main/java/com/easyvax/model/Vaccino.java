@@ -1,5 +1,6 @@
 package com.easyvax.model;
 
+import com.easyvax.DTO.VaccinoDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -32,4 +33,11 @@ public class Vaccino {
 
     @OneToMany(mappedBy="vaccino" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Somministrazione> somministrazioni = new ArrayList<>();
+
+
+    public Vaccino(VaccinoDTO vaccinoDTO) {
+        this.id = vaccinoDTO.getId();
+        this.nome = vaccinoDTO.getNome();
+        this.casaFarmaceutica = vaccinoDTO.getCasaFarmaceutica();
+    }
 }

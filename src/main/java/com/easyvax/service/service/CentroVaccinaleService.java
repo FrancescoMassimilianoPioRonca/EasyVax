@@ -19,5 +19,5 @@ public interface CentroVaccinaleService {
      */
     CentroVaccinaleDTO insertCentro(CentroVaccinaleDTO centro);
     CentroVaccinaleDTO updateCentro(CentroVaccinaleDTO centro);
-    List<CentroVaccinaleDTO> deleteCentro(CentroVaccinaleDTO centro);
+    List<CentroVaccinaleDTO> deleteCentro(Long id);
 }

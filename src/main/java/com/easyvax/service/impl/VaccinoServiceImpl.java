@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class VaccinoServiceImpl implements VaccinoService {
 
     private final VaccinoRepository vaccinoRepository;
-    private  VaccinoEnum vaccinoEnum;
+    private static VaccinoEnum vaccinoEnum;
 
     @Override
     public List<VaccinoDTO> findAll() {
@@ -48,9 +48,18 @@ public class VaccinoServiceImpl implements VaccinoService {
     public VaccinoDTO insertVaccino(VaccinoDTO vaccinoDTO) {
 
         Vaccino vaccino = new Vaccino(vaccinoDTO);
-        vaccino = vaccinoRepository.save(vaccino);
 
-        return new VaccinoDTO(vaccino);
+        if(vaccinoRepository.existsByNomeAndCasaFarmaceutica(vaccinoDTO.nome, vaccinoDTO.casaFarmaceutica)) {
+            vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VACC_AE");
+            throw new ApiRequestException(vaccinoEnum.getMessage());
+        }else if (vaccinoDTO.nome == null || vaccinoDTO.casaFarmaceutica==null) {
+            vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VCC_FI");
+            throw new ApiRequestException(vaccinoEnum.getMessage());
+        }
+        else {
+            vaccino = vaccinoRepository.save(vaccino);
+            return new VaccinoDTO(vaccino);
+        }
     }
 
     @Override
@@ -70,16 +79,29 @@ public class VaccinoServiceImpl implements VaccinoService {
     @Override
     public List<VaccinoDTO> updateVaccino(VaccinoDTO vaccinoDTO) {
 
-        if (vaccinoDTO.id != null && vaccinoRepository.existsById(vaccinoDTO.id)) {
+        if (vaccinoRepository.existsById(vaccinoDTO.id)) {
             Vaccino vaccino = vaccinoRepository.findById(vaccinoDTO.getId()).get();
-            vaccino.setNome(vaccinoDTO.nome);
-            vaccino.setDataApprovazioneVaccino(vaccinoDTO.getDataApprovazioneVaccino());
-            vaccino.setCasaFarmaceutica(vaccinoDTO.casaFarmaceutica);
-            vaccinoRepository.save(vaccino);
-            return (List<VaccinoDTO>) new VaccinoDTO(vaccino);
+
+            if(!vaccinoRepository.existsByNomeAndCasaFarmaceutica(vaccinoDTO.nome, vaccinoDTO.casaFarmaceutica)) {
+
+                vaccino.setNome(vaccinoDTO.nome);
+                vaccino.setCasaFarmaceutica(vaccinoDTO.casaFarmaceutica);
+
+                vaccinoRepository.save(vaccino);
+            }
+
+            else{
+                vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VCC_NU");
+                throw new ApiRequestException(vaccinoEnum.getMessage());
+            }
+        }
+        else
+        {
+            vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VACC_NF");
+            throw new ApiRequestException(vaccinoEnum.getMessage());
         }
 
-        throw new RuntimeException("Errore, impossibile aggiornare le impostazioni utente");
+        return vaccinoRepository.findAll().stream().map(VaccinoDTO::new).collect(Collectors.toList());
     }
 
 

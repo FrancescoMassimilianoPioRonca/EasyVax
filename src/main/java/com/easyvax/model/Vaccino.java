@@ -28,9 +28,6 @@ public class Vaccino {
     @NonNull
     private String casaFarmaceutica;
 
-    @NonNull
-    private LocalDate dataApprovazioneVaccino;
-
     @OneToMany(mappedBy="vaccino" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Somministrazione> somministrazioni = new ArrayList<>();
 

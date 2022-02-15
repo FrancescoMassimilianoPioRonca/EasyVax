@@ -13,15 +13,18 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class VaccinoDTO {
 
+
     public Long id;
+
+    @NonNull
     public String nome;
+
+    @NonNull
     public String casaFarmaceutica;
-    private LocalDate dataApprovazioneVaccino;
 
     public VaccinoDTO(Vaccino vaccino) {
         this.id = vaccino.getId();
         this.nome = vaccino.getNome();
         this.casaFarmaceutica = vaccino.getCasaFarmaceutica();
-        this.dataApprovazioneVaccino = vaccino.getDataApprovazioneVaccino();
     }
 }

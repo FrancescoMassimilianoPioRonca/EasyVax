@@ -2,6 +2,8 @@ package com.easyvax.service.impl;
 
 
 import com.easyvax.DTO.VaccinoDTO;
+import com.easyvax.exception.enums.VaccinoEnum;
+import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.Vaccino;
 import com.easyvax.repository.VaccinoRepository;
 import com.easyvax.service.service.VaccinoService;
@@ -19,30 +21,27 @@ import java.util.stream.Collectors;
 public class VaccinoServiceImpl implements VaccinoService {
 
     private final VaccinoRepository vaccinoRepository;
+    private  VaccinoEnum vaccinoEnum;
 
     @Override
     public List<VaccinoDTO> findAll() {
-        return vaccinoRepository.findAll().stream().map(VaccinoDTO::new).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<VaccinoDTO> findByDate(LocalDate date) {
-
-       /** if( date!=null)
-           return vaccinoRepository.findVaccinoByDataApprovazioneVaccino(date).stream().map(VaccinoDTO::new).collect(Collectors.toList());
-        else
-            return null;*/
-       return null;
+        if(!vaccinoRepository.findAll().isEmpty())
+            return vaccinoRepository.findAll().stream().map(VaccinoDTO::new).collect(Collectors.toList());
+        else {
+            vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VAXS_NF");
+            throw new ApiRequestException(vaccinoEnum.getMessage());
+        }
     }
 
     @Override
     public List<VaccinoDTO> findByCasaFarmaceutica(String casaFarmaceutica) {
 
-       /** if(casaFarmaceutica != null && !(vaccinoRepository.existsByCasaFarmaceutica(casaFarmaceutica).isEmpty()))
-            return vaccinoRepository.findVaccinoByCasaFarmaceutica(casaFarmaceutica).stream().map(VaccinoDTO::new).collect(Collectors.toList());
-        else
-            return null;*/
-        return null;
+        if(casaFarmaceutica != null && !(vaccinoRepository.findByCasaFarmaceutica(casaFarmaceutica).isEmpty()))
+            return vaccinoRepository.findVaccinoByCasaFarmaceutica(casaFarmaceutica);
+        else {
+            vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VACC_CASA_NF");
+            throw new ApiRequestException(vaccinoEnum.getMessage());
+        }
     }
 
     @Override
@@ -57,8 +56,14 @@ public class VaccinoServiceImpl implements VaccinoService {
     @Override
     public List<VaccinoDTO> deleteVaccino(Long id) {
 
-        vaccinoRepository.deleteById(id);
-        return vaccinoRepository.findAll().stream().map(VaccinoDTO::new).collect(Collectors.toList());
+        if(vaccinoRepository.existsById(id)) {
+            vaccinoRepository.deleteById(id);
+            return vaccinoRepository.findAll().stream().map(VaccinoDTO::new).collect(Collectors.toList());
+        }
+        else {
+            vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VACC_DLE");
+            throw new ApiRequestException(vaccinoEnum.getMessage());
+        }
 
     }
 

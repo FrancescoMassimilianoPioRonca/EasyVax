@@ -9,7 +9,6 @@ import java.util.List;
 public interface VaccinoService {
 
     List<VaccinoDTO> findAll();
-    List<VaccinoDTO> findByDate(LocalDate date);
     List<VaccinoDTO> findByCasaFarmaceutica(String casaFarmaceutica);
 
     /**

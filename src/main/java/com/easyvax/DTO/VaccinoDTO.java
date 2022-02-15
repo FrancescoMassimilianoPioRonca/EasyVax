@@ -24,5 +24,4 @@ public class VaccinoDTO {
         this.casaFarmaceutica = vaccino.getCasaFarmaceutica();
         this.dataApprovazioneVaccino = vaccino.getDataApprovazioneVaccino();
     }
-
 }

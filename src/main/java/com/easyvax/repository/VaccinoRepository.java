@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public interface VaccinoRepository extends JpaRepository<Vaccino,Long> {
 
-    List<VaccinoDTO> findVaccinoByDataApprovazioneVaccino(LocalDate data);
     List<VaccinoDTO>  findVaccinoByCasaFarmaceutica(String casaFarmaceutica);
-    List<VaccinoDTO> existsByCasaFarmaceutica(String casaFarmaceutica);
+    List<VaccinoDTO> findByCasaFarmaceutica(String casaFarmaceutica);
 }

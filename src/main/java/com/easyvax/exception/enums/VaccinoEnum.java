@@ -1,11 +1,16 @@
 package com.easyvax.exception.enums;
 
+import com.easyvax.DTO.VaccinoDTO;
+
 public enum VaccinoEnum {
 
     VACCINO_NOT_FOUND("VACC_NF", "Il vaccino che stai cercando non esiste"),
     VACCINO_ALREADY_EXISTS("VACC_AE", "Il vaccino che vuoi inserire è già presente nel sistema"),
     VACCINO_DELETE_ERROR("VACC_DLE", "Errore durante l'eliminazione del vaccino"),
-    VACCINO_ID_NOT_EXIST("VACC_IDNE", "Il vaccino che stai cercando non esiste");
+    VACCINO_ID_NOT_EXIST("VACC_IDNE", "Il vaccino che stai cercando non esiste"),
+    VACCINI_NOT_FOUND("VAXS_NF", "Attualmente non ci sono vaccini"),
+    VACCINO_CASA_NOT_EXIST("VACC_CASA_NF","La casa farmaceutica che stai cercando non esiste");
+
 
     private final String messageCode;
     private final String message;

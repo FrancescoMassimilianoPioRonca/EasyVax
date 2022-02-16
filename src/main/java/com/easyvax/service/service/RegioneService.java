@@ -9,7 +9,7 @@ public interface RegioneService {
 
     List<RegioneDTO> findAll();
     RegioneDTO findByNome(String nome);
-    RegioneDTO findByProvincia(String provincia);
+    List<RegioneDTO> findByProvincia(String provincia);
 
     RegioneDTO insertRegione(RegioneDTO regioneDTO);
     List<RegioneDTO> updateRegione(RegioneDTO regioneDTO);

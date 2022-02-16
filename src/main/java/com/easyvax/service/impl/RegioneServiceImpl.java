@@ -52,10 +52,10 @@ public class RegioneServiceImpl implements RegioneService {
     }
 
     @Override
-    public RegioneDTO findByProvincia(String provincia) {
+    public List<RegioneDTO> findByProvincia(String provincia) {
 
         if(provincia != null && (provinciaRepository.existsByNome(provincia)))
-            return new RegioneDTO(regioneRepository.findByProvincia(provincia));
+            return regioneRepository.findByProvincia(provincia).stream().map(RegioneDTO::new).collect(Collectors.toList());
         else {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_NF");
             throw new ApiRequestException(regioneEnum.getMessage());

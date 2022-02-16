@@ -24,7 +24,7 @@ public class RegioneController {
     }
 
     @GetMapping("/findByProvincia")
-    public RegioneDTO findByProvincia(@Valid @NotNull() @RequestParam String provincia){
+    public List<RegioneDTO> findByProvincia(@Valid @NotNull() @RequestParam String provincia){
         return regioneService.findByProvincia(provincia);
     }
 

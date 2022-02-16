@@ -10,6 +10,7 @@ public interface VaccinoService {
 
     List<VaccinoDTO> findAll();
     List<VaccinoDTO> findByCasaFarmaceutica(String casaFarmaceutica);
+    VaccinoDTO findByNome(String nome);
 
     /**
      * Riservato agli admin

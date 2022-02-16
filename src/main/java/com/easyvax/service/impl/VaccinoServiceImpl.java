@@ -1,7 +1,9 @@
 package com.easyvax.service.impl;
 
 
+import com.easyvax.DTO.RegioneDTO;
 import com.easyvax.DTO.VaccinoDTO;
+import com.easyvax.exception.enums.RegioneEnum;
 import com.easyvax.exception.enums.VaccinoEnum;
 import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.Vaccino;
@@ -37,11 +39,23 @@ public class VaccinoServiceImpl implements VaccinoService {
     public List<VaccinoDTO> findByCasaFarmaceutica(String casaFarmaceutica) {
 
         if(casaFarmaceutica != null && !(vaccinoRepository.findByCasaFarmaceutica(casaFarmaceutica).isEmpty()))
-            return vaccinoRepository.findVaccinoByCasaFarmaceutica(casaFarmaceutica);
+            return vaccinoRepository.findVaccinoByCasaFarmaceutica(casaFarmaceutica).stream().map(VaccinoDTO::new).collect(Collectors.toList());
         else {
             vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VACC_CASA_NF");
             throw new ApiRequestException(vaccinoEnum.getMessage());
         }
+    }
+
+    @Override
+    public VaccinoDTO findByNome(String nome) {
+
+        if(nome != null && (vaccinoRepository.existsByNome(nome)))
+            return new VaccinoDTO(vaccinoRepository.findByNome(nome));
+        else {
+            vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VACC_NF");
+            throw new ApiRequestException(vaccinoEnum.getMessage());
+        }
+
     }
 
     @Override

@@ -10,8 +10,9 @@ import java.util.List;
 @Repository
 public interface VaccinoRepository extends JpaRepository<Vaccino,Long> {
 
-    List<VaccinoDTO>  findVaccinoByCasaFarmaceutica(String casaFarmaceutica);
-    List<VaccinoDTO> findByCasaFarmaceutica(String casaFarmaceutica);
+    List<Vaccino>  findVaccinoByCasaFarmaceutica(String casaFarmaceutica);
+    List<Vaccino> findByCasaFarmaceutica(String casaFarmaceutica);
+    Vaccino findByNome (String nome);
 
     boolean existsByNome(String nome);
     boolean existsByNomeAndCasaFarmaceutica(String nome, String casaFarmaceutica);

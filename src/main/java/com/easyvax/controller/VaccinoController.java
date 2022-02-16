@@ -29,6 +29,11 @@ public class VaccinoController {
         return vaccinoService.findByCasaFarmaceutica(casaFarmaceutica);
     }
 
+    @GetMapping("/findByNome")
+    public VaccinoDTO findByNome(@Valid @NotNull() @RequestParam String nome){
+        return vaccinoService.findByNome(nome);
+    }
+
     @PostMapping("/insertVaccino")
     public VaccinoDTO insertVaccino(@NonNull @RequestBody VaccinoDTO vaccinoDTO){
         return vaccinoService.insertVaccino(vaccinoDTO);

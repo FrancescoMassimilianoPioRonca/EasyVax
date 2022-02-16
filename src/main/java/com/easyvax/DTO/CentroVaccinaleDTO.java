@@ -13,14 +13,14 @@ import java.util.Date;
 public class CentroVaccinaleDTO {
 
     public Long id;
-    public String cap;
-    public String località;
+    public String indirizzo;
     public String nome;
+    public Long idProvincia;
 
     public CentroVaccinaleDTO(CentroVaccinale centroVaccinale) {
         this.id = centroVaccinale.getId();
-        this.cap = centroVaccinale.getCap();
-        this.località = centroVaccinale.getLocalita();
+        this.indirizzo = centroVaccinale.getIndirizzo();
         this.nome = centroVaccinale.getNome();
+        this.idProvincia=centroVaccinale.getProvincia().getId();
     }
 }

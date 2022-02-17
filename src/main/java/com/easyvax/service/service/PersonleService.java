@@ -17,11 +17,10 @@ public interface PersonleService {
 
     List<PersonaleDTO> findAll();
 
-    List<PersonaleDTO> finByCap();
+    List<PersonaleDTO> finByCap(String cap);
 
-    PersonaleDTO findByCognome(String cognome);
+    List<PersonaleDTO> findByCognome(String cognome);
 
-    PersonaleDTO findById(Long Id);
 
     List<PersonaleDTO> findByRuolo(String ruolo);
 

@@ -1,5 +1,7 @@
 package com.easyvax.model;
 
+import com.easyvax.DTO.PersonaleDTO;
+import com.easyvax.DTO.VaccinoDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,33 +23,22 @@ public class Personale {
     private Long id;
 
     @NonNull
-    private String nome;
-
-    @NonNull
-    private String cognome;
-
-    @NonNull
-    private String codFiscale;
-
-    @NonNull
-    private String residenza;
-
-    @NonNull
-    private String capResidenza;
-
-    @NonNull
     private String ruolo;
-
-    @NonNull
-    private String password;
-
-    @NonNull
-    private LocalDate dataNascita;
 
     @ManyToOne
     @JoinColumn(name = "id_centroVaccinale")
     private CentroVaccinale centroVaccinale;
 
+    @ManyToOne
+    @JoinColumn(name = "id_utente")
+    private Utente utente;
+
     @OneToMany(mappedBy="personale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Turno> turni = new ArrayList<>();
+    private List<Somministrazione> somministrazioni = new ArrayList<>();
+
+
+    public Personale(PersonaleDTO personaleDTO) {
+        this.id = personaleDTO.getId();
+        this.ruolo = personaleDTO.getRuolo();
+    }
 }

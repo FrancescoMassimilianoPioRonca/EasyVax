@@ -11,16 +11,13 @@ public interface PersonleService {
 
     PersonaleDTO insertpersonale(PersonaleDTO personale);
 
-    PersonaleDTO getDetails(Long id);
-
-    PersonaleDTO updateAnagrafica(PersonaleDTO personale);
-
     List<PersonaleDTO> findAll();
 
-    List<PersonaleDTO> finByCap(String cap);
+    List<PersonaleDTO> finByCentroVaccinale(Long id);
 
     List<PersonaleDTO> findByCognome(String cognome);
 
+    PersonaleDTO findByCodFiscale(String cf);
 
     List<PersonaleDTO> findByRuolo(String ruolo);
 
@@ -31,6 +28,6 @@ public interface PersonleService {
      * @return
      */
     List<PersonaleDTO> deletePersonale(Long id);
-    PersonaleDTO updateRuolo(PersonaleDTO personale);
+    List<PersonaleDTO> updatePersonale(PersonaleDTO personale);
 
 }

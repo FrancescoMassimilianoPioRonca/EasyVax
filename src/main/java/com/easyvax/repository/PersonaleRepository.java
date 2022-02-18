@@ -9,21 +9,25 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface PersonaleRepository extends JpaRepository<Personale,Long> {
 
-    @Query("select distinct p from Personale p JOIN CentroVaccinale cv JOIN Provincia pr on cv.provincia.id = pr.id  where pr.cap=:cap")
-    List<Personale> findByCap(@Param("cap")String cap);
-
-    boolean existsByCognome(String cognome);
+    boolean existsByUtente_IdAndRuolo(Long id,String ruolo);
 
     boolean existsByRuolo(String ruolo);
 
-    List<Personale> findByCognome(String cognome);
-
     List<Personale> findByRuolo(String ruolo);
 
+    List<Personale> findByCentroVaccinale_Id(Long id);
 
+    boolean existsByUtente_IdAndRuoloAndCentroVaccinale(Long id,String ruolo,Long idCvex);
+
+    @Query("select distinct (p) from Personale p JOIN Utente u on p.utente.id = u.id  where u.nome=:nome")
+    List<Personale> findByCognome(@Param("nome") String nome);
+
+    @Query("select (p) from Personale p JOIN Utente u on p.utente.id = u.id  where u.codFiscale=:cf")
+    Personale findByCodFisc(@Param("cf") String cf);
 }

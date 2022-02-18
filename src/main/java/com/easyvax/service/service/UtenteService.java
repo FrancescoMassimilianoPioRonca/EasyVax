@@ -11,21 +11,21 @@ public interface UtenteService {
 
     UtenteDTO getDetails(Long id);
 
-    UtenteDTO updateAnagrafica(UtenteDTO utente);
+    List<UtenteDTO> updateAnagrafica(UtenteDTO utente);
 
     List<UtenteDTO> findAll();
 
-    List<UtenteDTO> finByCap();
+    /*
+    List<UtenteDTO> finByCap(String cap);
 
-    UtenteDTO findByCognome(String cognome);
+    List<UtenteDTO>  findByCognome(String cognome);
 
-    UtenteDTO findById(Long Id);
-
+    List<UtenteDTO>  findByPersonale(Boolean personale);
+*/
     /**
      * Riservato ad admin
      * @param id
      * @return
      */
     List<UtenteDTO> deleteUtente(Long id);
-    List<UtenteDTO> findByAdmin();
 }

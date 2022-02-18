@@ -38,8 +38,8 @@ public class Somministrazione {
     private CentroVaccinale centro;
 
     @ManyToOne
-    @JoinColumn(name="id_turno")
-    private Turno turno;
+    @JoinColumn(name="id_personale")
+    private Personale personale;
 
 
 

@@ -32,28 +32,35 @@ public class Utente {
     private String codFiscale;
 
     @NonNull
-    private String residenza;
-
-    @NonNull
-    private String capResidenza;
-
-    @NonNull
     private LocalDate dataNascita;
 
-
-    private Boolean admin;
+    @NonNull
+    private String ruolo;
 
     @NonNull
     private String password;
 
 
+
     @OneToMany(mappedBy="utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Somministrazione> somministrazioni = new ArrayList<>();
+
+    @OneToMany(mappedBy="utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Personale> personale = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name="id_residenza")
+    private Provincia provincia;
+
 
 
     public Utente(UtenteDTO utenteDTO) {
         this.id = utenteDTO.id;
         this.nome = utenteDTO.nome;
+        this.dataNascita=utenteDTO.getDataNascita();
+        this.password= utenteDTO.getPassword();
         this.cognome = utenteDTO.cognome;
+        this.ruolo=utenteDTO.getRuolo();
+
     }
 }

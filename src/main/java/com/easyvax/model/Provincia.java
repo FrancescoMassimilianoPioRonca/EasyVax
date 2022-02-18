@@ -33,6 +33,10 @@ public class Provincia {
     @OneToMany(mappedBy="provincia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CentroVaccinale> centriVaccinali = new ArrayList<>();
 
+    @OneToMany(mappedBy="provincia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Utente> utenti = new ArrayList<>();
+
+
 
     public Provincia (ProvinciaDTO provincia){
         this.id = provincia.getId();

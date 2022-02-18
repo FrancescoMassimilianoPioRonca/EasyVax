@@ -20,11 +20,10 @@ public class UtenteDTO {
     public String nome;
     public String cognome;
     private String codFiscale;
-    private String residenza;
-    private String capResidenza;
     private LocalDate dataNascita;
-    private Boolean admin;
     private String password;
+    private String ruolo;
+    private Long residenza;
 
 
     public UtenteDTO(Utente utente) {
@@ -32,10 +31,9 @@ public class UtenteDTO {
         this.nome = utente.getNome();
         this.cognome = utente.getCognome();
         this.dataNascita=utente.getDataNascita();
-        this.admin=utente.getAdmin();
-        this.capResidenza=utente.getCapResidenza();
+        this.ruolo= utente.getRuolo();
         this.codFiscale=utente.getCodFiscale();
         this.password=utente.getPassword();
-        this.residenza=utente.getResidenza();
+        this.residenza=utente.getProvincia().getId();
     }
 }

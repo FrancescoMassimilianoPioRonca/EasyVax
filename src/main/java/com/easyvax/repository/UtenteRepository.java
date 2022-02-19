@@ -18,6 +18,7 @@ public interface UtenteRepository extends JpaRepository<Utente,Long> {
     boolean existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuolo(String nome, String cognome, String cf, LocalDate data, String ruolo);
 
     List<Utente> findByCognome(String cognome);
+    Utente findByCodFiscale(String cf);
 
 
     @Query("select distinct u from Utente u JOIN Provincia p on u.provincia.id=p.id where p.cap=:cap")

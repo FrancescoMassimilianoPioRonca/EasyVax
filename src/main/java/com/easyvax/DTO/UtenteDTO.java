@@ -23,7 +23,8 @@ public class UtenteDTO {
     private LocalDate dataNascita;
     private String password;
     private String ruolo;
-    private Long residenza;
+
+    public Long residenza;
 
 
     public UtenteDTO(Utente utente) {

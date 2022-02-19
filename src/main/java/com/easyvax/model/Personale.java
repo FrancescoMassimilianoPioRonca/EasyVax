@@ -33,8 +33,6 @@ public class Personale {
     @JoinColumn(name = "id_utente")
     private Utente utente;
 
-    @OneToMany(mappedBy="personale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Somministrazione> somministrazioni = new ArrayList<>();
 
 
     public Personale(PersonaleDTO personaleDTO) {

@@ -1,5 +1,6 @@
 package com.easyvax.model;
 
+import com.easyvax.DTO.SomministrazioneDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -25,6 +26,9 @@ public class Somministrazione {
     @NonNull
     private LocalDate dataSomministrazione;
 
+    @NonNull
+    private String codiceSomm;
+
     @ManyToOne
     @JoinColumn(name="id_utente")
     private Utente utente;
@@ -37,9 +41,14 @@ public class Somministrazione {
     @JoinColumn(name="id_centro")
     private CentroVaccinale centro;
 
-    @ManyToOne
-    @JoinColumn(name="id_personale")
-    private Personale personale;
+
+    public Somministrazione(SomministrazioneDTO somministrazioneDTO)
+    {
+        this.id = somministrazioneDTO.getId();
+        this.oraSomministrazione = somministrazioneDTO.getOra();
+        this.dataSomministrazione = somministrazioneDTO.getData();
+        this.codiceSomm = somministrazioneDTO.codiceSomm;
+    }
 
 
 

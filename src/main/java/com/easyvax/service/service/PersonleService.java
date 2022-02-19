@@ -13,13 +13,13 @@ public interface PersonleService {
 
     List<PersonaleDTO> findAll();
 
-    List<PersonaleDTO> finByCentroVaccinale(Long id);
+    List<PersonaleDTO> findByCentroVaccinale(Long id);
 
     List<PersonaleDTO> findByCognome(String cognome);
 
     PersonaleDTO findByCodFiscale(String cf);
 
-    List<PersonaleDTO> findByRuolo(String ruolo);
+   // List<PersonaleDTO> findByRuolo(String ruolo);
 
 
     /**

@@ -35,9 +35,9 @@ public class UtenteServiceImpl  implements UtenteService {
     @Override
     public UtenteDTO insertUtente(UtenteDTO utenteDTO) {
 
-        if(!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuolo(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita(), utenteDTO.getRuolo())){
-            Provincia provincia = provinciaRepository.findById(utenteDTO.getResidenza()).get();
-            Utente utente = utenteRepository.findById(utenteDTO.id).get();
+        if(!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuolo(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita(), utenteDTO.getRuolo())){;
+            Utente utente = new Utente(utenteDTO);
+            Provincia provincia = provinciaRepository.findById(utenteDTO.residenza).get();
             utente.setNome(utenteDTO.nome);
             utente.setCognome(utenteDTO.cognome);
             utente.setCodFiscale(utenteDTO.getCodFiscale());
@@ -139,7 +139,7 @@ public class UtenteServiceImpl  implements UtenteService {
             return utenteRepository.findAll().stream().map(UtenteDTO::new).collect(Collectors.toList());
         }
         else {
-            utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_DLE");
+            utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_NF");
             throw new ApiRequestException(utenteEnum.getMessage());
         }
     }

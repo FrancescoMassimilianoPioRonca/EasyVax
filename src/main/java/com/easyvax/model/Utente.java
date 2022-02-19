@@ -50,7 +50,7 @@ public class Utente {
 
     @ManyToOne
     @JoinColumn(name="id_residenza")
-    private Provincia provincia;
+    public Provincia provincia;
 
 
 

@@ -9,15 +9,13 @@ public interface SomministrazioneService {
 
     SomministrazioneDTO insertSomministrazione(SomministrazioneDTO somministrazione);
     SomministrazioneDTO updateSomministrazione(SomministrazioneDTO somministrazione);
-    SomministrazioneDTO getDetails(SomministrazioneDTO somministrazione);
+    SomministrazioneDTO getDetails(Long id);
+    List<SomministrazioneDTO> findAll();
+    List<SomministrazioneDTO> findByUtente(String cf);
+    SomministrazioneDTO findByCod(String cod);
 
-    /**
-     * Riservate all'admin
-     * @param somministrazione
-     * @return
-     */
-    List<SomministrazioneDTO> deletePrenotazione(SomministrazioneDTO somministrazione);
-    SomministrazioneDTO updateSomministrazioneAdmin(SomministrazioneDTO somministrazione);
+
+    List<SomministrazioneDTO> deletePrenotazione(Long id);
 
 
 }

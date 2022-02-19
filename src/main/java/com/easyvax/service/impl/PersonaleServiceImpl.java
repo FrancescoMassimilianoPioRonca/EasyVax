@@ -33,6 +33,7 @@ public class PersonaleServiceImpl implements PersonleService {
     private final ProvinciaRepository provinciaRepository;
     private final CentroVaccinaleRepository centroVaccinaleRepository;
     private static PersonaleEnum personaleEnum;
+    private static CentroVaccinaleEnum centroVaccinaleEnum;
 
     @Override
     public PersonaleDTO insertpersonale(PersonaleDTO personaleDTO) {
@@ -67,14 +68,14 @@ public class PersonaleServiceImpl implements PersonleService {
     }
 
     @Override
-    public List<PersonaleDTO> finByCentroVaccinale(Long id) {
+    public List<PersonaleDTO> findByCentroVaccinale(Long id) {
 
         if(id!=null && centroVaccinaleRepository.existsById(id)){
             return personaleRepository.findByCentroVaccinale_Id(id).stream().map(PersonaleDTO::new).collect(Collectors.toList());
         }
         else{
-            personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_NF");
-            throw new ApiRequestException(personaleEnum.getMessage());
+            centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_NF");
+            throw new ApiRequestException(centroVaccinaleEnum.getMessage());
         }
     }
 
@@ -99,7 +100,7 @@ public class PersonaleServiceImpl implements PersonleService {
         }
     }
 
-
+/*
     @Override
     public List<PersonaleDTO> findByRuolo(String ruolo) {
         if(ruolo != null && (personaleRepository.existsByRuolo(ruolo)))
@@ -108,7 +109,7 @@ public class PersonaleServiceImpl implements PersonleService {
             personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_NF");
             throw new ApiRequestException(personaleEnum.getMessage());
         }
-    }
+    }*/
 
     @Override
     public List<PersonaleDTO> deletePersonale(Long id) {
@@ -143,6 +144,7 @@ public class PersonaleServiceImpl implements PersonleService {
                     personale.setUtente(utente);
 
                     personale = personaleRepository.save(personale);
+                    return personaleRepository.findAll().stream().map(PersonaleDTO::new).collect(Collectors.toList());
                 }
             }
             else{
@@ -156,6 +158,5 @@ public class PersonaleServiceImpl implements PersonleService {
             throw new ApiRequestException(personaleEnum.getMessage());
         }
 
-        return personaleRepository.findAll().stream().map(PersonaleDTO::new).collect(Collectors.toList());
     }
 }

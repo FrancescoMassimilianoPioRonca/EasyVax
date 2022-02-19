@@ -25,8 +25,8 @@ public interface PersonaleRepository extends JpaRepository<Personale,Long> {
 
     boolean existsByUtente_IdAndRuoloAndCentroVaccinale(Long id,String ruolo,Long idCvex);
 
-    @Query("select distinct (p) from Personale p JOIN Utente u on p.utente.id = u.id  where u.nome=:nome")
-    List<Personale> findByCognome(@Param("nome") String nome);
+    @Query("select distinct (p) from Personale p JOIN Utente u on p.utente.id = u.id  where u.cognome=:cognome")
+    List<Personale> findByCognome(@Param("cognome") String cognome);
 
     @Query("select (p) from Personale p JOIN Utente u on p.utente.id = u.id  where u.codFiscale=:cf")
     Personale findByCodFisc(@Param("cf") String cf);

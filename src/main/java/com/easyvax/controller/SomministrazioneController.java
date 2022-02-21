@@ -54,7 +54,7 @@ public class SomministrazioneController {
     }
 
     @PutMapping("/updateSomministrazione")
-    public SomministrazioneDTO updateSomministrazione(@Valid @RequestBody SomministrazioneDTO somministrazioneDTO){
-        return somministrazioneService.updateSomministrazione(somministrazioneDTO);
+    public SomministrazioneDTO updateSomministrazione(@Valid @RequestParam String code , @RequestBody SomministrazioneDTO somministrazioneDTO){
+        return somministrazioneService.updateSomministrazione(code,somministrazioneDTO);
     }
 }

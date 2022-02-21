@@ -16,7 +16,6 @@ public class SomministrazioneDTO {
 
     public Long id;
     public LocalDate data;
-    public String codiceSomm;
     public String ora;
     public Long idUtente;
     public Long idCentro;
@@ -29,6 +28,5 @@ public class SomministrazioneDTO {
         this.idUtente = somministrazione.getUtente().getId();
         this.idCentro = somministrazione.getCentro().getId();
         this.idVaccino = somministrazione.getVaccino().getId();
-        this.codiceSomm = somministrazione.getCodiceSomm();
     }
 }

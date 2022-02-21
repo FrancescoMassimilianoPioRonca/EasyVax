@@ -11,12 +11,14 @@ import com.easyvax.repository.ProvinciaRepository;
 import com.easyvax.repository.SomministrazioneRepository;
 import com.easyvax.repository.VaccinoRepository;
 import com.lowagie.text.*;
+import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.*;
 
 @Service
@@ -43,13 +45,11 @@ public class PdfGeneratorServiceImpl {
             Document document = new Document(PageSize.A4);
             PdfWriter.getInstance(document,response.getOutputStream());
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PdfWriter.getInstance(document, baos);
-
             document.open();
 
             Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLDOBLIQUE);
             fontTitle.setSize(20);
+            fontTitle.setColor(Color.red);
 
             Paragraph titolo = new Paragraph("EasyVax cod." + somministrazione.getCodiceSomm() + "\n \n", fontTitle);
             titolo.setAlignment(Element.ALIGN_CENTER);

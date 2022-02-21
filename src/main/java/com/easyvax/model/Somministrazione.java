@@ -47,7 +47,6 @@ public class Somministrazione {
         this.id = somministrazioneDTO.getId();
         this.oraSomministrazione = somministrazioneDTO.getOra();
         this.dataSomministrazione = somministrazioneDTO.getData();
-        this.codiceSomm = somministrazioneDTO.codiceSomm;
     }
 
 

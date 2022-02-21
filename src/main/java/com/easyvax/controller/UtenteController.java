@@ -2,14 +2,18 @@ package com.easyvax.controller;
 
 import com.easyvax.DTO.PersonaleDTO;
 import com.easyvax.DTO.UtenteDTO;
+import com.easyvax.model.Utente;
 import com.easyvax.service.service.PersonleService;
 import com.easyvax.service.service.UtenteService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -29,6 +33,7 @@ public class UtenteController {
     public UtenteDTO getDetails(@Valid @NotNull() @RequestParam Long id){
         return utenteService.getDetails(id);
     }
+
 
 
    /* @GetMapping("/findByRuolo")

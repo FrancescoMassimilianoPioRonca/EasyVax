@@ -16,10 +16,18 @@ import com.easyvax.repository.UtenteRepository;
 import com.easyvax.service.service.UtenteService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 
 @Service
@@ -31,9 +39,12 @@ public class UtenteServiceImpl  implements UtenteService {
     private final UtenteRepository utenteRepository;
     private final ProvinciaRepository provinciaRepository;
     private static UtenteEnum utenteEnum;
+    private JavaMailSender mailSender;
 
     @Override
-    public UtenteDTO insertUtente(UtenteDTO utenteDTO) {
+    public UtenteDTO insertUtente(UtenteDTO utenteDTO){
+        
+        String siteUrl= "http://localhost:8080";
 
         if(!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuolo(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita(), utenteDTO.getRuolo())){;
             Utente utente = new Utente(utenteDTO);
@@ -45,9 +56,22 @@ public class UtenteServiceImpl  implements UtenteService {
             utente.setPassword(utenteDTO.getPassword());
             utente.setRuolo(utente.getRuolo());
             utente.setProvincia(provincia);
+            utente.setEnabled(false);
+            
+            String randomCode = RandomString.make(64);
+            
+            utente.setVerificationCode(randomCode);
 
 
             utente = utenteRepository.save(utente);
+
+            try {
+                sendVerificationEmail(utente,siteUrl);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
             return new UtenteDTO(utente);
         }
@@ -55,6 +79,34 @@ public class UtenteServiceImpl  implements UtenteService {
             utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_AE");
             throw new ApiRequestException(utenteEnum.getMessage());
         }
+    }
+
+    private void sendVerificationEmail (Utente utente, String siteUrl) throws MessagingException, UnsupportedEncodingException {
+        String toAddress = utente.getEmail();
+        String fromAddress = "easyVaxNOREPLY@gmail.com";
+        String senderName = "EasyVax";
+        String subject = "Please verify your registration";
+        String content = "Dear [[name]],<br>"
+                + "Please click the link below to verify your registration:<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+                + "Thank you,<br>"
+                + "EasyVax.";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom(fromAddress, senderName);
+        helper.setTo(toAddress);
+        helper.setSubject(subject);
+
+        content = content.replace("[[name]]",utente.getNome_Cognome());
+        String verifyURL = siteUrl + "/verify?code=" + utente.getVerificationCode();
+
+        content = content.replace("[[URL]]", verifyURL);
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
     }
 
     @Override

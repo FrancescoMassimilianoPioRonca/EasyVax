@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -23,6 +24,9 @@ public class UtenteDTO {
     private LocalDate dataNascita;
     private String password;
     private String ruolo;
+    private String email;
+    private String verificationCode;
+    private boolean enabled;
 
     public Long residenza;
 
@@ -36,5 +40,8 @@ public class UtenteDTO {
         this.codFiscale=utente.getCodFiscale();
         this.password=utente.getPassword();
         this.residenza=utente.getProvincia().getId();
+        this.verificationCode=utente.getVerificationCode();
+        this.enabled=utente.isEnabled();
+        this.email=utente.getEmail();
     }
 }

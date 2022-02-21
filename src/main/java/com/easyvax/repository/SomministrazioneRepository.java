@@ -15,14 +15,14 @@ import java.util.List;
 public interface SomministrazioneRepository extends JpaRepository<Somministrazione,Long> {
 
     @Query("select s from Somministrazione s Join Utente u on s.utente.id = u.id where u.codFiscale=:cf")
-    List<SomministrazioneDTO> findbyUtente(@Param("cf") String codficeFiscale);
+    List<Somministrazione> findbyUtente(@Param("cf") String codficeFiscale);
 
     @Query("select s from Somministrazione s Join Utente u on s.utente.id = u.id where u.codFiscale=:cf and s.dataSomministrazione=:data")
-    List<SomministrazioneDTO> findbyUtenteAndData(@Param("cf") String codficeFiscale, @Param("data") LocalDate data);
+    List<Somministrazione> findbyUtenteAndData(@Param("cf") String codficeFiscale, @Param("data") LocalDate data);
 
 
-    @Query("select (s) from Somministrazione s Join Utente u on s.utente.id = u.id JOIN Vaccino v on s.vaccino.id = v.id JOIN CentroVaccinale cv on s.centro.id = cv.id where u.id=:idU and v.id=:idV and s.dataSomministrazione=:data")
-    List<SomministrazioneDTO> findByUtente_IdAndVaccino_IdAndDataSomministrazione(@Param("idU")Long idU, @Param("idV")Long idV, @Param("data")LocalDate data);
+    @Query("select count (s) from Somministrazione s Join Utente u on s.utente.id = u.id JOIN Vaccino v on s.vaccino.id = v.id JOIN CentroVaccinale cv on s.centro.id = cv.id where u.id=:idU and v.id=:idV and s.dataSomministrazione=:data")
+    int findByUtente_IdAndVaccino_IdAndDataSomministrazione(@Param("idU")Long idU, @Param("idV")Long idV, @Param("data")LocalDate data);
 
     Somministrazione findByCodiceSomm(String codice);
 

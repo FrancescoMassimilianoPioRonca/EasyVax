@@ -46,7 +46,7 @@ public class UtenteServiceImpl  implements UtenteService {
         
         String siteUrl= "http://localhost:8080";
 
-        if(!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuoloAndEmail(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita(), utenteDTO.getRuolo(),utenteDTO.getEmail())){;
+        if(!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuolo(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita(), utenteDTO.getRuolo()) && !utenteRepository.existsByEmail(utenteDTO.getEmail()) && !utenteRepository.existsByCodFiscale(utenteDTO.getCodFiscale())){;
             Utente utente = new Utente(utenteDTO);
             Provincia provincia = provinciaRepository.findById(utenteDTO.residenza).get();
             utente.setNome(utenteDTO.nome);
@@ -126,7 +126,7 @@ public class UtenteServiceImpl  implements UtenteService {
         if (utenteRepository.existsById(utenteDTO.id)) {
             Provincia provincia = provinciaRepository.findById(utenteDTO.getResidenza()).get();
 
-            if(!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuoloAndEmail(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita(),utenteDTO.getRuolo(),utenteDTO.getEmail()) && provinciaRepository.existsById(utenteDTO.getResidenza())) {
+            if(!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuolo(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita(),utenteDTO.getRuolo()) && provinciaRepository.existsById(utenteDTO.getResidenza())) {
 
                 Utente utente = new Utente(utenteDTO);
 

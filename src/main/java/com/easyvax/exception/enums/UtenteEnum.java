@@ -3,7 +3,7 @@ package com.easyvax.exception.enums;
 public enum UtenteEnum {
 
     UTENTE_NOT_FOUND("UTE_NF", "l'utente che stai cercando non è stato trovato"),
-    UTENTE_ALREADY_EXISTS("UTE_AE", "l'utente che vuoi inserire è già presente nel sistema"),
+    UTENTE_ALREADY_EXISTS("UTE_AE", "Parametri già presenti nel sistema"),
     UTENTI_NOT_EXISTS("UTI_NE","Nel db non sono presenti utenti"),
     UTENTE_DELETE_ERROR("UTE_DLE", "Errore durante l'eliminazione dell'utente"),
     UTENTE_CAP_ERROR("UTE_CAP_NF", "Non sono presenti utenti per il cap selezionato"),

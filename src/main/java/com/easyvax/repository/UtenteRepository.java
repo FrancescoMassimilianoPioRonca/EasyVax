@@ -14,8 +14,9 @@ public interface UtenteRepository extends JpaRepository<Utente,Long> {
 
     boolean existsByCognome(String cognome);
     boolean existsByCodFiscale(String cf);
+    boolean existsByEmail(String email);
 
-    boolean existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuoloAndEmail(String nome, String cognome, String cf, LocalDate data, String ruolo,String email);
+    boolean existsByNomeAndCognomeAndCodFiscaleAndDataNascitaAndRuolo(String nome, String cognome, String cf, LocalDate data, String ruolo);
 
     List<Utente> findByCognome(String cognome);
     Utente findByCodFiscale(String cf);

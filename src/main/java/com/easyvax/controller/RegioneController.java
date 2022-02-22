@@ -14,7 +14,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/regione")
+@RequestMapping("/regione")
 public class RegioneController {
     public final RegioneService regioneService;
 

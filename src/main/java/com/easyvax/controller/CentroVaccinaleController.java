@@ -14,7 +14,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/centroVaccinale")
+@RequestMapping("/centroVaccinale")
 public class CentroVaccinaleController {
 
     public final CentroVaccinaleService centroVaccinaleService;

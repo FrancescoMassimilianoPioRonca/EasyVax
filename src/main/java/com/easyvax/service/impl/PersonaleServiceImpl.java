@@ -38,30 +38,29 @@ public class PersonaleServiceImpl implements PersonleService {
     @Override
     public PersonaleDTO insertpersonale(PersonaleDTO personaleDTO) {
 
-       if(!personaleRepository.existsByUtente_IdAndRuolo(personaleDTO.getIdUtente(), personaleDTO.ruolo)){
-           Personale personale = new Personale(personaleDTO);
-           Utente utente = utenteRepository.findById(personaleDTO.getIdUtente()).get();
-           CentroVaccinale cv = centroVaccinaleRepository.findById(personaleDTO.getIdCentro()).get();
-           personale.setUtente(utente);
-           personale.setCentroVaccinale(cv);
+        if (!personaleRepository.existsByUtente_Id(personaleDTO.getIdUtente())) {
+            Personale personale = new Personale(personaleDTO);
+            Utente utente = utenteRepository.findById(personaleDTO.getIdUtente()).get();
+            CentroVaccinale cv = centroVaccinaleRepository.findById(personaleDTO.getIdCentro()).get();
+            personale.setUtente(utente);
+            personale.setCentroVaccinale(cv);
 
-           personale = personaleRepository.save(personale);
+            personale = personaleRepository.save(personale);
 
-           return new PersonaleDTO(personale);
-       }
-       else{
-           personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_AE");
-           throw new ApiRequestException(personaleEnum.getMessage());
-       }
+            return new PersonaleDTO(personale);
+        } else {
+            personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_AE");
+            throw new ApiRequestException(personaleEnum.getMessage());
+        }
 
     }
 
 
     @Override
     public List<PersonaleDTO> findAll() {
-        if(!personaleRepository.findAll().isEmpty())
+        if (!personaleRepository.findAll().isEmpty())
             return personaleRepository.findAll().stream().map(PersonaleDTO::new).collect(Collectors.toList());
-        else{
+        else {
             personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_NE");
             throw new ApiRequestException(personaleEnum.getMessage());
         }
@@ -70,10 +69,9 @@ public class PersonaleServiceImpl implements PersonleService {
     @Override
     public List<PersonaleDTO> findByCentroVaccinale(Long id) {
 
-        if(id!=null && centroVaccinaleRepository.existsById(id)){
+        if (id != null && centroVaccinaleRepository.existsById(id)) {
             return personaleRepository.findByCentroVaccinale_Id(id).stream().map(PersonaleDTO::new).collect(Collectors.toList());
-        }
-        else{
+        } else {
             centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_NF");
             throw new ApiRequestException(centroVaccinaleEnum.getMessage());
         }
@@ -81,7 +79,7 @@ public class PersonaleServiceImpl implements PersonleService {
 
     @Override
     public List<PersonaleDTO> findByCognome(String cognome) {
-        if(cognome != null && (utenteRepository.existsByCognome(cognome)))
+        if (cognome != null && (utenteRepository.existsByCognome(cognome)))
             return personaleRepository.findByCognome(cognome).stream().map(PersonaleDTO::new).collect(Collectors.toList());
         else {
             personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_NF");
@@ -91,10 +89,9 @@ public class PersonaleServiceImpl implements PersonleService {
 
     @Override
     public PersonaleDTO findByCodFiscale(String cf) {
-        if(cf != null && (utenteRepository.existsByCodFiscale(cf))) {
+        if (cf != null && (utenteRepository.existsByCodFiscale(cf))) {
             return new PersonaleDTO(personaleRepository.findByCodFisc(cf));
-        }
-        else {
+        } else {
             personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_NF");
             throw new ApiRequestException(personaleEnum.getMessage());
         }
@@ -114,11 +111,10 @@ public class PersonaleServiceImpl implements PersonleService {
     @Override
     public List<PersonaleDTO> deletePersonale(Long id) {
 
-        if(personaleRepository.existsById(id)) {
+        if (personaleRepository.existsById(id)) {
             personaleRepository.deleteById(id);
             return personaleRepository.findAll().stream().map(PersonaleDTO::new).collect(Collectors.toList());
-        }
-        else {
+        } else {
             personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_DLE");
             throw new ApiRequestException(personaleEnum.getMessage());
         }
@@ -130,30 +126,21 @@ public class PersonaleServiceImpl implements PersonleService {
             Utente utente = utenteRepository.findById(personaleDTO.getIdUtente()).get();
             CentroVaccinale cv = centroVaccinaleRepository.findById(personaleDTO.getIdCentro()).get();
 
-            if(!personaleRepository.existsByUtente_IdAndRuoloAndCentroVaccinale(utente.getId(), personaleDTO.ruolo, cv.getId()) && utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId())) {
+            if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId())) {
 
                 Personale personale = new Personale(personaleDTO);
 
-                if((!personaleDTO.ruolo.toUpperCase().equals("Medico")) || (!personaleDTO.ruolo.toUpperCase().equals("Infermere")) || (!personaleDTO.ruolo.toUpperCase().equals("Infermiera")) || (!personaleDTO.ruolo.toUpperCase().equals("Amministrativo"))){
-                    personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_RE");
-                    throw new ApiRequestException(personaleEnum.getMessage());
-                }
-                else{
-                    personale.setRuolo(personaleDTO.ruolo);
-                    personale.setCentroVaccinale(cv);
-                    personale.setUtente(utente);
+                personale.setCentroVaccinale(cv);
+                personale.setUtente(utente);
 
-                    personale = personaleRepository.save(personale);
-                    return personaleRepository.findAll().stream().map(PersonaleDTO::new).collect(Collectors.toList());
-                }
-            }
-            else{
+                personale = personaleRepository.save(personale);
+
+                return personaleRepository.findAll().stream().map(PersonaleDTO::new).collect(Collectors.toList());
+            } else {
                 personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_UE");
                 throw new ApiRequestException(personaleEnum.getMessage());
             }
-        }
-        else
-        {
+        } else {
             personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_NF");
             throw new ApiRequestException(personaleEnum.getMessage());
         }

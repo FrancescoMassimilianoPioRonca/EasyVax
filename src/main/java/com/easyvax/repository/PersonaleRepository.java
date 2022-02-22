@@ -15,15 +15,11 @@ import java.util.List;
 @Repository
 public interface PersonaleRepository extends JpaRepository<Personale,Long> {
 
-    boolean existsByUtente_IdAndRuolo(Long id,String ruolo);
-
-    boolean existsByRuolo(String ruolo);
-
-    List<Personale> findByRuolo(String ruolo);
+    boolean existsByUtente_Id(Long id);
 
     List<Personale> findByCentroVaccinale_Id(Long id);
 
-    boolean existsByUtente_IdAndRuoloAndCentroVaccinale(Long id,String ruolo,Long idCvex);
+    boolean existsByUtente_IdAndCentroVaccinale(Long id,Long idCvex);
 
     @Query("select distinct (p) from Personale p JOIN Utente u on p.utente.id = u.id  where u.cognome=:cognome")
     List<Personale> findByCognome(@Param("cognome") String cognome);

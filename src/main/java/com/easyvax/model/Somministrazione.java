@@ -17,7 +17,7 @@ import java.util.Date;
 
 public class Somministrazione {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NonNull

@@ -1,14 +1,12 @@
 package com.easyvax.DTO;
 
+import com.easyvax.exception.enums.RoleEnum;
 import com.easyvax.model.Utente;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -23,12 +21,12 @@ public class UtenteDTO {
     private String codFiscale;
     private LocalDate dataNascita;
     private String password;
-    private String ruolo;
     private String email;
     private String verificationCode;
     private boolean enabled;
 
     public Long residenza;
+    public RoleEnum ruolo;
 
 
     public UtenteDTO(Utente utente) {
@@ -36,7 +34,7 @@ public class UtenteDTO {
         this.nome = utente.getNome();
         this.cognome = utente.getCognome();
         this.dataNascita=utente.getDataNascita();
-        this.ruolo= utente.getRuolo();
+        this.ruolo=utente.getRuolo();
         this.codFiscale=utente.getCodFiscale();
         this.password=utente.getPassword();
         this.residenza=utente.getProvincia().getId();
@@ -44,4 +42,5 @@ public class UtenteDTO {
         this.enabled=utente.isEnabled();
         this.email=utente.getEmail();
     }
+
 }

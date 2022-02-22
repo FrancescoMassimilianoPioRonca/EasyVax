@@ -16,7 +16,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/somministrazione")
+@RequestMapping("/somministrazione")
 
 public class SomministrazioneController {
 

@@ -1,6 +1,7 @@
 package com.easyvax.model;
 
 import com.easyvax.DTO.UtenteDTO;
+import com.easyvax.exception.enums.RoleEnum;
 import lombok.*;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,7 +23,7 @@ import java.util.Locale;
 
 public class Utente {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NonNull
@@ -34,11 +35,8 @@ public class Utente {
     @NonNull
     private String codFiscale;
 
-    @NonNull
-    private LocalDate dataNascita;
 
-    @NonNull
-    private String ruolo;
+    private LocalDate dataNascita;
 
     @NonNull
     private String password;
@@ -49,9 +47,12 @@ public class Utente {
     @NonNull
     private String verificationCode;
 
-    @NotNull
+
     private boolean enabled;
 
+    @NonNull
+    @Enumerated(EnumType.STRING)
+    private RoleEnum ruolo;
 
 
     @OneToMany(mappedBy="utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -66,6 +67,7 @@ public class Utente {
 
 
 
+
     public Utente(UtenteDTO utenteDTO) {
         this.id = utenteDTO.id;
         this.nome = utenteDTO.nome;
@@ -73,10 +75,9 @@ public class Utente {
         this.password= utenteDTO.getPassword();
         this.cognome = utenteDTO.cognome;
         this.email=utenteDTO.getEmail();
-        this.ruolo=utenteDTO.getRuolo();
         this.verificationCode=utenteDTO.getVerificationCode();
         this.enabled=utenteDTO.isEnabled();
-
+        this.ruolo=utenteDTO.getRuolo();
     }
 
     public String getNome_Cognome(){

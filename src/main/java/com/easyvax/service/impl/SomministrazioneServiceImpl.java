@@ -72,7 +72,13 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
             if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId()) && vaccinoRepository.existsById(vaccino.getId())) { //da aggiungere se è valid l'utente
 
                 String randomCode = RandomString.make(12);
-                somministrazione.setCodiceSomm(randomCode);
+                if(!somministrazioneRepository.existsByCodiceSomm(randomCode))
+                     somministrazione.setCodiceSomm(randomCode);
+                else {
+                    somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_AE");
+                    throw new ApiRequestException(somministrazioneEnum.getMessage());
+                }
+
                 somministrazione.setDataSomministrazione(somministrazioneDTO.getData());
                 somministrazione.setOraSomministrazione(somministrazioneDTO.getOra());
                 somministrazione.setUtente(utente);

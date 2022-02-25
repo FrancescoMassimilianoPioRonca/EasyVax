@@ -1,6 +1,5 @@
 package com.easyvax.repository;
 
-import com.easyvax.DTO.VaccinoDTO;
 import com.easyvax.model.Vaccino;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

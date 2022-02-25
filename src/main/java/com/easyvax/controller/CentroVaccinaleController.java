@@ -1,8 +1,7 @@
 package com.easyvax.controller;
 
 
-import com.easyvax.DTO.CentroVaccinaleDTO;
-import com.easyvax.DTO.VaccinoDTO;
+import com.easyvax.dto.CentroVaccinaleDTO;
 import com.easyvax.service.service.CentroVaccinaleService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

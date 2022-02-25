@@ -1,14 +1,12 @@
 package com.easyvax.controller;
 
-import com.easyvax.DTO.UtenteDTO;
-import com.easyvax.DTO.VaccinoDTO;
+import com.easyvax.dto.VaccinoDTO;
 import com.easyvax.service.service.VaccinoService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 

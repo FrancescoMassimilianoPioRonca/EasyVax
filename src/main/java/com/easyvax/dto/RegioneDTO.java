@@ -1,8 +1,7 @@
-package com.easyvax.DTO;
+package com.easyvax.dto;
 
 
 import com.easyvax.model.Regione;
-import com.easyvax.model.Somministrazione;
 import lombok.*;
 
 @Builder

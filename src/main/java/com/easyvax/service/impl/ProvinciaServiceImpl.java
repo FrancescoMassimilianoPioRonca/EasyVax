@@ -1,9 +1,7 @@
 package com.easyvax.service.impl;
 
-import com.easyvax.DTO.ProvinciaDTO;
-import com.easyvax.DTO.RegioneDTO;
+import com.easyvax.dto.ProvinciaDTO;
 import com.easyvax.exception.enums.ProvinciaEnum;
-import com.easyvax.exception.enums.RegioneEnum;
 import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.Provincia;
 import com.easyvax.model.Regione;

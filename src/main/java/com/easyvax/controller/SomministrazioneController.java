@@ -1,15 +1,11 @@
 package com.easyvax.controller;
 
-import com.easyvax.DTO.SomministrazioneDTO;
-import com.easyvax.DTO.UtenteDTO;
-import com.easyvax.model.Somministrazione;
+import com.easyvax.dto.SomministrazioneDTO;
 import com.easyvax.service.service.SomministrazioneService;
-import com.easyvax.service.service.UtenteService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;

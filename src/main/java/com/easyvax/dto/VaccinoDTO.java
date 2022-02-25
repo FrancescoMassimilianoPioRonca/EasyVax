@@ -1,10 +1,7 @@
-package com.easyvax.DTO;
+package com.easyvax.dto;
 
-import com.easyvax.model.Utente;
 import com.easyvax.model.Vaccino;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Builder
 @Getter

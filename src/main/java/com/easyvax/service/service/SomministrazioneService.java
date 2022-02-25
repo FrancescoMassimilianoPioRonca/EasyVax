@@ -1,9 +1,7 @@
 package com.easyvax.service.service;
 
-import com.easyvax.DTO.SomministrazioneDTO;
-import com.easyvax.model.Somministrazione;
+import com.easyvax.dto.SomministrazioneDTO;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface SomministrazioneService {

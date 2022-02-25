@@ -1,7 +1,7 @@
 package com.easyvax.model;
 
 
-import com.easyvax.DTO.RegioneDTO;
+import com.easyvax.dto.RegioneDTO;
 import lombok.*;
 
 import javax.persistence.*;

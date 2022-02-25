@@ -1,7 +1,5 @@
 package com.easyvax.exception.enums;
 
-import com.easyvax.DTO.VaccinoDTO;
-
 public enum VaccinoEnum {
 
     VACCINO_NOT_FOUND("VACC_NF", "Il vaccino che stai cercando non esiste"),

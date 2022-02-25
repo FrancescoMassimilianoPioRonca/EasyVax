@@ -1,12 +1,10 @@
 package com.easyvax.model;
 
-import com.easyvax.DTO.SomministrazioneDTO;
+import com.easyvax.dto.SomministrazioneDTO;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Builder

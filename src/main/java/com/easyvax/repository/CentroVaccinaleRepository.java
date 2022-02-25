@@ -1,12 +1,6 @@
 package com.easyvax.repository;
 
-import com.easyvax.DTO.CentroVaccinaleDTO;
-import com.easyvax.DTO.ProvinciaDTO;
-import com.easyvax.DTO.VaccinoDTO;
 import com.easyvax.model.CentroVaccinale;
-import com.easyvax.model.Personale;
-import com.easyvax.model.Provincia;
-import com.easyvax.model.Regione;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,12 +1,9 @@
 package com.easyvax.service.impl;
 
 
-import com.easyvax.DTO.CentroVaccinaleDTO;
-import com.easyvax.DTO.PersonaleDTO;
-import com.easyvax.DTO.ProvinciaDTO;
+import com.easyvax.dto.PersonaleDTO;
 import com.easyvax.exception.enums.CentroVaccinaleEnum;
 import com.easyvax.exception.enums.PersonaleEnum;
-import com.easyvax.exception.enums.ProvinciaEnum;
 import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.*;
 import com.easyvax.repository.CentroVaccinaleRepository;
@@ -19,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service

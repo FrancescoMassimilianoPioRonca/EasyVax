@@ -1,9 +1,7 @@
 package com.easyvax.service.service;
 
-import com.easyvax.DTO.VaccinoDTO;
-import com.easyvax.model.Vaccino;
+import com.easyvax.dto.VaccinoDTO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface VaccinoService {

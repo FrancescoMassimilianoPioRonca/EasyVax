@@ -1,14 +1,9 @@
 package com.easyvax.service.impl;
 
-import com.easyvax.DTO.CentroVaccinaleDTO;
-import com.easyvax.DTO.RegioneDTO;
-import com.easyvax.DTO.VaccinoDTO;
-import com.easyvax.exception.enums.CentroVaccinaleEnum;
+import com.easyvax.dto.RegioneDTO;
 import com.easyvax.exception.enums.RegioneEnum;
-import com.easyvax.exception.enums.VaccinoEnum;
 import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.Regione;
-import com.easyvax.model.Vaccino;
 import com.easyvax.repository.ProvinciaRepository;
 import com.easyvax.repository.RegioneRepository;
 import com.easyvax.service.service.RegioneService;

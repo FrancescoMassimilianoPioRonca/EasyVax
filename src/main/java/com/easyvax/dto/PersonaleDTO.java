@@ -1,15 +1,7 @@
-package com.easyvax.DTO;
+package com.easyvax.dto;
 
-import com.easyvax.model.CentroVaccinale;
 import com.easyvax.model.Personale;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.Optional;
 
 @Builder
 @Getter

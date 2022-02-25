@@ -1,11 +1,7 @@
 package com.easyvax.repository;
 
-import com.easyvax.DTO.ProvinciaDTO;
 import com.easyvax.model.Provincia;
-import com.easyvax.model.Regione;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

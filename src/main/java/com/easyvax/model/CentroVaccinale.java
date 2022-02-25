@@ -1,7 +1,6 @@
 package com.easyvax.model;
 
-import com.easyvax.DTO.CentroVaccinaleDTO;
-import com.easyvax.DTO.VaccinoDTO;
+import com.easyvax.dto.CentroVaccinaleDTO;
 import lombok.*;
 
 import javax.persistence.*;

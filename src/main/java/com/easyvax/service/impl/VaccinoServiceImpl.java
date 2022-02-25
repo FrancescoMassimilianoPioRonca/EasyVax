@@ -1,9 +1,7 @@
 package com.easyvax.service.impl;
 
 
-import com.easyvax.DTO.RegioneDTO;
-import com.easyvax.DTO.VaccinoDTO;
-import com.easyvax.exception.enums.RegioneEnum;
+import com.easyvax.dto.VaccinoDTO;
 import com.easyvax.exception.enums.VaccinoEnum;
 import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.Vaccino;
@@ -13,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 

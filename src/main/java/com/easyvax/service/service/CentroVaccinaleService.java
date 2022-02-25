@@ -1,10 +1,6 @@
 package com.easyvax.service.service;
 
-import com.easyvax.DTO.CentroVaccinaleDTO;
-import com.easyvax.DTO.ProvinciaDTO;
-import com.easyvax.DTO.RegioneDTO;
-import com.easyvax.DTO.VaccinoDTO;
-import com.easyvax.model.Provincia;
+import com.easyvax.dto.CentroVaccinaleDTO;
 
 import java.util.List;
 

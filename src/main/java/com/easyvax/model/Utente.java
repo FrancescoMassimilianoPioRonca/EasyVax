@@ -1,18 +1,13 @@
 package com.easyvax.model;
 
-import com.easyvax.DTO.UtenteDTO;
+import com.easyvax.dto.UtenteDTO;
 import com.easyvax.exception.enums.RoleEnum;
 import lombok.*;
-import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 @Entity
 @Builder
@@ -35,7 +30,6 @@ public class Utente {
     @NonNull
     private String codFiscale;
 
-
     private LocalDate dataNascita;
 
     @NonNull
@@ -46,7 +40,6 @@ public class Utente {
 
     @NonNull
     private String verificationCode;
-
 
     private boolean enabled;
 

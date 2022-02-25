@@ -1,9 +1,7 @@
 package com.easyvax.controller;
 
 
-import com.easyvax.DTO.PersonaleDTO;
-import com.easyvax.DTO.ProvinciaDTO;
-import com.easyvax.model.Personale;
+import com.easyvax.dto.PersonaleDTO;
 import com.easyvax.service.service.PersonleService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

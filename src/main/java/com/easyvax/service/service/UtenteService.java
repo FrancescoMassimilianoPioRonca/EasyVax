@@ -1,6 +1,6 @@
 package com.easyvax.service.service;
 
-import com.easyvax.DTO.UtenteDTO;
+import com.easyvax.dto.UtenteDTO;
 
 import java.util.List;
 

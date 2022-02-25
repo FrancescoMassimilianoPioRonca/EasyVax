@@ -1,47 +1,26 @@
 package com.easyvax.service.impl;
 
 
-import ch.qos.logback.core.helpers.Transform;
-import com.easyvax.DTO.SomministrazioneDTO;
+import com.easyvax.dto.SomministrazioneDTO;
 import com.easyvax.exception.enums.SomministrazioneEnum;
 import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.*;
 import com.easyvax.repository.*;
 import com.easyvax.service.service.SomministrazioneService;
-import com.google.common.io.Files;
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PdfDocument;
-import com.sun.istack.ByteArrayDataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.mail.MailParseException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @Slf4j

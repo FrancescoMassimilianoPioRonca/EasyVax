@@ -1,7 +1,6 @@
 package com.easyvax.service.service;
 
-import com.easyvax.DTO.RegioneDTO;
-import com.easyvax.model.Regione;
+import com.easyvax.dto.RegioneDTO;
 
 import java.util.List;
 

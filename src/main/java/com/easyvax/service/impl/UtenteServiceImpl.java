@@ -1,6 +1,6 @@
 package com.easyvax.service.impl;
 
-import com.easyvax.DTO.UtenteDTO;
+import com.easyvax.dto.UtenteDTO;
 import com.easyvax.exception.enums.RoleEnum;
 import com.easyvax.exception.enums.UtenteEnum;
 import com.easyvax.exception.handler.ApiRequestException;
@@ -61,8 +61,8 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
         String siteUrl = "http://localhost:8080";
 
-        if (!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascita(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita()) && !utenteRepository.existsByEmail(utenteDTO.getEmail()) && !utenteRepository.existsByCodFiscale(utenteDTO.getCodFiscale())) {
-            ;
+        if (!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascita(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita()) && !utenteRepository.existsByEmail(utenteDTO.getEmail()) && !utenteRepository.existsByCodFiscale(utenteDTO.getCodFiscale())) {  //campi null
+
             Utente utente = new Utente(utenteDTO);
             Provincia provincia = provinciaRepository.findById(utenteDTO.residenza).get();
 

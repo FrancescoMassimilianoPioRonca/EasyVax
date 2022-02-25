@@ -1,12 +1,10 @@
-package com.easyvax.DTO;
+package com.easyvax.dto;
 
 import com.easyvax.exception.enums.RoleEnum;
 import com.easyvax.model.Utente;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @Getter

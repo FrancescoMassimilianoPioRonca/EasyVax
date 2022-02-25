@@ -1,10 +1,8 @@
 package com.easyvax.controller;
 
 
-import com.easyvax.DTO.ProvinciaDTO;
-import com.easyvax.DTO.RegioneDTO;
+import com.easyvax.dto.ProvinciaDTO;
 import com.easyvax.service.service.ProvinciaService;
-import com.easyvax.service.service.RegioneService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.*;

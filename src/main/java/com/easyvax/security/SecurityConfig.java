@@ -1,5 +1,6 @@
 package com.easyvax.security;
 
+
 import com.easyvax.security.filter.CustomAuthenticationFilter;
 import com.easyvax.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,9 @@ import java.util.Arrays;
 
 import static org.springframework.http.HttpMethod.*;
 
-@Configuration @EnableWebSecurity @RequiredArgsConstructor
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -38,86 +41,73 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests().antMatchers("/", "/login", "/css/**")
-                .permitAll();
 
-        http.formLogin()
-                .loginPage("/login.html")
-                .loginProcessingUrl("/perform_login")
-                .defaultSuccessUrl("/homepage.html", true)
-                .failureUrl("/login.html?error=true").permitAll();
 
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/login","/token/refresh/**", "/utente/insertAdmin").permitAll();
+        http.authorizeRequests().antMatchers("/login", "/token/refresh/**", "/utente/insertAdmin").permitAll();
         http.authorizeRequests().antMatchers(POST, "/utente/insertAdmin").permitAll();
 
 
-
         //UTENTE
-        http.authorizeRequests().antMatchers(POST,"api/utente/insertUtente").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(PUT,"api/utente/updateUtente").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/utente/getDetails").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/findAll").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/findByNome").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/findByCap").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/finByVaccino").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/findByProvincia").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/findByRegione").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/pdf/generate").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/regione/findByNome").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/provincia/findByNome").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/provincia/findByCap").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "api/utente/insertUtente").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/utente/getDetails").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findAll").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findByNome").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findByCap").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/finByVaccino").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findByProvincia").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findByRegione").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/pdf/generate").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/regione/findByNome").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/provincia/findByNome").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/provincia/findByCap").hasAnyAuthority("ROLE_USER");
         //http.authorizeRequests().antMatchers(GET,"api/provincia/findByRegione").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/somministrazione/getDetails").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(POST,"api/somministrazione/insertSomministrazione").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(PUT,"api/somministrazione/updateSomministrazione").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/vaccino/findByNome").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET,"api/vaccino/findByCasaFarmaceutica").hasAnyAuthority("ROLE_USER");
-
+        http.authorizeRequests().antMatchers(GET, "api/somministrazione/getDetails").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "api/somministrazione/insertSomministrazione").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(PUT, "api/somministrazione/updateSomministrazione").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/vaccino/findByNome").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/vaccino/findByCasaFarmaceutica").hasAnyAuthority("ROLE_USER");
 
 
         //ADMIN
-       // http.authorizeRequests().antMatchers(POST,"api/utente/insertAdmin").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT,"api/utente/updateUtente").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE,"api/utente/deleteUtente").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET,"api/utente/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(POST,"api/centroVaccinale/insertCentro").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT,"api/centroVaccinale/updateCentoVaccinale").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE,"api/centroVaccinale/deletecetroVaccinale").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET,"api/pdf/generate").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(POST,"api/regione/insertRegione").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT,"api/regione/updateRegione").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE,"api/regione/deleteRegione").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET,"api/regione/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(POST,"api/provincia/insertProvincia").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT,"api/provincia/updateProvincia").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE,"api/provincia/deleteProvincia").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET,"api/provincia/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(POST,"api/personale/insertPersonale").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT,"api/personale/updatePersonale").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE,"api/personale/deletePersonale").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET,"api/personale/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(POST,"api/vaccino/insertVaccino").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT,"api/vaccino/updateVaccino").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE,"api/vaccino/deleteVaccino").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET,"api/vaccino/**").hasAnyAuthority("ROLE_ADMIN");
-
-
+        // http.authorizeRequests().antMatchers(POST,"api/utente/insertAdmin").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(DELETE, "api/utente/deleteUtente").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "api/utente/**").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST, "api/centroVaccinale/insertCentro").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(PUT, "api/centroVaccinale/updateCentoVaccinale").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(DELETE, "api/centroVaccinale/deletecetroVaccinale").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/**").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "api/pdf/generate").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST, "api/regione/insertRegione").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(PUT, "api/regione/updateRegione").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(DELETE, "api/regione/deleteRegione").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "api/regione/**").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST, "api/provincia/insertProvincia").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(PUT, "api/provincia/updateProvincia").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(DELETE, "api/provincia/deleteProvincia").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "api/provincia/**").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST, "api/personale/insertPersonale").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(PUT, "api/personale/updatePersonale").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(DELETE, "api/personale/deletePersonale").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "api/personale/**").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST, "api/vaccino/insertVaccino").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(PUT, "api/vaccino/updateVaccino").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(DELETE, "api/vaccino/deleteVaccino").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "api/vaccino/**").hasAnyAuthority("ROLE_ADMIN");
 
 
         //PERSONALE
-        http.authorizeRequests().antMatchers(PUT,"api/utente/updateUtente").hasAnyAuthority("ROLE_PERSONALE");
-        http.authorizeRequests().antMatchers(GET,"api/somministrazione/getDetails").hasAnyAuthority("ROLE_PERSONALE");
-        http.authorizeRequests().antMatchers(POST,"api/somministrazione/insertSomministrazione").hasAnyAuthority("ROLE_PERSONALE");
-        http.authorizeRequests().antMatchers(PUT,"api/somministrazione/updateSomministrazione").hasAnyAuthority("ROLE_PERSONALE");
-        http.authorizeRequests().antMatchers(GET,"api/somministrazione/**").hasAnyAuthority("ROLE_PERSONALE");
-        http.authorizeRequests().antMatchers(GET,"api/pdf/generate").hasAnyAuthority("ROLE_PERSONALE");
-
-
+        http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/somministrazione/getDetails").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(POST, "api/somministrazione/insertSomministrazione").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(PUT, "api/somministrazione/updateSomministrazione").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/somministrazione/**").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/pdf/generate").hasAnyAuthority("ROLE_PERSONALE");
 
 
         http.authorizeRequests().anyRequest().authenticated();
@@ -127,7 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
@@ -149,10 +139,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return corsConfiguration;
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .antMatchers("/resources/**");
-    }
 }

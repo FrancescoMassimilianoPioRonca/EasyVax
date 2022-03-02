@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/somministrazione")
-
+@CrossOrigin("*")
 public class SomministrazioneController {
 
     private final SomministrazioneService somministrazioneService;
@@ -45,7 +45,7 @@ public class SomministrazioneController {
     }
 
     @DeleteMapping("/deleteSomministrazione")
-    public List<SomministrazioneDTO> deleteUtente(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id){
+    public List<SomministrazioneDTO> deleteSomministrazione(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id){
         return somministrazioneService.deletePrenotazione(id);
     }
 

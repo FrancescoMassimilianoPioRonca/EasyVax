@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/vaccino")
+@CrossOrigin("*")
 public class VaccinoController {
 
     public final VaccinoService vaccinoService;

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/personale")
-
+@CrossOrigin("*")
 public class PersonaleController {
 
     private final PersonleService personaleService;

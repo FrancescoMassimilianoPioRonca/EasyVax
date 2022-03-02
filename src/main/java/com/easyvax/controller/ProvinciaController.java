@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/provincia")
+@CrossOrigin("*")
 public class ProvinciaController {
 
     public final ProvinciaService provinciaService;

@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/centroVaccinale")
+@CrossOrigin("*")
 public class CentroVaccinaleController {
 
     public final CentroVaccinaleService centroVaccinaleService;

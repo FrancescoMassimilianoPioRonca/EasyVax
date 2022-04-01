@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/utente")
+@RequestMapping("/api/utente")
 @CrossOrigin("*")
 public class UtenteController {
 

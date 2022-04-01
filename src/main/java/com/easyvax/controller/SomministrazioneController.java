@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/somministrazione")
+@RequestMapping("/api/somministrazione")
 @CrossOrigin("*")
 public class SomministrazioneController {
 

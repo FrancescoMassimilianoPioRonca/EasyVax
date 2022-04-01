@@ -68,9 +68,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //http.authorizeRequests().antMatchers(GET,"api/provincia/findByRegione").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/somministrazione/getDetails").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "api/somministrazione/insertSomministrazione").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "api/richieste/insertRichieste").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(PUT, "api/somministrazione/updateSomministrazione").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/vaccino/findByNome").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/vaccino/findByCasaFarmaceutica").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "api/richieste/getRichiesteUtente").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "api/richieste/insertRichiesta").hasAnyAuthority("ROLE_USER");
 
 
         //ADMIN
@@ -101,6 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "api/vaccino/**").hasAnyAuthority("ROLE_ADMIN");
 
 
+
         //PERSONALE
         http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/somministrazione/getDetails").hasAnyAuthority("ROLE_PERSONALE");
@@ -108,6 +112,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(PUT, "api/somministrazione/updateSomministrazione").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/somministrazione/**").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/pdf/generate").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/richieste/getRichiestePersonale").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(PUT, "api/richieste/accettaRichiesta").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(PUT, "api/richieste/rejectRichiesta").hasAnyAuthority("ROLE_PERSONALE");
 
 
         http.authorizeRequests().anyRequest().authenticated();
@@ -130,12 +137,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CorsConfiguration getCorsConfiguration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://192.168.1.10:3000"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:8080"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type", "Accept", "Authorization"
                 , "Origin, Accept", "X-Requesed-With", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
         corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"
-                , "Access-Control-Allow-Origin",  "Access-Control-Allow-Credentials"));
+                , "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
         return corsConfiguration;
     }
 

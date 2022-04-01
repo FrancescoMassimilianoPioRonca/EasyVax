@@ -10,6 +10,7 @@ import com.easyvax.service.service.SomministrazioneService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.data.relational.core.sql.FalseCondition;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,6 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
     private final UtenteRepository utenteRepository;
     private static SomministrazioneEnum somministrazioneEnum;
     private JavaMailSender mailSender;
-    private static String url = "http://localhost:8080";
 
     @Override
     public SomministrazioneDTO insertSomministrazione(SomministrazioneDTO somministrazioneDTO) {
@@ -48,26 +48,34 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
             Vaccino vaccino = vaccinoRepository.findById(somministrazioneDTO.getIdVaccino()).get();
             CentroVaccinale cv = centroVaccinaleRepository.findById(somministrazioneDTO.getIdCentro()).get();
 
-            if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId()) && vaccinoRepository.existsById(vaccino.getId())) { //da aggiungere se è valid l'utente
+            if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId()) && vaccinoRepository.existsById(vaccino.getId()) && utenteRepository.existsById(somministrazioneDTO.idUtente)) { //da aggiungere se è valid l'utente
 
                 String randomCode = RandomString.make(12);
-                if(!somministrazioneRepository.existsByCodiceSomm(randomCode))
-                     somministrazione.setCodiceSomm(randomCode);
+                if (!somministrazioneRepository.existsByCodiceSomm(randomCode))
+                    somministrazione.setCodiceSomm(randomCode);
                 else {
                     somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_AE");
                     throw new ApiRequestException(somministrazioneEnum.getMessage());
                 }
+                LocalDate today = LocalDate.now();
+                LocalDate giornoSomm = somministrazione.getDataSomministrazione();
 
-                somministrazione.setDataSomministrazione(somministrazioneDTO.getData());
-                somministrazione.setOraSomministrazione(somministrazioneDTO.getOra());
-                somministrazione.setUtente(utente);
-                somministrazione.setCentro(cv);
-                somministrazione.setVaccino(vaccino);
+                if (ChronoUnit.DAYS.between(today, giornoSomm) >= 2 && today.isBefore(somministrazione.getDataSomministrazione())) {
 
-                somministrazione = somministrazioneRepository.save(somministrazione);
+                    somministrazione.setDataSomministrazione(somministrazioneDTO.getData());
+                    somministrazione.setOraSomministrazione(somministrazioneDTO.getOra());
+                    somministrazione.setUtente(utente);
+                    somministrazione.setCentro(cv);
+                    somministrazione.setVaccino(vaccino);
+                    somministrazione.setInAttesa(Boolean.FALSE);
+                    somministrazione = somministrazioneRepository.save(somministrazione);
+                }else {
+                    somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IE");
+                    throw new ApiRequestException(somministrazioneEnum.getMessage());
+                }
 
                 try {
-                    sendEmail(somministrazione.getCodiceSomm(), utente, url);
+                    sendEmail(somministrazione.getCodiceSomm(), utente);
                 } catch (MessagingException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
@@ -86,7 +94,7 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
         }
     }
 
-    private void sendEmail(String cod, Utente utente, String url) throws MessagingException, UnsupportedEncodingException {
+    private void sendEmail(String cod, Utente utente) throws MessagingException, UnsupportedEncodingException {
         String toAddress = utente.getEmail();
         String fromAddress = "easyVaxNOREPLY@gmail.com";
         String senderName = "EasyVax";
@@ -107,9 +115,6 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
 
         content = content.replace("[[name]]", utente.getNome_Cognome());
         content = content.replace("[[codice]]", cod);
-        String verifyURL = url + "/pdf/generate?codSomm=" + cod;
-
-        content = content.replace("[[URL]]", verifyURL);
 
         helper.setText(content, true);
 
@@ -120,13 +125,13 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
     @Override
     public SomministrazioneDTO updateSomministrazione(String code, SomministrazioneDTO somministrazioneDTO) {
 
-        if (somministrazioneRepository.existsByCodiceSomm(code)) {
+        if (somministrazioneRepository.existsByCodiceSomm(code) && somministrazioneDTO.inAttesa != Boolean.TRUE) {
             Somministrazione somministrazione = somministrazioneRepository.findByCodiceSomm(code);
 
             if (somministrazioneDTO.getData() != somministrazione.getDataSomministrazione() || somministrazioneDTO.getOra() != somministrazione.getOraSomministrazione()) {
 
                 LocalDate today = LocalDate.now();
-                LocalDate giornoSomm = somministrazione.getDataSomministrazione();
+                LocalDate giornoSomm = somministrazioneDTO.getData();
 
                 if (ChronoUnit.DAYS.between(today, giornoSomm) >= 2 && today.isBefore(somministrazione.getDataSomministrazione())) {
                     somministrazione.setDataSomministrazione(somministrazioneDTO.getData());
@@ -193,7 +198,9 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
     @Override
     public List<SomministrazioneDTO> deletePrenotazione(Long id) {
         if (somministrazioneRepository.existsById(id)) {
-            somministrazioneRepository.deleteById(id);
+            Somministrazione somministrazione = somministrazioneRepository.findById(id).get();
+            if (somministrazione.getInAttesa() != Boolean.TRUE)
+                somministrazioneRepository.deleteById(id);
             return somministrazioneRepository.findAll().stream().map(SomministrazioneDTO::new).collect(Collectors.toList());
         } else {
             somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_DLE");

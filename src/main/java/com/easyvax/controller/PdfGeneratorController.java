@@ -11,7 +11,7 @@ import java.text.DateFormat;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/pdf")
+@RequestMapping("/api/pdf")
 @CrossOrigin("*")
 public class PdfGeneratorController {
 

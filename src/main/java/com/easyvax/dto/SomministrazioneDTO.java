@@ -18,6 +18,7 @@ public class SomministrazioneDTO {
     public Long idUtente;
     public Long idCentro;
     public Long idVaccino;
+    public Boolean inAttesa;
 
     public SomministrazioneDTO(Somministrazione somministrazione) {
         this.id = somministrazione.getId();
@@ -26,5 +27,6 @@ public class SomministrazioneDTO {
         this.idUtente = somministrazione.getUtente().getId();
         this.idCentro = somministrazione.getCentro().getId();
         this.idVaccino = somministrazione.getVaccino().getId();
+        this.inAttesa = somministrazione.getInAttesa();
     }
 }

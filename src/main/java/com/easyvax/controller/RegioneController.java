@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/regione")
+@RequestMapping("/api/regione")
 @CrossOrigin("*")
 public class RegioneController {
     public final RegioneService regioneService;

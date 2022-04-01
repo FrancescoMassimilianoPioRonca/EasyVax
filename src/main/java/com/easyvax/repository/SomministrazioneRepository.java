@@ -15,6 +15,8 @@ public interface SomministrazioneRepository extends JpaRepository<Somministrazio
     @Query("select s from Somministrazione s Join Utente u on s.utente.id = u.id where u.codFiscale=:cf")
     List<Somministrazione> findbyUtente(@Param("cf") String codficeFiscale);
 
+
+
     @Query("select s from Somministrazione s Join Utente u on s.utente.id = u.id where u.codFiscale=:cf and s.dataSomministrazione=:data")
     List<Somministrazione> findbyUtenteAndData(@Param("cf") String codficeFiscale, @Param("data") LocalDate data);
 
@@ -25,6 +27,8 @@ public interface SomministrazioneRepository extends JpaRepository<Somministrazio
     Somministrazione findByCodiceSomm(String codice);
 
     boolean existsByCodiceSomm(String cod);
+
+    boolean existsById(Long id);
 
 
 

@@ -13,7 +13,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/centroVaccinale")
+@RequestMapping("/api/centroVaccinale")
 @CrossOrigin("*")
 public class CentroVaccinaleController {
 

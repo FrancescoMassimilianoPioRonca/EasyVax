@@ -2,10 +2,10 @@ package com.easyvax.exception.enums;
 
 public enum SomministrazioneEnum {
 
-    SOMMINISTRAZIONE_NOT_FOUND("SOMM_NF", "La somministrazione che stai cercando non è stata trovata"),
-    SOMMINISTRAZIONE_INSERT_ERROR("SOMM_IE", "Errore durante l'inserimento della richiesta. Controllare i parametri relativi al centro vaccinale, al vaccino o al personale"),
+    SOMMINISTRAZIONE_NOT_FOUND("SOMM_NF", "La somministrazione che stai cercando non è stata trovata oppure puo' essere nello stato di approvazione"),
+    SOMMINISTRAZIONE_INSERT_ERROR("SOMM_IE", "Errore durante l'inserimento della richiesta. Controllare i parametri relativi al centro vaccinale, al vaccino,alla data o al personale"),
     SOMMINISTRAZIONE_ALREADY_EXISTS("SOMM_AE", "La somministrazione che vuoi inserire è già presente nel sistema"),
-    SOMMINISTRAZIONE_DELETE_ERROR("SOMM_DLE", "Errore durante l'eliminazione della somministrazione"),
+    SOMMINISTRAZIONE_DELETE_ERROR("SOMM_DLE", "Errore durante l'eliminazione della somministrazione."),
     SOMMINISTRAZIONE_DATA_ERROR("SOMM_DE", "Errore nell'aggiornare la somministrazione. Verificare la validità della data inserita"),
     SOMMINISTRAZIONE_ID_NOT_EXIST("SOMM_IDNE", "Nel database non sono presenti somministrazioni"),
     SOMMINISTRAZIONE_DATE_NOT_COMPATIBLE("SOMM_DNC", "Le date della somministrazione non sono compatibili"),

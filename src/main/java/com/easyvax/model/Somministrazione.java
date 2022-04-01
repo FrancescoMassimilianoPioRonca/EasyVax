@@ -39,12 +39,15 @@ public class Somministrazione {
     @JoinColumn(name="id_centro")
     private CentroVaccinale centro;
 
+    private Boolean inAttesa;
+
 
     public Somministrazione(SomministrazioneDTO somministrazioneDTO)
     {
         this.id = somministrazioneDTO.getId();
         this.oraSomministrazione = somministrazioneDTO.getOra();
         this.dataSomministrazione = somministrazioneDTO.getData();
+        this.inAttesa=somministrazioneDTO.inAttesa;
     }
 
 

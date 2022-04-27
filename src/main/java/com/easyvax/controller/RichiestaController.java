@@ -26,14 +26,14 @@ public class RichiestaController {
         return richiestaService.getRichiesteUtente(id);
     }
 
-    @GetMapping("/getRichiestePersonale")
-    public List<RichiestaDTO> getDetailsPersonal(@Valid @NotNull() @RequestParam Long id){
-        return richiestaService.getRichiestePersonale(id);
+    @GetMapping("/getRichiesteOperatore")
+    public List<RichiestaDTO> getDetailsOperatore(@Valid @NotNull() @RequestParam Long id){
+        return richiestaService.getRichiesteOperatore(id);
     }
 
     @DeleteMapping("/deleteRichiesta")
-    public void deleteRichiesta(@Valid @NotNull() @RequestParam Long id){
-         richiestaService.deleteRichiesta(id);
+    public List<RichiestaDTO> deleteRichiesta(@Valid @NotNull() @RequestParam Long id){
+         return richiestaService.deleteRichiesta(id);
     }
 
     @PostMapping("/insertRichiesta")

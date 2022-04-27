@@ -4,6 +4,7 @@ package com.easyvax.service.impl;
 import com.easyvax.dto.PersonaleDTO;
 import com.easyvax.exception.enums.CentroVaccinaleEnum;
 import com.easyvax.exception.enums.PersonaleEnum;
+import com.easyvax.exception.enums.RoleEnum;
 import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.*;
 import com.easyvax.repository.CentroVaccinaleRepository;
@@ -40,7 +41,7 @@ public class PersonaleServiceImpl implements PersonleService {
             CentroVaccinale cv = centroVaccinaleRepository.findById(personaleDTO.getIdCentro()).get();
             personale.setUtente(utente);
             personale.setCentroVaccinale(cv);
-
+            utente.setRuolo(RoleEnum.ROLE_PERSONALE);
             personale = personaleRepository.save(personale);
 
             return new PersonaleDTO(personale);

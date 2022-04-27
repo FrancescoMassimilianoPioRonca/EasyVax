@@ -6,13 +6,14 @@ import java.util.List;
 
 public interface RichiestaService {
 
-    List<RichiestaDTO> getRichiestePersonale(Long idPersonale);
+    List<RichiestaDTO> getRichiesteOperatore(Long idOperatore);
 
     List<RichiestaDTO> getRichiesteUtente(Long idUtente);
     void accettaRichiesta(Long id);
     void rifiutaRichiesta(Long id);
 
-   void deleteRichiesta(Long idUtente);
+    List<RichiestaDTO> deleteRichiesta(Long idUtente);
 
     RichiestaDTO insertRichiesta(RichiestaDTO richiestaDTO);
+
 }

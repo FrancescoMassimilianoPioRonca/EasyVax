@@ -3,6 +3,8 @@ package com.easyvax.service.impl;
 import com.easyvax.dto.PersonaleDTO;
 import com.easyvax.dto.RichiestaDTO;
 import com.easyvax.dto.SomministrazioneDTO;
+import com.easyvax.exception.enums.CentroVaccinaleEnum;
+import com.easyvax.exception.enums.PersonaleEnum;
 import com.easyvax.exception.enums.RichiestaEnum;
 import com.easyvax.exception.enums.SomministrazioneEnum;
 import com.easyvax.exception.handler.ApiRequestException;
@@ -27,19 +29,20 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RichiestaServiceImpl implements RichiestaService {
 
-    private final PersonaleRepository personaleRepository;
+    private final OperatoreRepository operatoreRepository;
     private static RichiestaEnum richiestaEnum;
+    private static CentroVaccinaleEnum centroVaccinaleEnum;
+    private final CentroVaccinaleRepository centroVaccinaleRepository;
     private final RichiestaRepository richiestaRepository;
     private final SomministrazioneRepository somministrazioneRepository;
     private final UtenteRepository utenteRepository;
     private JavaMailSender mailSender;
 
     @Override
-    public List<RichiestaDTO> getRichiestePersonale(Long idPersonale){
+    public List<RichiestaDTO> getRichiesteOperatore(Long idOperatore){
 
-        if(idPersonale != null && personaleRepository.existsById(idPersonale)){
-            Personale personale = personaleRepository.findById(idPersonale).get();
-            return  richiestaRepository.getRichiestePersonal(personale.getCentroVaccinale().getId()).stream().map(RichiestaDTO::new).collect(Collectors.toList());
+        if(idOperatore != null && operatoreRepository.existsById(idOperatore)){
+            return  richiestaRepository.getRichieste(idOperatore).stream().map(RichiestaDTO::new).collect(Collectors.toList());
         }else{
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NE");
             throw new ApiRequestException(richiestaEnum.getMessage());
@@ -67,20 +70,39 @@ public class RichiestaServiceImpl implements RichiestaService {
 
                 Somministrazione somministrazione = somministrazioneRepository.findById(richiesta.getSomministrazione().getId()).get();
 
-                somministrazione.setDataSomministrazione(richiesta.getNewData());
-                somministrazione.setInAttesa(Boolean.FALSE);
+                if(richiesta.getNewData()!=null && richiesta.getIdCentroVacc()==null) {
+                    somministrazione.setDataSomministrazione(richiesta.getNewData());
+                    somministrazione.setInAttesa(Boolean.FALSE);
+                    richiesta.setApproved(Boolean.TRUE);
+                    somministrazioneRepository.save(somministrazione);
+                    richiestaRepository.save(richiesta);
+                }
+                else if(richiesta.getNewData()==null && richiesta.getIdCentroVacc()!=null) {
 
-                richiesta.setApproved(Boolean.TRUE);
+                    if(richiesta.getApprovedOp1()!=null && richiesta.getApprovedOp2()==null){
+                        richiesta.setApprovedOp2(true);
+                        richiesta.setApproved(true);
+                       somministrazione.setInAttesa(false);
+                        richiestaRepository.save(richiesta);
 
-                somministrazioneRepository.save(somministrazione);
-                richiestaRepository.save(richiesta);
-
-                try {
-                    acceptEmail(richiesta.getId(),somministrazione);
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                        try {
+                            acceptEmail(richiesta.getId(),somministrazione);
+                        } catch (MessagingException e) {
+                            e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(centroVaccinaleRepository.existsById(richiesta.getIdCentroVacc())){
+                        CentroVaccinale cv = centroVaccinaleRepository.findById(richiesta.getIdCentroVacc()).get();
+                        somministrazione.setCentro(cv);
+                        richiesta.setApprovedOp1(true);
+                        somministrazioneRepository.save(somministrazione);
+                        richiestaRepository.save(richiesta);
+                    }else {
+                        centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_NF");
+                        throw new ApiRequestException(centroVaccinaleEnum.getMessage());
+                    }
                 }
             }
         }else{
@@ -122,42 +144,65 @@ public class RichiestaServiceImpl implements RichiestaService {
 
 
     @Override
-    public void deleteRichiesta(Long id) {
+    public List<RichiestaDTO> deleteRichiesta(Long id) {
 
-         richiestaRepository.deleteById(id);
-
+        if (richiestaRepository.existsById(id)) {
+            richiestaRepository.deleteById(id);
+            return richiestaRepository.findAll().stream().map(RichiestaDTO::new).collect(Collectors.toList());
+        } else {
+            richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("R_NE");
+            throw new ApiRequestException(richiestaEnum.getMessage());
+        }
     }
 
     @Override
     public RichiestaDTO insertRichiesta(RichiestaDTO richiestaDTO) {
 
-        if(personaleRepository.existsById(richiestaDTO.idPersonale) && somministrazioneRepository.existsById(richiestaDTO.idSomministrazione)){
+        if (somministrazioneRepository.existsById(richiestaDTO.idSomministrazione)) {
             Somministrazione somministrazione = somministrazioneRepository.findById(richiestaDTO.idSomministrazione).get();
-            Personale personale = personaleRepository.findById(richiestaDTO.idPersonale).get();
             somministrazione.setInAttesa(Boolean.TRUE);
 
             Richiesta richiesta = new Richiesta(richiestaDTO);
 
-            richiesta.setNewData(richiestaDTO.getData());
-            richiesta.setSomministrazione(somministrazione);
-            richiesta.setPersonale(personale);
+            if (!(richiestaRepository.existsBySomministrazione_Id(somministrazione.getId()))) {
 
-            richiesta = richiestaRepository.save(richiesta);
+                if (richiestaDTO.getData() != null && richiestaDTO.getIdCentroVaccinale() == null) {
+                    richiesta.setNewData(richiestaDTO.getData());
+                    richiesta.setSomministrazione(somministrazione);
 
-            try {
-                sendEmail(richiesta.getId(), somministrazione);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                    richiesta = richiestaRepository.save(richiesta);
+                } else if (richiestaDTO.getData() == null && richiestaDTO.getIdCentroVaccinale() != null) {
+
+                    if (centroVaccinaleRepository.existsById(richiestaDTO.IdCentroVaccinale)) {
+                        richiesta.setSomministrazione(somministrazione);
+                        richiesta.setIdCentroVacc(richiestaDTO.getIdCentroVaccinale());
+                        richiesta = richiestaRepository.save(richiesta);
+                    } else {
+                        centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_NF");
+                        throw new ApiRequestException(centroVaccinaleEnum.getMessage());
+                    }
+                }
+
+                try {
+                    sendEmail(richiesta.getId(), somministrazione);
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                return new RichiestaDTO(richiesta);
+            } else {
+                richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_E");
+                throw new ApiRequestException(richiestaEnum.getMessage());
             }
-
-            return new RichiestaDTO(richiesta);
-        }else{
+        }
+        else {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_E");
             throw new ApiRequestException(richiestaEnum.getMessage());
         }
     }
+
 
 
     private void sendEmail(Long  id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
@@ -200,7 +245,7 @@ public class RichiestaServiceImpl implements RichiestaService {
         String senderName = "EasyVax";
         String subject = "Esito richiesta";
         String content = "Caro [[name]],<br>"
-                + "La tua richiesta (n. [[nr_richiesta]]) per posticipare la data della tua vaccinazione è stata accettata.<br>"
+                + "La tua richiesta (n. [[nr_richiesta]]) è stata accettata.<br>"
                 + "Puoi nuovamente verificare i dettagli della prenotazione nella tua area personale.<br>"
                 + "Grazie per averci scelto.<br>"
                 + " Saluti,<br>"
@@ -231,7 +276,7 @@ public class RichiestaServiceImpl implements RichiestaService {
         String senderName = "EasyVax";
         String subject = "Esito richiesta";
         String content = "Caro [[name]],<br>"
-                + "La tua richiesta (n. [[nr_richiesta]]) per posticipare la data della tua vaccinazione è stata respinta.<br>"
+                + "La tua richiesta (n. [[nr_richiesta]]) è stata respinta.<br>"
                 + "Puoi nuovamente visualizzare e modificare la tua prenotazione nella tua area personale <br>"
                 + "Grazie per averci scelto.<br>"
                 + " Saluti,<br>"

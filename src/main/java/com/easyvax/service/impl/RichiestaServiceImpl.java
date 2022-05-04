@@ -214,7 +214,7 @@ public class RichiestaServiceImpl implements RichiestaService {
         String subject = "Inserimento richiesta";
         String content = "Caro [[name]],<br>"
                 + "hai appena inserito una richiesta (n. [[nr_richiesta]]) per posticipare la data della tua vaccinazione.<br>"
-                + "Ti ricordiamo che non potrai eseguire altre operazioni sulla tua prenotazione (cod : [[codice]]) , fino a quando non riceverai l'esito della richiesta.<br>"
+                + "Ti ricordiamo che non potrai eseguire altre operazioni sulla tua prenotazione <b>(cod : [[codice]])</b , fino a quando non riceverai l'esito della richiesta.<br>"
                 + "Non appena il personale accetterà o rifiuterà la tua richiesta ti invieremo una email.<br>"
                 + "Grazie per averci scelto.<br>"
                 + " Saluti,<br>"
@@ -245,7 +245,7 @@ public class RichiestaServiceImpl implements RichiestaService {
         String senderName = "EasyVax";
         String subject = "Esito richiesta";
         String content = "Caro [[name]],<br>"
-                + "La tua richiesta (n. [[nr_richiesta]]) è stata accettata.<br>"
+                + "La tua richiesta <b>(cod : [[codice]])</b è stata accettata.<br>"
                 + "Puoi nuovamente verificare i dettagli della prenotazione nella tua area personale.<br>"
                 + "Grazie per averci scelto.<br>"
                 + " Saluti,<br>"
@@ -276,7 +276,7 @@ public class RichiestaServiceImpl implements RichiestaService {
         String senderName = "EasyVax";
         String subject = "Esito richiesta";
         String content = "Caro [[name]],<br>"
-                + "La tua richiesta (n. [[nr_richiesta]]) è stata respinta.<br>"
+                + "La tua richiesta <b>(cod : [[codice]])</b  è stata respinta.<br>"
                 + "Puoi nuovamente visualizzare e modificare la tua prenotazione nella tua area personale <br>"
                 + "Grazie per averci scelto.<br>"
                 + " Saluti,<br>"

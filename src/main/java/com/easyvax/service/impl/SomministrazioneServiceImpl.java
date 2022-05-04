@@ -40,55 +40,64 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
     @Override
     public SomministrazioneDTO insertSomministrazione(SomministrazioneDTO somministrazioneDTO) {
 
+
+
         if (somministrazioneRepository.findByUtente_IdAndVaccino_IdAndDataSomministrazione(somministrazioneDTO.getIdUtente(), somministrazioneDTO.getIdVaccino(), somministrazioneDTO.getData()) == 0) {
 
             Somministrazione somministrazione = new Somministrazione(somministrazioneDTO);
-
             Utente utente = utenteRepository.findById(somministrazioneDTO.getIdUtente()).get();
-            Vaccino vaccino = vaccinoRepository.findById(somministrazioneDTO.getIdVaccino()).get();
-            CentroVaccinale cv = centroVaccinaleRepository.findById(somministrazioneDTO.getIdCentro()).get();
 
-            if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId()) && vaccinoRepository.existsById(vaccino.getId()) && utenteRepository.existsById(somministrazioneDTO.idUtente)) { //da aggiungere se è valid l'utente
+            if(somministrazioneRepository.checkVaccini(utente.getId(),somministrazioneDTO.data.minusMonths(6))==0) {
+                Vaccino vaccino = vaccinoRepository.findById(somministrazioneDTO.getIdVaccino()).get();
+                CentroVaccinale cv = centroVaccinaleRepository.findById(somministrazioneDTO.getIdCentro()).get();
 
-                String randomCode = RandomString.make(12);
-                if (!somministrazioneRepository.existsByCodiceSomm(randomCode))
-                    somministrazione.setCodiceSomm(randomCode);
-                else {
-                    somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_AE");
-                    throw new ApiRequestException(somministrazioneEnum.getMessage());
+                if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId()) && vaccinoRepository.existsById(vaccino.getId()) && utenteRepository.existsById(somministrazioneDTO.idUtente)) { //da aggiungere se è valid l'utente
+
+                    String randomCode = RandomString.make(12);
+                    if (!somministrazioneRepository.existsByCodiceSomm(randomCode))
+                        somministrazione.setCodiceSomm(randomCode);
+                    else {
+                        somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_AE");
+                        throw new ApiRequestException(somministrazioneEnum.getMessage());
+                    }
+                    LocalDate today = LocalDate.now();
+                    LocalDate giornoSomm = somministrazione.getDataSomministrazione();
+
+                    if (ChronoUnit.DAYS.between(today, giornoSomm) >= 2 && today.isBefore(somministrazione.getDataSomministrazione())) {
+
+                        somministrazione.setDataSomministrazione(somministrazioneDTO.getData());
+                        somministrazione.setOraSomministrazione(somministrazioneDTO.getOra());
+                        somministrazione.setUtente(utente);
+                        somministrazione.setCentro(cv);
+                        somministrazione.setVaccino(vaccino);
+                        somministrazione.setInAttesa(Boolean.FALSE);
+                        somministrazione = somministrazioneRepository.save(somministrazione);
+                    } else {
+                        somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IE");
+                        throw new ApiRequestException(somministrazioneEnum.getMessage());
+                    }
+
+                    try {
+                        sendEmail(somministrazione.getCodiceSomm(), utente);
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+                    return new SomministrazioneDTO(somministrazione);
                 }
-                LocalDate today = LocalDate.now();
-                LocalDate giornoSomm = somministrazione.getDataSomministrazione();
-
-                if (ChronoUnit.DAYS.between(today, giornoSomm) >= 2 && today.isBefore(somministrazione.getDataSomministrazione())) {
-
-                    somministrazione.setDataSomministrazione(somministrazioneDTO.getData());
-                    somministrazione.setOraSomministrazione(somministrazioneDTO.getOra());
-                    somministrazione.setUtente(utente);
-                    somministrazione.setCentro(cv);
-                    somministrazione.setVaccino(vaccino);
-                    somministrazione.setInAttesa(Boolean.FALSE);
-                    somministrazione = somministrazioneRepository.save(somministrazione);
-                }else {
+                else {
                     somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IE");
                     throw new ApiRequestException(somministrazioneEnum.getMessage());
                 }
-
-                try {
-                    sendEmail(somministrazione.getCodiceSomm(), utente);
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                return new SomministrazioneDTO(somministrazione);
-
-            } else {
-                somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IE");
+            }else{
+                somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_UA");
                 throw new ApiRequestException(somministrazioneEnum.getMessage());
             }
-        } else {
+
+            }
+        else {
             somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_AE");
             throw new ApiRequestException(somministrazioneEnum.getMessage());
         }
@@ -125,13 +134,13 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
     @Override
     public SomministrazioneDTO updateSomministrazione(String code, SomministrazioneDTO somministrazioneDTO) {
 
-        if (somministrazioneRepository.existsByCodiceSomm(code) && somministrazioneDTO.inAttesa != Boolean.TRUE) {
+        LocalDate today = LocalDate.now();
+        LocalDate giornoSomm = somministrazioneDTO.getData();
+
+        if (somministrazioneRepository.existsByCodiceSomm(code) && somministrazioneDTO.inAttesa != Boolean.TRUE && today.isBefore(somministrazioneDTO.getData())) {
             Somministrazione somministrazione = somministrazioneRepository.findByCodiceSomm(code);
 
             if (somministrazioneDTO.getData() != somministrazione.getDataSomministrazione() || somministrazioneDTO.getOra() != somministrazione.getOraSomministrazione()) {
-
-                LocalDate today = LocalDate.now();
-                LocalDate giornoSomm = somministrazioneDTO.getData();
 
                 if (ChronoUnit.DAYS.between(today, giornoSomm) >= 2 && today.isBefore(somministrazione.getDataSomministrazione())) {
                     somministrazione.setDataSomministrazione(somministrazioneDTO.getData());

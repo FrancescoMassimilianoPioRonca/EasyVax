@@ -10,6 +10,7 @@ public enum SomministrazioneEnum {
     SOMMINISTRAZIONE_ID_NOT_EXIST("SOMM_IDNE", "Nel database non sono presenti somministrazioni"),
     SOMMINISTRAZIONE_DATE_NOT_COMPATIBLE("SOMM_DNC", "Le date della somministrazione non sono compatibili"),
     DATE_ERROR("SOMM_DE", "Date inserite non corrette"),
+    UTENTE_ERROR("SOMM_UA", "L'utente non è ablitato per ricevere il vaccino"),
     SOMMINISTRAZIONE_LIMITE_UPDATE("SOMM_LUP", "Impossibile modificare la somministrazione per i limiti");
 
     private final String messageCode;

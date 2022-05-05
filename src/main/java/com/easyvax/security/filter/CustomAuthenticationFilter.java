@@ -33,6 +33,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         this.authenticationManager=authenticationManager;
     }
 
+
+    /**
+     * Questo metodo viene richiamato nella fase di login. Vengono richiesti codFiscale e password,
+     * successivamente si passa al controllo e all'autenticazione di quest'ultimi.
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
        String username = request.getParameter("codFiscale");
@@ -42,6 +52,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         return authenticationManager.authenticate(authenticationToken);
     }
 
+
+    /**
+     * In questo metodo viene decifrata e controllata la password, viene controllato il ruolo associato all'utente che vuole
+     * effettuare l'accesso. Se tutto va a buon fine viene effettuato il login e fornito al front-end il token di sessione
+     * con la sua durata
+     *
+     * @param request
+     * @param response
+     * @param chain
+     * @param authentication
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();

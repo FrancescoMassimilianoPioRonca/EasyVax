@@ -8,6 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
+/**
+ * L'interfaccia PersonaleRepository estende JpaRepository<T, ID>.
+ * Quest'interfaccia, offre diversi metodi base (es. findAll(), findById() e tanti altri)
+ * per relazionarsi con il db.
+ * Invece, se si ha bisogno di query SQL native si può utilizzare l’annotazione @Query.
+ */
+
 @Repository
 public interface PersonaleRepository extends JpaRepository<Personale,Long> {
 

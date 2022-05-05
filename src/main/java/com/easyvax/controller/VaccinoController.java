@@ -14,6 +14,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/vaccino")
 @CrossOrigin("*")
+
+/**
+ * -Nella classe VaccinoController vengono gestiti e organizzati tutti gli endpoint relativi ai vaccini.
+ * -I path delle api, ovvero delle attività che si possono svolgere relative all'amministratore, iniziano con:
+ * "http://localhost:8080/api/vaccino/...".
+ * -Nei metodi presenti in questa classe vengono semplicemente richiamati i metodi dela classe VaccinoService
+ * per il controllo e la validità dei dati in input delle request dal front-end.
+ * -Infine tutte le response ricevute dal livello "service" verranno inviare al front-end.
+ */
+
 public class VaccinoController {
 
     public final VaccinoService vaccinoService;

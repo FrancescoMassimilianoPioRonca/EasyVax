@@ -27,6 +27,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api/utente")
 @CrossOrigin("*")
+
+/**
+ * -Nella classe UtenteController vengono gestiti e organizzati tutti gli endpoint relativi all'utente.
+ * -I path delle api, ovvero delle attività che si possono svolgere relative all'amministratore, iniziano con:
+ * "http://localhost:8080/api/utente/...".
+ * -Nei metodi presenti in questa classe vengono semplicemente richiamati i metodi dela classe UtenteService
+ * per il controllo e la validità dei dati in input delle request dal front-end.
+ * -Infine tutte le response ricevute dal livello "service" verranno inviare al front-end.
+ */
 public class UtenteController {
 
     private final UtenteService utenteService;

@@ -14,6 +14,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/somministrazione")
 @CrossOrigin("*")
+
+/**
+ * -Nella classe SomministrazioneController vengono gestiti e organizzati tutti gli endpoint relativi alle somministrazioni.
+ * -I path delle api, ovvero delle attività che si possono svolgere relative all'amministratore, iniziano con:
+ * "http://localhost:8080/api/somministrazioni/...".
+ * -Nei metodi presenti in questa classe vengono semplicemente richiamati i metodi dela classe SomministrazioneService
+ * per il controllo e la validità dei dati in input delle request dal front-end.
+ * -Infine tutte le response ricevute dal livello "service" verranno inviare al front-end.
+ */
+
 public class SomministrazioneController {
 
     private final SomministrazioneService somministrazioneService;

@@ -76,6 +76,14 @@ public class RichiestaServiceImpl implements RichiestaService {
                     richiesta.setApproved(Boolean.TRUE);
                     somministrazioneRepository.save(somministrazione);
                     richiestaRepository.save(richiesta);
+
+                    try {
+                        acceptEmail(richiesta.getId(),somministrazione);
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else if(richiesta.getNewData()==null && richiesta.getIdCentroVacc()!=null) {
 

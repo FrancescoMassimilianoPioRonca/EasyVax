@@ -9,7 +9,14 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
-@Repository
+
+/**
+ * L'interfaccia SomministrazioneRepository estende JpaRepository<T, ID>.
+ * Quest'interfaccia, offre diversi metodi base (es. findAll(), findById() e tanti altri)
+ * per relazionarsi con il db.
+ * Invece, se si ha bisogno di query SQL native si può utilizzare l’annotazione @Query.
+ */
+
 public interface SomministrazioneRepository extends JpaRepository<Somministrazione,Long> {
 
     @Query("select s from Somministrazione s Join Utente u on s.utente.id = u.id where u.codFiscale=:cf")

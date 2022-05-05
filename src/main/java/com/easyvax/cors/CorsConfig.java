@@ -6,9 +6,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * In questa classe vengono gestiti i CORS (cross-origin HTTP request)
+ * In questa classe vengono gestite le CORS (cross-origin HTTP request)
  * per l'interfacciamento con il front-end.
- * Per avere maggiori informazioni su cosa sono i CORS guardare la documentazioni.
+ * Per avere maggiori informazioni su cosa sono le CORS guardare la documentazione.
  */
 
 @Configuration

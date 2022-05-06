@@ -31,14 +31,13 @@ public class UtenteDTO {
         this.id = utente.getId();
         this.nome = utente.getNome();
         this.cognome = utente.getCognome();
-        this.dataNascita=utente.getDataNascita();
-        this.ruolo=utente.getRuolo();
-        this.codFiscale=utente.getCodFiscale();
-        this.password=utente.getPassword();
-        this.residenza=utente.getProvincia().getId();
-        this.verificationCode=utente.getVerificationCode();
-        this.enabled=utente.isEnabled();
-        this.email=utente.getEmail();
+        this.dataNascita = utente.getDataNascita();
+        this.ruolo = utente.getRuolo();
+        this.codFiscale = utente.getCodFiscale();
+        this.password = utente.getPassword();
+        this.residenza = utente.getProvincia().getId();
+        this.enabled = utente.isEnabled();
+        this.email = utente.getEmail();
     }
 
 }

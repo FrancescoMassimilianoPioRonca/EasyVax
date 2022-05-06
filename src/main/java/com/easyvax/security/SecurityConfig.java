@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
@@ -41,20 +43,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+
         http.cors().configurationSource(r -> getCorsConfiguration());
         http.authorizeRequests().antMatchers("/login").permitAll();
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/login", "/token/refresh/**", "/utente/insertAdmin").permitAll();
-        http.authorizeRequests().antMatchers(POST, "/utente/insertAdmin").permitAll();
+        http.authorizeRequests().antMatchers("/login", "/token/refresh/**", "/api/utente/insertAdmin", "/api/regione/insertRegione", "/api/provincia/insertProvincia").permitAll();
         http.
                 authorizeRequests()
-                .antMatchers("/","/public/**", "/resources/**","/resources/public/**")
+                .antMatchers("/", "/public/**", "/resources/**", "/resources/public/static/chat/**")
                 .permitAll();
 
-
+/*
         //UTENTE
         http.authorizeRequests().antMatchers(POST, "api/utente/insertUtente").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_USER");
@@ -79,9 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "api/richieste/getRichiesteUtente").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "api/richieste/insertRichiesta").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
 
-
+/*
         //ADMIN
-        // http.authorizeRequests().antMatchers(POST,"api/utente/insertAdmin").hasAnyAuthority("ROLE_ADMIN");
+       //  http.authorizeRequests().antMatchers(POST,"api/utente/insertAdmin").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(DELETE, "api/utente/deleteUtente").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "api/utente/**").hasAnyAuthority("ROLE_ADMIN");
@@ -90,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(DELETE, "api/centroVaccinale/deletecetroVaccinale").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "api/pdf/generate").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(POST, "api/regione/insertRegione").hasAnyAuthority("ROLE_ADMIN");
+        //http.authorizeRequests().antMatchers(POST, "api/regione/insertRegione").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(PUT, "api/regione/updateRegione").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(DELETE, "api/regione/deleteRegione").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "api/regione/**").hasAnyAuthority("ROLE_ADMIN");
@@ -119,13 +121,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "api/richieste/getRichiestePersonale").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(PUT, "api/richieste/accettaRichiesta").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(PUT, "api/richieste/rejectRichiesta").hasAnyAuthority("ROLE_PERSONALE");
-
+*/
 
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
 
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {

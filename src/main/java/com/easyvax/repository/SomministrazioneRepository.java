@@ -17,13 +17,13 @@ import java.util.List;
  * Invece, se si ha bisogno di query SQL native si può utilizzare l’annotazione @Query.
  */
 
-public interface SomministrazioneRepository extends JpaRepository<Somministrazione,Long> {
+public interface SomministrazioneRepository extends JpaRepository<Somministrazione, Long> {
 
     @Query("select s from Somministrazione s Join Utente u on s.utente.id = u.id where u.codFiscale=:cf")
     List<Somministrazione> findbyUtente(@Param("cf") String codficeFiscale);
 
     @Query("select count (s) from Somministrazione s Join Utente u on s.utente.id = u.id JOIN Vaccino v on s.vaccino.id = v.id JOIN CentroVaccinale cv on s.centro.id = cv.id where u.id=:idU and v.id=:idV and s.dataSomministrazione=:data")
-    int findByUtente_IdAndVaccino_IdAndDataSomministrazione(@Param("idU")Long idU, @Param("idV")Long idV, @Param("data")LocalDate data);
+    int findByUtente_IdAndVaccino_IdAndDataSomministrazione(@Param("idU") Long idU, @Param("idV") Long idV, @Param("data") LocalDate data);
 
     Somministrazione findByCodiceSomm(String codice);
 
@@ -32,6 +32,6 @@ public interface SomministrazioneRepository extends JpaRepository<Somministrazio
     boolean existsById(Long id);
 
     @Query("select count(s) from Somministrazione s JOIN Utente u on s.utente.id=u.id WHERE u.id=:id AND s.dataSomministrazione >= :data")
-    int checkVaccini(@Param("id")Long id, @Param("data")LocalDate data);
+    int checkVaccini(@Param("id") Long id, @Param("data") LocalDate data);
 
 }

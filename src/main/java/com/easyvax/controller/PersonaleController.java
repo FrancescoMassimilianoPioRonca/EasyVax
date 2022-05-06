@@ -17,7 +17,7 @@ import java.util.List;
 @CrossOrigin("*")
 
 /**
- * -Nella classe AmministratoreController vengono gestiti e organizzati tutti gli endpoint relativi al personale.
+ * -Nella classe PersonaleController vengono gestiti e organizzati tutti gli endpoint relativi al personale.
  * -I path delle api, ovvero delle attività che si possono svolgere relative all'amministratore, iniziano con:
  * "http://localhost:8080/api/personale/...".
  * -Nei metodi presenti in questa classe vengono semplicemente richiamati i metodi dela classe PersonaleService
@@ -28,23 +28,43 @@ public class PersonaleController {
 
     private final PersonleService personaleService;
 
+    /**
+     * Restituisce tutto il personale
+     *
+     * @return List<OperatoriDTO>
+     */
     @GetMapping("/findAll")
-    public List<PersonaleDTO> findAll(){
+    public List<PersonaleDTO> findAll() {
         return personaleService.findAll();
     }
 
+    /**
+     * Restituisce tutti il personale che è in servizio nel centroVaccinale cercato
+     *
+     * @return List<PersonaleDTO>
+     */
     @GetMapping("/findByCentroVaccinale")
-    public List<PersonaleDTO> findByCentroVaccinale(@Valid @NotNull() @RequestParam Long id){
+    public List<PersonaleDTO> findByCentroVaccinale(@Valid @NotNull() @RequestParam Long id) {
         return personaleService.findByCentroVaccinale(id);
     }
 
+    /**
+     * Restituisce  il personale in base al cognome
+     *
+     * @return List<PersonaleDTO>
+     */
     @GetMapping("/findByCognome")
-    public List<PersonaleDTO> findByCognome(@Valid @NotNull() @RequestParam String cognome){
+    public List<PersonaleDTO> findByCognome(@Valid @NotNull() @RequestParam String cognome) {
         return personaleService.findByCognome(cognome);
     }
 
+    /**
+     * Restituisce il personale cercato in base al codicefiscale
+     *
+     * @return PersonoaleDTO
+     */
     @GetMapping("/findByCodFiscale")
-    public PersonaleDTO findByCodFiscale(@Valid @NotNull() @RequestParam String cf){
+    public PersonaleDTO findByCodFiscale(@Valid @NotNull() @RequestParam String cf) {
         return personaleService.findByCodFiscale(cf);
     }
 
@@ -53,18 +73,27 @@ public class PersonaleController {
         return personaleService.findByCodFiscale(cf);
     }*/
 
+    /**
+     * Associa un nuovo personale alla struttura
+     */
     @PostMapping("/insertPersonale")
-    public PersonaleDTO insertPersonale(@NonNull @RequestBody PersonaleDTO personaleDTO){
+    public PersonaleDTO insertPersonale(@NonNull @RequestBody PersonaleDTO personaleDTO) {
         return personaleService.insertpersonale(personaleDTO);
     }
 
+    /**
+     * Elimina il personale dalla struttura
+     */
     @DeleteMapping("/deletePersonale")
-    public List<PersonaleDTO> deletePersonale(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id){
+    public List<PersonaleDTO> deletePersonale(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return personaleService.deletePersonale(id);
     }
 
+    /**
+     * Modifica il personale
+     */
     @PutMapping("/updatePersonale")
-    public List<PersonaleDTO> updatePersonale(@Valid @RequestBody PersonaleDTO personaleDTO){
+    public List<PersonaleDTO> updatePersonale(@Valid @RequestBody PersonaleDTO personaleDTO) {
         return personaleService.updatePersonale(personaleDTO);
     }
 

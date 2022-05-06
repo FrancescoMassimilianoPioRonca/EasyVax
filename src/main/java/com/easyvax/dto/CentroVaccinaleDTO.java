@@ -19,6 +19,6 @@ public class CentroVaccinaleDTO {
         this.id = centroVaccinale.getId();
         this.indirizzo = centroVaccinale.getIndirizzo();
         this.nome = centroVaccinale.getNome();
-        this.idProvincia=centroVaccinale.getProvincia().getId();
+        this.idProvincia = centroVaccinale.getProvincia().getId();
     }
 }

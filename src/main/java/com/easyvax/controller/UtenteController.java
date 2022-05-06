@@ -41,12 +41,12 @@ public class UtenteController {
     private final UtenteService utenteService;
 
     @GetMapping("/findAll")
-    public List<UtenteDTO> findAll(){
+    public List<UtenteDTO> findAll() {
         return utenteService.findAll();
     }
 
     @GetMapping("/getDetails")
-    public UtenteDTO getDetails(@Valid @NotNull() @RequestParam Long id){
+    public UtenteDTO getDetails(@Valid @NotNull() @RequestParam Long id) {
         return utenteService.getDetails(id);
     }
 
@@ -65,23 +65,23 @@ public class UtenteController {
 
                 String access_token = JWT.create()
                         .withSubject(user.getCodFiscale())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10*60*1000))
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
                         .withClaim("roles", user.getRuolo().toString())
                         .sign(algorithm);
-                Map<String,String> tokens = new HashMap<>();
-                tokens.put("access-token",access_token);
-                tokens.put("refresh-token",refresh_token);
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("access-token", access_token);
+                tokens.put("refresh-token", refresh_token);
                 response.setContentType(APPLICATION_JSON_VALUE);
 
-                new ObjectMapper().writeValue(response.getOutputStream(),tokens);
+                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
             } catch (Exception exception) {
-                response.setHeader("error",exception.getMessage());
+                response.setHeader("error", exception.getMessage());
                 response.setStatus(FORBIDDEN.value());
-                Map<String,String> error = new HashMap<>();
-                error.put("error_message",exception.getMessage());
+                Map<String, String> error = new HashMap<>();
+                error.put("error_message", exception.getMessage());
                 response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(),error);
+                new ObjectMapper().writeValue(response.getOutputStream(), error);
             }
         } else {
             throw new RuntimeException("Refresh token is missing");
@@ -89,22 +89,22 @@ public class UtenteController {
     }
 
     @PostMapping("/insertUtente")
-    public UtenteDTO insertUtente(@NonNull @RequestBody UtenteDTO utenteDTO){
+    public UtenteDTO insertUtente(@NonNull @RequestBody UtenteDTO utenteDTO) {
         return utenteService.insertUtente(utenteDTO);
     }
 
     @PostMapping("/insertAdmin")
-    public UtenteDTO insertAdmin(@NonNull @RequestBody UtenteDTO utenteDTO){
+    public UtenteDTO insertAdmin(@NonNull @RequestBody UtenteDTO utenteDTO) {
         return utenteService.insertAdminUtente(utenteDTO);
     }
 
     @DeleteMapping("/deleteUtente")
-    public List<UtenteDTO> deleteUtente(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id){
+    public List<UtenteDTO> deleteUtente(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return utenteService.deleteUtente(id);
     }
 
     @PutMapping("/updateUtente")
-    public List<UtenteDTO> updateAnagrafica(@Valid @RequestBody UtenteDTO utenteDTO){
+    public List<UtenteDTO> updateAnagrafica(@Valid @RequestBody UtenteDTO utenteDTO) {
         return utenteService.updateAnagrafica(utenteDTO);
     }
 }

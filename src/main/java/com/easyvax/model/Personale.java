@@ -25,7 +25,6 @@ public class Personale {
     private Utente utente;
 
 
-
     public Personale(PersonaleDTO personaleDTO) {
         this.id = personaleDTO.getId();
     }

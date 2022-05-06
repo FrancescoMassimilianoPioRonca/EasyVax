@@ -28,32 +28,32 @@ public class RegioneController {
     public final RegioneService regioneService;
 
     @GetMapping("/findAll")
-    public List<RegioneDTO> findAll(){
+    public List<RegioneDTO> findAll() {
         return regioneService.findAll();
     }
 
     @GetMapping("/findByProvincia")
-    public List<RegioneDTO> findByProvincia(@Valid @NotNull() @RequestParam String provincia){
+    public List<RegioneDTO> findByProvincia(@Valid @NotNull() @RequestParam String provincia) {
         return regioneService.findByProvincia(provincia);
     }
 
     @GetMapping("/findByNome")
-    public RegioneDTO findByNome(@Valid @NotNull() @RequestParam String nome){
+    public RegioneDTO findByNome(@Valid @NotNull() @RequestParam String nome) {
         return regioneService.findByNome(nome);
     }
 
     @PostMapping("/insertRegione")
-    public RegioneDTO insertRegione(@NonNull @RequestBody RegioneDTO regioneDTO){
+    public RegioneDTO insertRegione(@NonNull @RequestBody RegioneDTO regioneDTO) {
         return regioneService.insertRegione(regioneDTO);
     }
 
     @DeleteMapping("/deleteRegione")
-    public List<RegioneDTO> deleteVaccino(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id){
+    public List<RegioneDTO> deleteVaccino(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return regioneService.deleteRegione(id);
     }
 
     @PutMapping("/updateRegione")
-    public List<RegioneDTO> updateVaccino(@Valid @RequestBody RegioneDTO regioneDTO){
+    public List<RegioneDTO> updateVaccino(@Valid @RequestBody RegioneDTO regioneDTO) {
         return regioneService.updateRegione(regioneDTO);
     }
 }

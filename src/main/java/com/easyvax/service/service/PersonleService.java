@@ -18,15 +18,9 @@ public interface PersonleService {
 
     PersonaleDTO findByCodFiscale(String cf);
 
-   // List<PersonaleDTO> findByRuolo(String ruolo);
 
-
-    /**
-     * Riservato agli admin
-     * @param id
-     * @return
-     */
     List<PersonaleDTO> deletePersonale(Long id);
+
     List<PersonaleDTO> updatePersonale(PersonaleDTO personale);
 
 }

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Utente {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NonNull
@@ -38,8 +38,6 @@ public class Utente {
     @NonNull
     private String email;
 
-    @NonNull
-    private String verificationCode;
 
     private boolean enabled;
 
@@ -48,32 +46,29 @@ public class Utente {
     private RoleEnum ruolo;
 
 
-    @OneToMany(mappedBy="utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Somministrazione> somministrazioni = new ArrayList<>();
 
-    @OneToMany(mappedBy="utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Personale> personale = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name="id_residenza")
+    @JoinColumn(name = "id_residenza")
     public Provincia provincia;
-
-
 
 
     public Utente(UtenteDTO utenteDTO) {
         this.id = utenteDTO.id;
         this.nome = utenteDTO.nome;
-        this.dataNascita=utenteDTO.getDataNascita();
-        this.password= utenteDTO.getPassword();
+        this.dataNascita = utenteDTO.getDataNascita();
+        this.password = utenteDTO.getPassword();
         this.cognome = utenteDTO.cognome;
-        this.email=utenteDTO.getEmail();
-        this.verificationCode=utenteDTO.getVerificationCode();
-        this.enabled=utenteDTO.isEnabled();
-        this.ruolo=utenteDTO.getRuolo();
+        this.email = utenteDTO.getEmail();
+        this.enabled = utenteDTO.isEnabled();
+        this.ruolo = utenteDTO.getRuolo();
     }
 
-    public String getNome_Cognome(){
-        return this.getCognome().toUpperCase() + " "+ this.getNome().toUpperCase();
+    public String getNome_Cognome() {
+        return this.getCognome().toUpperCase() + " " + this.getNome().toUpperCase();
     }
 }

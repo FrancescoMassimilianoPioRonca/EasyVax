@@ -19,7 +19,7 @@ public class OperatoreDTO {
 
     public OperatoreDTO(Operatore operatore) {
         this.id = operatore.getId();
-        this.idUtente=operatore.getUtente().getId();
-        this.idCentro=operatore.getCentroVaccinale().getId();
+        this.idUtente = operatore.getUtente().getId();
+        this.idCentro = operatore.getCentroVaccinale().getId();
     }
 }

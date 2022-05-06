@@ -25,7 +25,7 @@ public class Vaccino {
     @NonNull
     private String casaFarmaceutica;
 
-    @OneToMany(mappedBy="vaccino" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "vaccino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Somministrazione> somministrazioni = new ArrayList<>();
 
 

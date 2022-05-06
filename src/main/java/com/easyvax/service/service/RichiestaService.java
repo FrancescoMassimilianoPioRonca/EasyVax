@@ -9,7 +9,9 @@ public interface RichiestaService {
     List<RichiestaDTO> getRichiesteOperatore(Long idOperatore);
 
     List<RichiestaDTO> getRichiesteUtente(Long idUtente);
+
     void accettaRichiesta(Long id);
+
     void rifiutaRichiesta(Long id);
 
     List<RichiestaDTO> deleteRichiesta(Long idUtente);

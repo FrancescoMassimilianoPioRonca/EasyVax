@@ -12,12 +12,16 @@ import java.util.List;
  * Invece, se si ha bisogno di query SQL native si può utilizzare l’annotazione @Query.
  */
 
-public interface ProvinciaRepository extends JpaRepository<Provincia,Long> {
+public interface ProvinciaRepository extends JpaRepository<Provincia, Long> {
 
     boolean existsByNome(String nome);
+
     List<Provincia> findByNome(String nome);
+
     boolean existsByCap(String cap);
+
     boolean existsByNomeAndRegione_IdAndCap(String nome, Long id, String cap);
+
     boolean existsByNomeAndCap(String nome, String cap);
 
     List<Provincia> findByRegione_Id(Long id);

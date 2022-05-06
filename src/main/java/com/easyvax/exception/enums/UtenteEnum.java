@@ -4,7 +4,7 @@ public enum UtenteEnum {
 
     UTENTE_NOT_FOUND("UTE_NF", "l'utente che stai cercando non è stato trovato"),
     UTENTE_ALREADY_EXISTS("UTE_AE", "Parametri già presenti nel sistema"),
-    UTENTI_NOT_EXISTS("UTI_NE","Nel db non sono presenti utenti"),
+    UTENTI_NOT_EXISTS("UTI_NE", "Nel db non sono presenti utenti"),
     UTENTE_DELETE_ERROR("UTE_DLE", "Errore durante l'eliminazione dell'utente"),
     UTENTE_CAP_ERROR("UTE_CAP_NF", "Non sono presenti utenti per il cap selezionato"),
     UTENTE_ID_NOT_EXIST("UTE_IDNE", "l'utente che stai cercando non esiste"),

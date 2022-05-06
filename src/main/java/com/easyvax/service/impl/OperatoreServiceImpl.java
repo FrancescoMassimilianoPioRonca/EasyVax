@@ -34,6 +34,12 @@ public class OperatoreServiceImpl implements OperatoreService {
     private static OperatoreEnum operatoreEnum;
     private static CentroVaccinaleEnum centroVaccinaleEnum;
 
+    /**
+     * Associo un nuovo operatore presso la struttura
+     *
+     * @param operatoreDTO
+     * @return OperatoreDTO
+     */
     @Override
     public OperatoreDTO insertOperatore(OperatoreDTO operatoreDTO) {
 
@@ -54,7 +60,11 @@ public class OperatoreServiceImpl implements OperatoreService {
 
     }
 
-
+    /**
+     * Cerco tutti gli operatori
+     *
+     * @return List<OperatoreDTO>
+     */
     @Override
     public List<OperatoreDTO> findAll() {
         if (!operatoreRepository.findAll().isEmpty())
@@ -65,6 +75,12 @@ public class OperatoreServiceImpl implements OperatoreService {
         }
     }
 
+    /**
+     * Cerco gli operatoi in base al centro vaccinale
+     *
+     * @param id
+     * @return List<OperatoreDTO>
+     */
     @Override
     public List<OperatoreDTO> findByCentroVaccinale(Long id) {
 
@@ -76,6 +92,12 @@ public class OperatoreServiceImpl implements OperatoreService {
         }
     }
 
+    /**
+     * Cerco l'operatore in base al codice fiscale
+     *
+     * @param cf
+     * @return OperatoreDTO
+     */
     @Override
     public OperatoreDTO findByCodFiscale(String cf) {
         if (cf != null && (utenteRepository.existsByCodFiscale(cf))) {
@@ -97,6 +119,12 @@ public class OperatoreServiceImpl implements OperatoreService {
         }
     }*/
 
+    /**
+     * Elimino un operatore
+     *
+     * @param id
+     * @return List<OperatoreDTO>
+     */
     @Override
     public List<OperatoreDTO> deleteOperatore(Long id) {
 
@@ -109,6 +137,12 @@ public class OperatoreServiceImpl implements OperatoreService {
         }
     }
 
+    /**
+     * Modifico un operatore
+     *
+     * @param operatoreDTO
+     * @return List<OperatoreDTO>
+     */
     @Override
     public List<OperatoreDTO> updateOperatore(OperatoreDTO operatoreDTO) {
         if (operatoreRepository.existsById(operatoreDTO.id)) {

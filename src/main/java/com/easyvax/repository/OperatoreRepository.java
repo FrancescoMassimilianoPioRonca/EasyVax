@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 @Repository
-public interface OperatoreRepository extends JpaRepository<Operatore,Long> {
+public interface OperatoreRepository extends JpaRepository<Operatore, Long> {
 
     boolean existsByUtente_Id(Long id);
 

@@ -5,7 +5,7 @@ public enum ProvinciaEnum {
     PROVINCIA_NOT_FOUND("P_NF", "La provincia che stai cercando non esiste"),
     PROVINCIA_ALREADY_EXISTS("P_AE", "La provincia che vuoi inserire è già presente nel sistema"),
     CAP_NOT_FOUND("C_NF", "Il cap inserito non esiste"),
-    PROVINCE_NOT_EXISTS("PE_NE","Nel db non sono presenti province"),
+    PROVINCE_NOT_EXISTS("PE_NE", "Nel db non sono presenti province"),
     PROVINCIA_EMPTY_FIELD("P_EF", "Alcuni campi sono vuoti"),
     PROVINCIA_REGIONE_NOT_EXISTS("PR_NE", "Non ci sono province associate alla regione inserita");
 

@@ -12,14 +12,18 @@ import java.util.List;
  * per relazionarsi con il db.
  * Invece, se si ha bisogno di query SQL native si può utilizzare l’annotazione @Query.
  */
-public interface VaccinoRepository extends JpaRepository<Vaccino,Long> {
+public interface VaccinoRepository extends JpaRepository<Vaccino, Long> {
 
-    List<Vaccino>  findVaccinoByCasaFarmaceutica(String casaFarmaceutica);
+    List<Vaccino> findVaccinoByCasaFarmaceutica(String casaFarmaceutica);
+
     List<Vaccino> findByCasaFarmaceutica(String casaFarmaceutica);
-    Vaccino findByNome (String nome);
+
+    Vaccino findByNome(String nome);
 
     boolean existsByNome(String nome);
+
     boolean existsByNomeAndCasaFarmaceutica(String nome, String casaFarmaceutica);
+
     boolean existsById(Long id);
     //boolean existsByCasaFarmaceutica(String casaFarmaceutica);
 }

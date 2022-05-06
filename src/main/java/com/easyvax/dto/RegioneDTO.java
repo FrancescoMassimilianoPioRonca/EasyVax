@@ -18,6 +18,6 @@ public class RegioneDTO {
 
     public RegioneDTO(Regione regione) {
         this.id = regione.getId();
-        this.nome= regione.getNome();
+        this.nome = regione.getNome();
     }
 }

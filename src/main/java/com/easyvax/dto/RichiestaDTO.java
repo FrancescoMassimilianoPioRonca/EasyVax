@@ -27,9 +27,9 @@ public class RichiestaDTO {
         this.id = richiesta.getId();
         this.data = richiesta.getNewData();
         this.idSomministrazione = richiesta.getSomministrazione().getId();
-        this.IdCentroVaccinale=richiesta.getIdCentroVacc();
-        this.approvedOp1=richiesta.getApprovedOp1();
-        this.approvedOp2=richiesta.getApprovedOp2();
+        this.IdCentroVaccinale = richiesta.getIdCentroVacc();
+        this.approvedOp1 = richiesta.getApprovedOp1();
+        this.approvedOp2 = richiesta.getApprovedOp2();
         this.approved = richiesta.getApproved();
     }
 }

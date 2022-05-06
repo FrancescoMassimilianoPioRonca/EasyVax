@@ -2,9 +2,9 @@ package com.easyvax.exception.enums;
 
 public enum RichiestaEnum {
 
-    RICHIESTE_NE("RS_NE","Nel db non sono presenti richieste"),
-    RICHIESTE_E("RS_E","Errore nell'inserire la rchiesta. Controllare i parametri"),
-    RICHIESTA_NF("RS_NF","La richiesta non è stata trovata");
+    RICHIESTE_NE("RS_NE", "Nel db non sono presenti richieste"),
+    RICHIESTE_E("RS_E", "Errore nell'inserire la rchiesta. Controllare i parametri"),
+    RICHIESTA_NF("RS_NF", "La richiesta non è stata trovata");
 
 
     private final String messageCode;

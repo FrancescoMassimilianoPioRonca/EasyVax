@@ -1,5 +1,6 @@
 package com.easyvax.service.impl;
 
+import com.auth0.jwt.algorithms.Algorithm;
 import com.easyvax.dto.UtenteDTO;
 import com.easyvax.exception.enums.RoleEnum;
 import com.easyvax.exception.enums.UtenteEnum;
@@ -19,9 +20,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,6 +46,13 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     private JavaMailSender mailSender;
 
 
+    /**
+     * Ricerco l'username per security
+     *
+     * @param cf
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String cf) throws UsernameNotFoundException {
 
@@ -56,6 +68,12 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     }
 
 
+    /**
+     * Inserisco un nuovo utente che di base ha ruolo USER ed invio mail per la verifica
+     *
+     * @param utenteDTO
+     * @return UtenteDTO
+     */
     @Override
     public UtenteDTO insertUtente(UtenteDTO utenteDTO) {
 
@@ -68,7 +86,10 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
             utente.setNome(utenteDTO.nome);
             utente.setCognome(utenteDTO.cognome);
-            utente.setCodFiscale(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT));
+
+            //Basic hash
+            utente.setCodFiscale(Base64.getEncoder().encodeToString(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT).getBytes()));
+
             utente.setDataNascita(utenteDTO.getDataNascita());
             utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
             utente.setEmail(utente.getEmail());
@@ -78,9 +99,9 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
             utente.setRuolo(RoleEnum.ROLE_USER);
 
 
-            String randomCode = RandomString.make(64);
+            /*String randomCode = RandomString.make(64);
 
-            utente.setVerificationCode(randomCode);
+            utente.setVerificationCode(randomCode);*/
 
 
             utente.setEnabled(false);
@@ -104,6 +125,12 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     }
 
 
+    /**
+     * Inserisco un utente admin e invio mail per la verifica
+     *
+     * @param utenteDTO
+     * @return UtenteDTO
+     */
     @Override
     public UtenteDTO insertAdminUtente(UtenteDTO utenteDTO) {
 
@@ -117,7 +144,7 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
             utente.setNome(utenteDTO.nome);
             utente.setCognome(utenteDTO.cognome);
-            utente.setCodFiscale(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT));
+            utente.setCodFiscale(Base64.getEncoder().encodeToString(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT).getBytes()));
             utente.setDataNascita(utenteDTO.getDataNascita());
             utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
 
@@ -126,9 +153,9 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
             utente.setProvincia(provincia);
 
-            String randomCode = RandomString.make(64);
+            /*String randomCode = RandomString.make(64);
 
-            utente.setVerificationCode(randomCode);
+            utente.setVerificationCode(randomCode);*/
 
             utente.setEnabled(false);
             utente = utenteRepository.save(utente);
@@ -148,6 +175,14 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
         }
     }
 
+    /**
+     * Invio mail per la verifica
+     *
+     * @param utente
+     * @param siteUrl
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
+     */
     private void sendVerificationEmail(Utente utente, String siteUrl) throws MessagingException, UnsupportedEncodingException {
         String toAddress = utente.getEmail();
         String fromAddress = "easyVaxNOREPLY@gmail.com";
@@ -168,15 +203,21 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
 
         content = content.replace("[[name]]", utente.getNome_Cognome());
-        String verifyURL = siteUrl + "/verify?code=" + utente.getVerificationCode();
+        //String verifyURL = siteUrl + "/verify?code=" + utente.getVerificationCode();
 
-        content = content.replace("[[URL]]", verifyURL);
+        //content = content.replace("[[URL]]", verifyURL);
 
         helper.setText(content, true);
 
         mailSender.send(message);
     }
 
+    /**
+     * Ricevo i dettagli di un utente
+     *
+     * @param id
+     * @return UtenteDTO
+     */
     @Override
     public UtenteDTO getDetails(Long id) {
         if (id != null && utenteRepository.existsById(id)) {
@@ -187,6 +228,12 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
         }
     }
 
+    /**
+     * Modifico l'anagrafica di un utente
+     *
+     * @param utenteDTO
+     * @return List<UtenteDTO>
+     */
     @Override
     public List<UtenteDTO> updateAnagrafica(UtenteDTO utenteDTO) {
 
@@ -197,12 +244,18 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
                 Utente utente = new Utente(utenteDTO);
 
-                utente.setNome(utenteDTO.getNome());
-                utente.setCodFiscale(utenteDTO.getCognome());
+                utente.setNome(utenteDTO.nome);
+                utente.setCognome(utenteDTO.cognome);
+
+                //Basic hash
+                utente.setCodFiscale(Base64.getEncoder().encodeToString(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT).getBytes()));
+
                 utente.setDataNascita(utenteDTO.getDataNascita());
-                utente.setPassword(utenteDTO.getPassword());
-                utente.setCognome(utenteDTO.getCognome());
-                utente.setProvincia(provincia);
+                utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
+                utente.setEmail(utente.getEmail());
+
+                utenteRepository.save(utente);
+
             } else {
                 utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_AE");
                 throw new ApiRequestException(utenteEnum.getMessage());
@@ -215,6 +268,12 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
         return utenteRepository.findAll().stream().map(UtenteDTO::new).collect(Collectors.toList());
     }
 
+
+    /**
+     * Cerco tutti gli uenti
+     *
+     * @return List<UtenteDTO>
+     */
     @Override
     public List<UtenteDTO> findAll() {
         if (!utenteRepository.findAll().isEmpty())
@@ -245,6 +304,13 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
          }
      }
  */
+
+    /**
+     * Elimino un utente
+     *
+     * @param id
+     * @return List<UtenteDTO>
+     */
     @Override
     public List<UtenteDTO> deleteUtente(Long id) {
         if (utenteRepository.existsById(id)) {
@@ -257,6 +323,12 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     }
 
 
+    /**
+     * Cerco l'utente in base al codice fiscale
+     *
+     * @param cf
+     * @return UtenteDTO
+     */
     @Override
     public UtenteDTO findByCF(String cf) {
         if (cf != null && utenteRepository.existsByCodFiscale(cf))

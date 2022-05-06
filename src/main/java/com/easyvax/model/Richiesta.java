@@ -23,7 +23,7 @@ public class Richiesta {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="id_somministrazione")
+    @JoinColumn(name = "id_somministrazione")
     private Somministrazione somministrazione;
 
 
@@ -40,14 +40,13 @@ public class Richiesta {
     private Boolean approved;
 
 
-    public Richiesta(RichiestaDTO richiestaDTO)
-    {
+    public Richiesta(RichiestaDTO richiestaDTO) {
         this.id = richiestaDTO.getId();
         this.newData = richiestaDTO.getData();
         this.approved = richiestaDTO.getApproved();
-        this.IdCentroVacc=richiestaDTO.getIdCentroVaccinale();
-        this.approvedOp1=richiestaDTO.getApprovedOp1();
-        this.approvedOp2=richiestaDTO.getApprovedOp2();
+        this.IdCentroVacc = richiestaDTO.getIdCentroVaccinale();
+        this.approvedOp1 = richiestaDTO.getApprovedOp1();
+        this.approvedOp2 = richiestaDTO.getApprovedOp2();
     }
 
 }

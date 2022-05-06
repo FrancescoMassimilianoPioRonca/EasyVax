@@ -26,7 +26,6 @@ public class Operatore {
     private Utente utente;
 
 
-
     public Operatore(OperatoreDTO operatoreDTO) {
         this.id = operatoreDTO.getId();
     }

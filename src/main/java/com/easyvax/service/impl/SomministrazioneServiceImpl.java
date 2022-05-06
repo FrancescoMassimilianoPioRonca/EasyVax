@@ -37,9 +37,15 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
     private static SomministrazioneEnum somministrazioneEnum;
     private JavaMailSender mailSender;
 
+    /**
+     * Inserisco una nuova somministrazione, controllando che la data sia valida quindi che non infranga il limite dei 2 giorni prima e che l'utente non abbia fatto
+     * qualsiasi altra vaccinazione nell'arco dei 6 mesi precedenti. Inserendo una somministrazione viene inviata una email riepilogativa
+     *
+     * @param somministrazioneDTO
+     * @return SomministrazioneDTO
+     */
     @Override
     public SomministrazioneDTO insertSomministrazione(SomministrazioneDTO somministrazioneDTO) {
-
 
 
         if (somministrazioneRepository.findByUtente_IdAndVaccino_IdAndDataSomministrazione(somministrazioneDTO.getIdUtente(), somministrazioneDTO.getIdVaccino(), somministrazioneDTO.getData()) == 0) {
@@ -47,7 +53,7 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
             Somministrazione somministrazione = new Somministrazione(somministrazioneDTO);
             Utente utente = utenteRepository.findById(somministrazioneDTO.getIdUtente()).get();
 
-            if(somministrazioneRepository.checkVaccini(utente.getId(),somministrazioneDTO.data.minusMonths(6))==0) {
+            if (somministrazioneRepository.checkVaccini(utente.getId(), somministrazioneDTO.data.minusMonths(6)) == 0) {
                 Vaccino vaccino = vaccinoRepository.findById(somministrazioneDTO.getIdVaccino()).get();
                 CentroVaccinale cv = centroVaccinaleRepository.findById(somministrazioneDTO.getIdCentro()).get();
 
@@ -86,23 +92,30 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
                     }
 
                     return new SomministrazioneDTO(somministrazione);
-                }
-                else {
+                } else {
                     somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IE");
                     throw new ApiRequestException(somministrazioneEnum.getMessage());
                 }
-            }else{
+            } else {
                 somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_UA");
                 throw new ApiRequestException(somministrazioneEnum.getMessage());
             }
 
-            }
-        else {
+        } else {
             somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_AE");
             throw new ApiRequestException(somministrazioneEnum.getMessage());
         }
     }
 
+
+    /**
+     * Invio email riepilogativa
+     *
+     * @param cod
+     * @param utente
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
+     */
     private void sendEmail(String cod, Utente utente) throws MessagingException, UnsupportedEncodingException {
         String toAddress = utente.getEmail();
         String fromAddress = "easyVaxNOREPLY@gmail.com";
@@ -131,6 +144,13 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
     }
 
 
+    /**
+     * Modifico la prenotazione controllando i vincoli
+     *
+     * @param code
+     * @param somministrazioneDTO
+     * @return
+     */
     @Override
     public SomministrazioneDTO updateSomministrazione(String code, SomministrazioneDTO somministrazioneDTO) {
 
@@ -163,6 +183,12 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
         }
     }
 
+    /**
+     * Ricevo i dettagli di una prenotazione
+     *
+     * @param id
+     * @return SomministrazioneDTO
+     */
     @Override
     public SomministrazioneDTO getDetails(Long id) {
         if (somministrazioneRepository.existsById(id)) {
@@ -173,6 +199,11 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
         }
     }
 
+    /**
+     * Ricevo tutte le prenotazioni
+     *
+     * @return List<SomministrazioneDTO>
+     */
     @Override
     public List<SomministrazioneDTO> findAll() {
 
@@ -184,6 +215,12 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
         }
     }
 
+    /**
+     * Cerco le prenotazioni in base al codice fiscale
+     *
+     * @param cf
+     * @return List<SomministrazioneDTO>
+     */
     @Override
     public List<SomministrazioneDTO> findByUtente(String cf) {
         if (cf != null && utenteRepository.existsByCodFiscale(cf)) {
@@ -194,6 +231,12 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
         }
     }
 
+    /**
+     * Cerco una prenotazione in base al codice
+     *
+     * @param cod
+     * @return Somministrazione DTO
+     */
     @Override
     public SomministrazioneDTO findByCod(String cod) {
         if (cod != null && somministrazioneRepository.existsByCodiceSomm(cod)) {
@@ -204,6 +247,12 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
         }
     }
 
+    /**
+     * Elimino una prenotazione
+     *
+     * @param id
+     * @return List<SomministrazioneDTO>
+     */
     @Override
     public List<SomministrazioneDTO> deletePrenotazione(Long id) {
         if (somministrazioneRepository.existsById(id)) {

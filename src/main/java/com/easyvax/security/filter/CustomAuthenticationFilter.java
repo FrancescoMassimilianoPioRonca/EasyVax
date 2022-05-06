@@ -12,14 +12,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -28,9 +34,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private static String key = "Bar12345Bar12345";
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager){
-        this.authenticationManager=authenticationManager;
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
 
@@ -45,10 +52,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-       String username = request.getParameter("codFiscale");
+        String username = request.getParameter("codFiscale");
         String password = request.getParameter("password");
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(Base64.getEncoder().encodeToString(username.toUpperCase(Locale.ROOT).getBytes()), password);
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -78,11 +86,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
 
-        Map<String,String> tokens = new HashMap<>();
-        tokens.put("access-token",access_token);
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access-token", access_token);
         tokens.put("token_expiration", token_expiration.toString());
         response.setContentType(APPLICATION_JSON_VALUE);
 
-        new ObjectMapper().writeValue(response.getOutputStream(),tokens);
+        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 }

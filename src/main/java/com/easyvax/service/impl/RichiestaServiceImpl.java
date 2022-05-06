@@ -38,39 +38,60 @@ public class RichiestaServiceImpl implements RichiestaService {
     private final UtenteRepository utenteRepository;
     private JavaMailSender mailSender;
 
-    @Override
-    public List<RichiestaDTO> getRichiesteOperatore(Long idOperatore){
 
-        if(idOperatore != null && operatoreRepository.existsById(idOperatore)){
-            return  richiestaRepository.getRichieste(idOperatore).stream().map(RichiestaDTO::new).collect(Collectors.toList());
-        }else{
+    /**
+     * Con questo metodo, l'operatore, in base al suo id, riceve tutte le richieste generate dagli utenti non ancora smarcate, relative
+     * al centro vaccinale in cui lavora
+     *
+     * @param idOperatore
+     * @return List<RichiestaDTO>
+     */
+    @Override
+    public List<RichiestaDTO> getRichiesteOperatore(Long idOperatore) {
+
+        if (idOperatore != null && operatoreRepository.existsById(idOperatore)) {
+            return richiestaRepository.getRichieste(idOperatore).stream().map(RichiestaDTO::new).collect(Collectors.toList());
+        } else {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NE");
             throw new ApiRequestException(richiestaEnum.getMessage());
         }
     }
 
+    /**
+     * Con questo metodo invece, l'utente può vedere tutte le richieste non ancora smarcate che ha eseguito
+     *
+     * @param idUtente
+     * @return
+     */
     @Override
     public List<RichiestaDTO> getRichiesteUtente(Long idUtente) {
-        if(idUtente != null && utenteRepository.existsById(idUtente)){
-            return  richiestaRepository.getRichiesteUtente(idUtente).stream().map(RichiestaDTO::new).collect(Collectors.toList());
-        }else{
+        if (idUtente != null && utenteRepository.existsById(idUtente)) {
+            return richiestaRepository.getRichiesteUtente(idUtente).stream().map(RichiestaDTO::new).collect(Collectors.toList());
+        } else {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NE");
             throw new ApiRequestException(richiestaEnum.getMessage());
         }
     }
 
+    /**
+     * Si occupa di accettare le richieste. Se approved è true, è stato autorizzato il cambio data
+     * Se invece op1, op2 e quindi approved sono true allora è sato autrizzato il cambio sede
+     * Viene inviata una email quando viene accettata ogni richiesta
+     * Gli attributi op1 e op2 si riferiscono all'operatore della sede vecchia e op2 l'operatore della nuova sede. Entrambi devono essere a true per poter cambiare sede
+     *
+     * @param id
+     */
     @Override
     public void accettaRichiesta(Long id) {
 
-        if(id != null && richiestaRepository.existsById(id)){
+        if (id != null && richiestaRepository.existsById(id)) {
             Richiesta richiesta = richiestaRepository.findById(id).get();
 
-            if(somministrazioneRepository.existsById(richiesta.getSomministrazione().getId()))
-            {
+            if (somministrazioneRepository.existsById(richiesta.getSomministrazione().getId())) {
 
                 Somministrazione somministrazione = somministrazioneRepository.findById(richiesta.getSomministrazione().getId()).get();
 
-                if(richiesta.getNewData()!=null && richiesta.getIdCentroVacc()==null) {
+                if (richiesta.getNewData() != null && richiesta.getIdCentroVacc() == null) {
                     somministrazione.setDataSomministrazione(richiesta.getNewData());
                     somministrazione.setInAttesa(Boolean.FALSE);
                     richiesta.setApproved(Boolean.TRUE);
@@ -78,52 +99,56 @@ public class RichiestaServiceImpl implements RichiestaService {
                     richiestaRepository.save(richiesta);
 
                     try {
-                        acceptEmail(richiesta.getId(),somministrazione);
+                        acceptEmail(richiesta.getId(), somministrazione);
                     } catch (MessagingException e) {
                         e.printStackTrace();
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                }
-                else if(richiesta.getNewData()==null && richiesta.getIdCentroVacc()!=null) {
+                } else if (richiesta.getNewData() == null && richiesta.getIdCentroVacc() != null) {
 
-                    if(richiesta.getApprovedOp1()!=null && richiesta.getApprovedOp2()==null){
+                    if (richiesta.getApprovedOp1() != null && richiesta.getApprovedOp2() == null) {
                         richiesta.setApprovedOp2(true);
                         richiesta.setApproved(true);
-                       somministrazione.setInAttesa(false);
+                        somministrazione.setInAttesa(false);
                         richiestaRepository.save(richiesta);
 
                         try {
-                            acceptEmail(richiesta.getId(),somministrazione);
+                            acceptEmail(richiesta.getId(), somministrazione);
                         } catch (MessagingException e) {
                             e.printStackTrace();
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
-                    if(centroVaccinaleRepository.existsById(richiesta.getIdCentroVacc())){
+                    if (centroVaccinaleRepository.existsById(richiesta.getIdCentroVacc())) {
                         CentroVaccinale cv = centroVaccinaleRepository.findById(richiesta.getIdCentroVacc()).get();
                         somministrazione.setCentro(cv);
                         richiesta.setApprovedOp1(true);
                         somministrazioneRepository.save(somministrazione);
                         richiestaRepository.save(richiesta);
-                    }else {
+                    } else {
                         centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_NF");
                         throw new ApiRequestException(centroVaccinaleEnum.getMessage());
                     }
                 }
             }
-        }else{
+        } else {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NF");
             throw new ApiRequestException(richiestaEnum.getMessage());
         }
 
     }
 
+    /**
+     * Rifiuto una richiesta
+     *
+     * @param id
+     */
     @Override
     public void rifiutaRichiesta(Long id) {
 
-        if(id != null && richiestaRepository.existsById(id)){
+        if (id != null && richiestaRepository.existsById(id)) {
             Richiesta richiesta = richiestaRepository.findById(id).get();
 
             richiesta.setApproved(Boolean.FALSE);
@@ -137,20 +162,25 @@ public class RichiestaServiceImpl implements RichiestaService {
             somministrazioneRepository.save(somministrazione);
 
             try {
-                rejectEmail(richiesta.getId(),somministrazione);
+                rejectEmail(richiesta.getId(), somministrazione);
             } catch (MessagingException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
 
-        }else{
+        } else {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NF");
             throw new ApiRequestException(richiestaEnum.getMessage());
         }
     }
 
-
+    /**
+     * Elimino una richiesta
+     *
+     * @param id
+     * @return List<RichiestaDTO>
+     */
     @Override
     public List<RichiestaDTO> deleteRichiesta(Long id) {
 
@@ -163,6 +193,15 @@ public class RichiestaServiceImpl implements RichiestaService {
         }
     }
 
+    /**
+     * Questo metodo gestisce sia le richieste di cambio data (generabile dagli utenti se per motivi validi devono per forza spostare la lor prenotazione anche
+     * dopo il limite imposto di 2 giorni antecedenti) sia le richieste di cambio sede mantendendo la stessa prenotazione.
+     * Abbiamo utilizzato una logica abbastanza semplice ma efficace ovvero: se la richiesta contiene l'attributo newData != null e i due flag op1 e op2 a null, allora vuol dire che
+     * si intende cambiare la data. Se invece l'attributo newData ==null ma l'attributo centrovacc != null allora si intende cambiare la sede.
+     * Tutto questo è poi gestito tramite una logica di flag approved (nel caso di cambio data) e op1 e op2 nel caso di cambio sede.
+     * <p>
+     * Appena si inserisce una richiestaviene poi inviata una email informativa con il codice della richiesta
+     **/
     @Override
     public RichiestaDTO insertRichiesta(RichiestaDTO richiestaDTO) {
 
@@ -204,16 +243,22 @@ public class RichiestaServiceImpl implements RichiestaService {
                 richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_E");
                 throw new ApiRequestException(richiestaEnum.getMessage());
             }
-        }
-        else {
+        } else {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_E");
             throw new ApiRequestException(richiestaEnum.getMessage());
         }
     }
 
+    /**
+     * Invio l'email di inserimento richiesta
+     *
+     * @param id
+     * @param somm
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
+     */
 
-
-    private void sendEmail(Long  id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
+    private void sendEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
 
         Utente utente = utenteRepository.findById(somm.getUtente().getId()).get();
         String toAddress = utente.getEmail();
@@ -245,7 +290,15 @@ public class RichiestaServiceImpl implements RichiestaService {
         mailSender.send(message);
     }
 
-    private void acceptEmail(Long  id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
+    /**
+     * Invio l'email per avvenuta accettazione della richiesta
+     *
+     * @param id
+     * @param somm
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
+     */
+    private void acceptEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
 
         Utente utente = utenteRepository.findById(somm.getUtente().getId()).get();
         String toAddress = utente.getEmail();
@@ -276,7 +329,15 @@ public class RichiestaServiceImpl implements RichiestaService {
         mailSender.send(message);
     }
 
-    private void rejectEmail(Long  id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
+    /**
+     * Invio l'email per rifiuto richiesta
+     *
+     * @param id
+     * @param somm
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
+     */
+    private void rejectEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
 
         Utente utente = utenteRepository.findById(somm.getUtente().getId()).get();
         String toAddress = utente.getEmail();

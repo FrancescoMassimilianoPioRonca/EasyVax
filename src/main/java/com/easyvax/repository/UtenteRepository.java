@@ -15,15 +15,18 @@ import java.util.List;
  * per relazionarsi con il db.
  * Invece, se si ha bisogno di query SQL native si può utilizzare l’annotazione @Query.
  */
-public interface UtenteRepository extends JpaRepository<Utente,Long> {
+public interface UtenteRepository extends JpaRepository<Utente, Long> {
 
     boolean existsByCognome(String cognome);
+
     boolean existsByCodFiscale(String cf);
+
     boolean existsByEmail(String email);
 
     boolean existsByNomeAndCognomeAndCodFiscaleAndDataNascita(String nome, String cognome, String cf, LocalDate data);
 
     List<Utente> findByCognome(String cognome);
+
     Utente findByCodFiscale(String cf);
 
 

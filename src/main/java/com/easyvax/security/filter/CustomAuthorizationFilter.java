@@ -69,14 +69,14 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {
-                    log.error("Error loggin in : {}",exception.getMessage());
-                    response.setHeader("error",exception.getMessage());
+                    log.error("Error loggin in : {}", exception.getMessage());
+                    response.setHeader("error", exception.getMessage());
                     response.setStatus(FORBIDDEN.value());
                     //response.sendError(FORBIDDEN.value());
-                    Map<String,String> error = new HashMap<>();
-                    error.put("error_message",exception.getMessage());
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error_message", exception.getMessage());
                     response.setContentType(APPLICATION_JSON_VALUE);
-                    new ObjectMapper().writeValue(response.getOutputStream(),error);
+                    new ObjectMapper().writeValue(response.getOutputStream(), error);
                 }
             } else {
                 filterChain.doFilter(request, response);

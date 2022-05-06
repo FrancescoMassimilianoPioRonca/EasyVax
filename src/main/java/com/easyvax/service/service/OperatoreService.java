@@ -16,5 +16,6 @@ public interface OperatoreService {
     OperatoreDTO findByCodFiscale(String cf);
 
     List<OperatoreDTO> deleteOperatore(Long id);
+
     List<OperatoreDTO> updateOperatore(OperatoreDTO operatoreDTO);
 }

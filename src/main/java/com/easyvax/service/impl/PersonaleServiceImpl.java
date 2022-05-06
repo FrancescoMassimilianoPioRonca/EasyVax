@@ -32,6 +32,12 @@ public class PersonaleServiceImpl implements PersonleService {
     private static PersonaleEnum personaleEnum;
     private static CentroVaccinaleEnum centroVaccinaleEnum;
 
+    /**
+     * Associo il personale ad una struttura
+     *
+     * @param personaleDTO
+     * @return PersonaleDTO
+     */
     @Override
     public PersonaleDTO insertpersonale(PersonaleDTO personaleDTO) {
 
@@ -52,6 +58,11 @@ public class PersonaleServiceImpl implements PersonleService {
 
     }
 
+    /**
+     * Cerco tutto il personale
+     *
+     * @return List<PersonaleDTO>
+     */
 
     @Override
     public List<PersonaleDTO> findAll() {
@@ -63,6 +74,12 @@ public class PersonaleServiceImpl implements PersonleService {
         }
     }
 
+    /**
+     * Cerco il personale in base al centro vaccinale
+     *
+     * @param id
+     * @return List<PersonaleDTO>
+     */
     @Override
     public List<PersonaleDTO> findByCentroVaccinale(Long id) {
 
@@ -74,6 +91,12 @@ public class PersonaleServiceImpl implements PersonleService {
         }
     }
 
+    /**
+     * Cerco il personale in base al cognome
+     *
+     * @param cognome
+     * @return List<PersonaleDTO>
+     */
     @Override
     public List<PersonaleDTO> findByCognome(String cognome) {
         if (cognome != null && (utenteRepository.existsByCognome(cognome)))
@@ -84,6 +107,12 @@ public class PersonaleServiceImpl implements PersonleService {
         }
     }
 
+    /**
+     * Cerco il personale in base al codice fiscale
+     *
+     * @param cf
+     * @return PersonaleDTO
+     */
     @Override
     public PersonaleDTO findByCodFiscale(String cf) {
         if (cf != null && (utenteRepository.existsByCodFiscale(cf))) {
@@ -105,6 +134,12 @@ public class PersonaleServiceImpl implements PersonleService {
         }
     }*/
 
+    /**
+     * Elimino il personale
+     *
+     * @param id
+     * @return List<PersonaleDTO>
+     */
     @Override
     public List<PersonaleDTO> deletePersonale(Long id) {
 
@@ -117,6 +152,12 @@ public class PersonaleServiceImpl implements PersonleService {
         }
     }
 
+    /**
+     * Eseguo l'update del personale
+     *
+     * @param personaleDTO
+     * @return List<PersonaleDTO>
+     */
     @Override
     public List<PersonaleDTO> updatePersonale(PersonaleDTO personaleDTO) {
         if (personaleRepository.existsById(personaleDTO.id)) {
@@ -130,7 +171,7 @@ public class PersonaleServiceImpl implements PersonleService {
                 personale.setCentroVaccinale(cv);
                 personale.setUtente(utente);
 
-                personale = personaleRepository.save(personale);
+                personaleRepository.save(personale);
 
                 return personaleRepository.findAll().stream().map(PersonaleDTO::new).collect(Collectors.toList());
             } else {

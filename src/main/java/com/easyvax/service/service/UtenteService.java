@@ -25,11 +25,7 @@ public interface UtenteService {
 
     List<UtenteDTO>  findByPersonale(Boolean personale);
 */
-    /**
-     * Riservato ad admin
-     * @param id
-     * @return
-     */
+
     List<UtenteDTO> deleteUtente(Long id);
 
 

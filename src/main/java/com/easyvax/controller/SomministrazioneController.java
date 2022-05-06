@@ -29,38 +29,38 @@ public class SomministrazioneController {
     private final SomministrazioneService somministrazioneService;
 
     @GetMapping("/findAll")
-    public List<SomministrazioneDTO> findAll(){
+    public List<SomministrazioneDTO> findAll() {
         return somministrazioneService.findAll();
     }
 
     @GetMapping("/getDetails")
-    public SomministrazioneDTO getDetails(@Valid @NotNull() @RequestParam Long id){
+    public SomministrazioneDTO getDetails(@Valid @NotNull() @RequestParam Long id) {
         return somministrazioneService.getDetails(id);
     }
 
 
     @GetMapping("/findByUtente")
-    public List<SomministrazioneDTO> findByUtente(@Valid @NotNull() @RequestParam String cf){
+    public List<SomministrazioneDTO> findByUtente(@Valid @NotNull() @RequestParam String cf) {
         return somministrazioneService.findByUtente(cf);
     }
 
     @GetMapping("/findByCod")
-    public SomministrazioneDTO findByCod(@Valid @NotNull() @RequestParam String cod){
+    public SomministrazioneDTO findByCod(@Valid @NotNull() @RequestParam String cod) {
         return somministrazioneService.findByCod(cod);
     }
 
     @PostMapping("/insertSomministrazione")
-    public SomministrazioneDTO insertSomministrazione(@NonNull @RequestBody SomministrazioneDTO somministrazioneDTO){
+    public SomministrazioneDTO insertSomministrazione(@NonNull @RequestBody SomministrazioneDTO somministrazioneDTO) {
         return somministrazioneService.insertSomministrazione(somministrazioneDTO);
     }
 
     @DeleteMapping("/deleteSomministrazione")
-    public List<SomministrazioneDTO> deleteSomministrazione(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id){
+    public List<SomministrazioneDTO> deleteSomministrazione(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return somministrazioneService.deletePrenotazione(id);
     }
 
     @PutMapping("/updateSomministrazione")
-    public SomministrazioneDTO updateSomministrazione(@Valid @RequestParam String code , @RequestBody SomministrazioneDTO somministrazioneDTO){
-        return somministrazioneService.updateSomministrazione(code,somministrazioneDTO);
+    public SomministrazioneDTO updateSomministrazione(@Valid @RequestParam String code, @RequestBody SomministrazioneDTO somministrazioneDTO) {
+        return somministrazioneService.updateSomministrazione(code, somministrazioneDTO);
     }
 }

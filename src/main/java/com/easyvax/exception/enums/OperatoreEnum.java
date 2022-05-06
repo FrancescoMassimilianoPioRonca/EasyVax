@@ -7,7 +7,7 @@ public enum OperatoreEnum {
     OPERATORE_DELETE_ERROR("OP_DLE", "Errore durante l'eliminazione del operatore"),
     OPERATORE_UPDATE_ERROR("OP_UE", "Errore durante l'update del operatore"),
     OPERATORE_ID_NOT_EXIST("OP_IDNE", "Il operatore che stai cercando non esiste"),
-    OPERATORE_NOT_EXIST("OP_NE","Non c'è alcun operatore inserito nel DB"),
+    OPERATORE_NOT_EXIST("OP_NE", "Non c'è alcun operatore inserito nel DB"),
     OPERATORE_EMPTY_FIELD("OP_EF", "Alcuni campi sono vuoti");
 
     private final String messageCode;

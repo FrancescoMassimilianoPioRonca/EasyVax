@@ -3,7 +3,7 @@ package com.easyvax.exception.enums;
 public enum RegioneEnum {
 
     REGIONE_NOT_FOUND("R_NF", "La regione che stai cercando non esiste"),
-    REGIONI_NOT_EXIST("RI_NE","Nel db non sono presenti regioni"),
+    REGIONI_NOT_EXIST("RI_NE", "Nel db non sono presenti regioni"),
     REGIONE_ALREADY_EXISTS("R_AE", "La regione che vuoi inserire è già presente nel sistema"),
     REGIONE_EMPTY_FIELD("R_EF", "Alcuni campi sono vuoti");
 

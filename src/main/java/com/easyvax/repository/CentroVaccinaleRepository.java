@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
-
 /**
  * L'interfaccia CentroVaccinaleRepository estende JpaRepository<T, ID>.
  * Quest'interfaccia, offre diversi metodi base (es. findAll(), findById() e tanti altri)
@@ -20,7 +19,7 @@ import java.util.List;
 
 
 @Repository
-public interface CentroVaccinaleRepository extends JpaRepository<CentroVaccinale,Long> {
+public interface CentroVaccinaleRepository extends JpaRepository<CentroVaccinale, Long> {
 
     boolean existsByNome(String nome);
 
@@ -40,10 +39,10 @@ public interface CentroVaccinaleRepository extends JpaRepository<CentroVaccinale
 
 
     @Query("select distinct c from CentroVaccinale c JOIN Provincia p on c.provincia.id = p.id  where p.cap=:cap")
-    List<CentroVaccinale> findByCap(@Param("cap")String cap);
+    List<CentroVaccinale> findByCap(@Param("cap") String cap);
 
 
     @Query("select distinct c from Somministrazione s JOIN CentroVaccinale c on s.centro.id = c.id  where s.vaccino.id=:id_vaccino")
-    List<CentroVaccinale> findByVaccino(@Param("id_vaccino")Long id);
+    List<CentroVaccinale> findByVaccino(@Param("id_vaccino") Long id);
 
 }

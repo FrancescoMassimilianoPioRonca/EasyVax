@@ -135,6 +135,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Override
+    public void configure(WebSecurity web)throws Exception{
+        web.ignoring().antMatchers("/chat.html/**", "/css/**", "/js/**","/app/**","/topic/public","/ws/**", "/img/**");
+    }
+
 
     /**
      * In questo metodo vengono gestiti i CORS, per maggiore informazioni guardare la documentazione

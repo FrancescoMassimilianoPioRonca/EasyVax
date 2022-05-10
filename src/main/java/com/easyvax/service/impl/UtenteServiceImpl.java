@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.util.DigestUtils;
 
 
 @Service
@@ -64,7 +65,6 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(utente.getRuolo().toString()));
         return new org.springframework.security.core.userdetails.User(utente.getCodFiscale(), utente.getPassword(), authorities);
-
     }
 
 
@@ -87,8 +87,7 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
             utente.setNome(utenteDTO.nome);
             utente.setCognome(utenteDTO.cognome);
 
-            //Basic hash
-            utente.setCodFiscale(Base64.getEncoder().encodeToString(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT).getBytes()));
+            utente.setCodFiscale(utenteDTO.getCodFiscale());
 
             utente.setDataNascita(utenteDTO.getDataNascita());
             utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
@@ -144,7 +143,7 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
             utente.setNome(utenteDTO.nome);
             utente.setCognome(utenteDTO.cognome);
-            utente.setCodFiscale(Base64.getEncoder().encodeToString(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT).getBytes()));
+            utente.setCodFiscale(utenteDTO.getCodFiscale());
             utente.setDataNascita(utenteDTO.getDataNascita());
             utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
 

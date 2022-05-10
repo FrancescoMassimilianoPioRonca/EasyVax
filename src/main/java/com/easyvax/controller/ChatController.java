@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Questi metodi saranno responsabili della ricezione dei messaggi da un client e quindi della trasmissione ad altri.
+ * Il secondo metodo in particolare, è responsabile dell'inserimento di uno user al topic che nel nostro caso sarà uno
  */
 public class ChatController {
 
@@ -26,7 +27,7 @@ public class ChatController {
     @SendTo("/topic/public")
     public ChatMessage addUser(@Payload ChatMessage chatMessage,
                                SimpMessageHeaderAccessor headerAccessor) {
-        // Add username in web socket session
+
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
         return chatMessage;
     }

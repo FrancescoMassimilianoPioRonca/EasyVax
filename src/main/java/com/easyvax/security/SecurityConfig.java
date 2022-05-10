@@ -4,6 +4,7 @@ package com.easyvax.security;
 import com.easyvax.security.filter.CustomAuthenticationFilter;
 import com.easyvax.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,14 +44,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-
+        http.formLogin().loginPage("/login-form.html").loginProcessingUrl("/login").
+                defaultSuccessUrl("/chat",true).permitAll();
         http.cors().configurationSource(r -> getCorsConfiguration());
-        http.authorizeRequests().antMatchers("/login").permitAll();
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/login", "/token/refresh/**", "/api/utente/insertAdmin", "/api/regione/insertRegione", "/api/provincia/insertProvincia").permitAll();
+        http.authorizeRequests().antMatchers( "/login","/token/refresh/**", "/api/utente/insertUtente", "/api/regione/insertRegione", "/api/provincia/insertProvincia").permitAll();
         http.
                 authorizeRequests()
                 .antMatchers("/", "/public/**", "/resources/**", "/resources/public/static/chat/**")
@@ -136,8 +137,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web)throws Exception{
-        web.ignoring().antMatchers("/chat.html/**", "/css/**", "/js/**","/app/**","/topic/public","/ws/**", "/img/**");
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/chat.html/**", "/css/**", "/js/**", "/app/**", "/topic/public", "/ws/**", "/img/**", "/static/**", "/login-form.html");
     }
 
 

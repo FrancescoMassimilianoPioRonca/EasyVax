@@ -61,15 +61,6 @@ public class CentroVaccinaleController {
         return centroVaccinaleService.findByCap(cap);
     }
 
-    /**
-     * Questo controller restituisce i CentriVaccinali cercati in base al vaccino che erogano
-     *
-     * @return List<CentroVaccinaleDTO>
-     */
-    @GetMapping("/findByVaccino")
-    public List<CentroVaccinaleDTO> findByVaccino(@NonNull @RequestParam Long id) {
-        return centroVaccinaleService.findByVaccino(id);
-    }
 
     /**
      * Questo controller restituisce i CentriVaccinali cercati in base alla provincia

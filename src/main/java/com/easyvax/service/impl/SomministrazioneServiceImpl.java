@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 public class SomministrazioneServiceImpl implements SomministrazioneService {
 
     private final SomministrazioneRepository somministrazioneRepository;
-    private final PersonaleRepository personaleRepository;
     private final VaccinoRepository vaccinoRepository;
     private final CentroVaccinaleRepository centroVaccinaleRepository;
     private final UtenteRepository utenteRepository;
@@ -57,7 +56,7 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
                 Vaccino vaccino = vaccinoRepository.findById(somministrazioneDTO.getIdVaccino()).get();
                 CentroVaccinale cv = centroVaccinaleRepository.findById(somministrazioneDTO.getIdCentro()).get();
 
-                if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId()) && vaccinoRepository.existsById(vaccino.getId()) && utenteRepository.existsById(somministrazioneDTO.idUtente)) { //da aggiungere se è valid l'utente
+                if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId()) && vaccinoRepository.existsById(vaccino.getId()) ) {
 
                     String randomCode = RandomString.make(12);
                     if (!somministrazioneRepository.existsByCodiceSomm(randomCode))
@@ -77,20 +76,11 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
                         somministrazione.setCentro(cv);
                         somministrazione.setVaccino(vaccino);
                         somministrazione.setInAttesa(Boolean.FALSE);
-                        somministrazione = somministrazioneRepository.save(somministrazione);
+                        somministrazioneRepository.save(somministrazione);
                     } else {
                         somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IE");
                         throw new ApiRequestException(somministrazioneEnum.getMessage());
                     }
-
-                    try {
-                        sendEmail(somministrazione.getCodiceSomm(), utente);
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-
                     return new SomministrazioneDTO(somministrazione);
                 } else {
                     somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IE");
@@ -112,16 +102,15 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
      * Invio email riepilogativa
      *
      * @param cod
-     * @param utente
+     * @param toAddress
      * @throws MessagingException
      * @throws UnsupportedEncodingException
      */
-    private void sendEmail(String cod, Utente utente) throws MessagingException, UnsupportedEncodingException {
-        String toAddress = utente.getEmail();
+     public void sendEmail(String cod, String toAddress) throws MessagingException, UnsupportedEncodingException {
         String fromAddress = "easyVaxNOREPLY@gmail.com";
         String senderName = "EasyVax";
         String subject = "I dettagli della tua prenotazione";
-        String content = "Caro [[name]],<br>"
+        String content = "Gentile utente,<br>"
                 + "eccco il codice della tua prenotazione [[codice]]<br>"
                 + "Con questo codice potrai scaricare la ricevuta cliccando sul seguente link<br>"
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">DETTAGLI</a></h3>"
@@ -135,7 +124,6 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
         helper.setTo(toAddress);
         helper.setSubject(subject);
 
-        content = content.replace("[[name]]", utente.getNome_Cognome());
         content = content.replace("[[codice]]", cod);
 
         helper.setText(content, true);
@@ -254,12 +242,12 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
      * @return List<SomministrazioneDTO>
      */
     @Override
-    public List<SomministrazioneDTO> deletePrenotazione(Long id) {
+    public boolean deletePrenotazione(Long id) {
         if (somministrazioneRepository.existsById(id)) {
             Somministrazione somministrazione = somministrazioneRepository.findById(id).get();
             if (somministrazione.getInAttesa() != Boolean.TRUE)
                 somministrazioneRepository.deleteById(id);
-            return somministrazioneRepository.findAll().stream().map(SomministrazioneDTO::new).collect(Collectors.toList());
+            return true;
         } else {
             somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_DLE");
             throw new ApiRequestException(somministrazioneEnum.getMessage());

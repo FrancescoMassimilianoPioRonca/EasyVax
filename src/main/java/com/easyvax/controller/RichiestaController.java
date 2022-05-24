@@ -4,13 +4,19 @@ package com.easyvax.controller;
 import com.easyvax.dto.RichiestaDTO;
 import com.easyvax.dto.SomministrazioneDTO;
 import com.easyvax.model.Richiesta;
+import com.easyvax.model.Somministrazione;
+import com.easyvax.repository.RichiestaRepository;
+import com.easyvax.repository.SomministrazioneRepository;
+import com.easyvax.service.impl.RichiestaServiceImpl;
 import com.easyvax.service.service.RichiestaService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -30,6 +36,8 @@ import java.util.List;
 public class RichiestaController {
 
     private final RichiestaService richiestaService;
+    private final RichiestaServiceImpl richiestaServiceImpl;
+    private final RichiestaRepository richiestaRepository;
 
     @GetMapping("/getRichiesteUtente")
     public List<RichiestaDTO> getDetails(@Valid @NotNull() @RequestParam Long id) {
@@ -47,17 +55,24 @@ public class RichiestaController {
     }
 
     @PostMapping("/insertRichiesta")
-    public RichiestaDTO insertRichiesta(@NonNull @RequestBody RichiestaDTO richiestaDTO) {
+    public RichiestaDTO insertRichiesta(@NonNull @RequestBody RichiestaDTO richiestaDTO) throws MessagingException, UnsupportedEncodingException {
+        Somministrazione somministrazione = richiestaRepository.findById(richiestaDTO.id).get().getSomministrazione();
+        richiestaServiceImpl.sendEmail(richiestaDTO.id,somministrazione);
+
         return richiestaService.insertRichiesta(richiestaDTO);
     }
 
     @PutMapping("/accettaRichiesta")
-    public void accettaRichiesta(@NonNull @RequestParam Long id) {
+    public void accettaRichiesta(@NonNull @RequestParam Long id) throws MessagingException, UnsupportedEncodingException {
         richiestaService.accettaRichiesta(id);
+        Somministrazione somministrazione = richiestaRepository.findById(id).get().getSomministrazione();
+        richiestaServiceImpl.acceptEmail(id,somministrazione);
     }
 
     @PutMapping("/rejectRichiesta")
-    public void rejectichiesta(@NonNull @RequestParam Long id) {
+    public void rejectichiesta(@NonNull @RequestParam Long id) throws MessagingException, UnsupportedEncodingException {
         richiestaService.rifiutaRichiesta(id);
+        Somministrazione somministrazione = richiestaRepository.findById(id).get().getSomministrazione();
+        richiestaServiceImpl.rejectEmail(id,somministrazione);
     }
 }

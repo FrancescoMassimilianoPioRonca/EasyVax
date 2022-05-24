@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class CentroVaccinaleServiceImpl implements CentroVaccinaleService {
 
     private final CentroVaccinaleRepository centroVaccinaleRepository;
@@ -27,6 +26,14 @@ public class CentroVaccinaleServiceImpl implements CentroVaccinaleService {
     private final RegioneRepository regioneRepository;
     private final ProvinciaRepository provinciaRepository;
     private static CentroVaccinaleEnum centroVaccinaleEnum;
+
+    public CentroVaccinaleServiceImpl(CentroVaccinaleRepository centroVaccinaleRepository,VaccinoRepository vaccinoRepository, RegioneRepository regioneRepository, ProvinciaRepository provinciaRepository) {
+        this.vaccinoRepository=vaccinoRepository;
+        this.regioneRepository=regioneRepository;
+        this.provinciaRepository=provinciaRepository;
+        this.centroVaccinaleRepository=centroVaccinaleRepository;
+
+    }
 
 
     /**
@@ -80,22 +87,6 @@ public class CentroVaccinaleServiceImpl implements CentroVaccinaleService {
 
     }
 
-    /**
-     * Cerco i centri vaccinali in base al vaccino che erogano/hanno erogato
-     *
-     * @param id
-     * @return List<CentroVaccinaleDTO>
-     */
-    @Override
-    public List<CentroVaccinaleDTO> findByVaccino(Long id) {
-
-        if (vaccinoRepository.existsById(id))
-            return centroVaccinaleRepository.findByVaccino(id).stream().map(CentroVaccinaleDTO::new).collect(Collectors.toList());
-        else {
-            centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CVV_NF");
-            throw new ApiRequestException(centroVaccinaleEnum.getMessage());
-        }
-    }
 
     /**
      * Cerco i centri vaccinali in base alla provincia
@@ -146,7 +137,7 @@ public class CentroVaccinaleServiceImpl implements CentroVaccinaleService {
         if (!centroVaccinaleRepository.existsByNomeAndProvincia_Id(centro.nome, provincia.getId())) {
             if (centro.nome != null && centro.indirizzo != null && provinciaRepository.existsById(provincia.getId())) {
                 centroVaccinale.setProvincia(provincia);
-                centroVaccinale = centroVaccinaleRepository.save(centroVaccinale);
+                 centroVaccinaleRepository.save(centroVaccinale);
                 return new CentroVaccinaleDTO(centroVaccinale);
             } else {
                 centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_EF");

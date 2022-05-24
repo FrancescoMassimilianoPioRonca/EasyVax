@@ -71,7 +71,7 @@ public class OperatoreController {
      * Elimina un operatore
      */
     @DeleteMapping("/deleteOperatore")
-    public List<OperatoreDTO> deleteOperatore(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
+    public Boolean deleteOperatore(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return operatoreService.deleteOperatore(id);
     }
 

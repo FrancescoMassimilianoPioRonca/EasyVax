@@ -82,7 +82,7 @@ public class RichiestaServiceImpl implements RichiestaService {
      * @param id
      */
     @Override
-    public void accettaRichiesta(Long id) {
+    public boolean accettaRichiesta(Long id) {
 
         if (id != null && richiestaRepository.existsById(id)) {
             Richiesta richiesta = richiestaRepository.findById(id).get();
@@ -97,29 +97,16 @@ public class RichiestaServiceImpl implements RichiestaService {
                     richiesta.setApproved(Boolean.TRUE);
                     somministrazioneRepository.save(somministrazione);
                     richiestaRepository.save(richiesta);
-
-                    try {
-                        acceptEmail(richiesta.getId(), somministrazione);
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    return true;
                 } else if (richiesta.getNewData() == null && richiesta.getIdCentroVacc() != null) {
 
                     if (richiesta.getApprovedOp1() != null && richiesta.getApprovedOp2() == null) {
                         richiesta.setApprovedOp2(true);
                         richiesta.setApproved(true);
                         somministrazione.setInAttesa(false);
+                        somministrazioneRepository.save(somministrazione);
                         richiestaRepository.save(richiesta);
-
-                        try {
-                            acceptEmail(richiesta.getId(), somministrazione);
-                        } catch (MessagingException e) {
-                            e.printStackTrace();
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
+                        return true;
                     }
                     if (centroVaccinaleRepository.existsById(richiesta.getIdCentroVacc())) {
                         CentroVaccinale cv = centroVaccinaleRepository.findById(richiesta.getIdCentroVacc()).get();
@@ -127,6 +114,7 @@ public class RichiestaServiceImpl implements RichiestaService {
                         richiesta.setApprovedOp1(true);
                         somministrazioneRepository.save(somministrazione);
                         richiestaRepository.save(richiesta);
+                        return true;
                     } else {
                         centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_NF");
                         throw new ApiRequestException(centroVaccinaleEnum.getMessage());
@@ -137,7 +125,7 @@ public class RichiestaServiceImpl implements RichiestaService {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NF");
             throw new ApiRequestException(richiestaEnum.getMessage());
         }
-
+        return false;
     }
 
     /**
@@ -146,7 +134,7 @@ public class RichiestaServiceImpl implements RichiestaService {
      * @param id
      */
     @Override
-    public void rifiutaRichiesta(Long id) {
+    public boolean rifiutaRichiesta(Long id) {
 
         if (id != null && richiestaRepository.existsById(id)) {
             Richiesta richiesta = richiestaRepository.findById(id).get();
@@ -161,13 +149,7 @@ public class RichiestaServiceImpl implements RichiestaService {
 
             somministrazioneRepository.save(somministrazione);
 
-            try {
-                rejectEmail(richiesta.getId(), somministrazione);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            return true;
 
         } else {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NF");
@@ -217,27 +199,18 @@ public class RichiestaServiceImpl implements RichiestaService {
                     richiesta.setNewData(richiestaDTO.getData());
                     richiesta.setSomministrazione(somministrazione);
 
-                    richiesta = richiestaRepository.save(richiesta);
+                     richiestaRepository.save(richiesta);
                 } else if (richiestaDTO.getData() == null && richiestaDTO.getIdCentroVaccinale() != null) {
 
                     if (centroVaccinaleRepository.existsById(richiestaDTO.IdCentroVaccinale)) {
                         richiesta.setSomministrazione(somministrazione);
                         richiesta.setIdCentroVacc(richiestaDTO.getIdCentroVaccinale());
-                        richiesta = richiestaRepository.save(richiesta);
+                        richiestaRepository.save(richiesta);
                     } else {
                         centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_NF");
                         throw new ApiRequestException(centroVaccinaleEnum.getMessage());
                     }
                 }
-
-                try {
-                    sendEmail(richiesta.getId(), somministrazione);
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
                 return new RichiestaDTO(richiesta);
             } else {
                 richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_E");
@@ -258,7 +231,7 @@ public class RichiestaServiceImpl implements RichiestaService {
      * @throws UnsupportedEncodingException
      */
 
-    private void sendEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
+    public void sendEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
 
         Utente utente = utenteRepository.findById(somm.getUtente().getId()).get();
         String toAddress = utente.getEmail();
@@ -298,7 +271,7 @@ public class RichiestaServiceImpl implements RichiestaService {
      * @throws MessagingException
      * @throws UnsupportedEncodingException
      */
-    private void acceptEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
+    public void acceptEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
 
         Utente utente = utenteRepository.findById(somm.getUtente().getId()).get();
         String toAddress = utente.getEmail();
@@ -337,7 +310,7 @@ public class RichiestaServiceImpl implements RichiestaService {
      * @throws MessagingException
      * @throws UnsupportedEncodingException
      */
-    private void rejectEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
+    public void rejectEmail(Long id, Somministrazione somm) throws MessagingException, UnsupportedEncodingException {
 
         Utente utente = utenteRepository.findById(somm.getUtente().getId()).get();
         String toAddress = utente.getEmail();

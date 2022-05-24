@@ -5,17 +5,21 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.easyvax.dto.UtenteDTO;
+import com.easyvax.model.Utente;
+import com.easyvax.service.impl.UtenteServiceImpl;
 import com.easyvax.service.service.UtenteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static java.util.Arrays.stream;
@@ -39,11 +43,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UtenteController {
 
     private final UtenteService utenteService;
+    private final UtenteServiceImpl utenteServiceImpl;
 
     @GetMapping("/findAll")
     public List<UtenteDTO> findAll() {
         return utenteService.findAll();
     }
+
+   
 
     @GetMapping("/getDetails")
     public UtenteDTO getDetails(@Valid @NotNull() @RequestParam Long id) {
@@ -89,8 +96,13 @@ public class UtenteController {
     }
 
     @PostMapping("/insertUtente")
-    public UtenteDTO insertUtente(@NonNull @RequestBody UtenteDTO utenteDTO) {
-        return utenteService.insertUtente(utenteDTO);
+    public UtenteDTO insertUtente(@NonNull @RequestBody UtenteDTO utenteDTO) throws MessagingException, UnsupportedEncodingException {
+
+        UtenteDTO utenteIns =  utenteService.insertUtente(utenteDTO);
+        Utente utente = new Utente(utenteIns);
+        utenteServiceImpl.sendVerificationEmail(utente,"http://localhost:8080");
+
+        return utenteIns;
     }
 
     @PostMapping("/insertAdmin")
@@ -99,7 +111,7 @@ public class UtenteController {
     }
 
     @DeleteMapping("/deleteUtente")
-    public List<UtenteDTO> deleteUtente(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
+    public Boolean deleteUtente(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return utenteService.deleteUtente(id);
     }
 

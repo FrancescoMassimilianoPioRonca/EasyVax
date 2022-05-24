@@ -81,7 +81,7 @@ public class VaccinoServiceImpl implements VaccinoService {
     @Override
     public VaccinoDTO insertVaccino(VaccinoDTO vaccinoDTO) {
 
-        Vaccino vaccino = new Vaccino(vaccinoDTO);
+        Vaccino vaccino = new Vaccino();
 
         if (vaccinoRepository.existsByNomeAndCasaFarmaceutica(vaccinoDTO.nome, vaccinoDTO.casaFarmaceutica)) {
             vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VACC_AE");
@@ -90,7 +90,10 @@ public class VaccinoServiceImpl implements VaccinoService {
             vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VCC_FI");
             throw new ApiRequestException(vaccinoEnum.getMessage());
         } else {
-            vaccino = vaccinoRepository.save(vaccino);
+
+            vaccino.setNome(vaccinoDTO.nome);
+            vaccino.setCasaFarmaceutica(vaccinoDTO.casaFarmaceutica);
+            vaccinoRepository.save(vaccino);
             return new VaccinoDTO(vaccino);
         }
     }

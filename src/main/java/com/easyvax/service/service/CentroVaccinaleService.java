@@ -12,8 +12,6 @@ public interface CentroVaccinaleService {
 
     List<CentroVaccinaleDTO> findByCap(String cap);
 
-    List<CentroVaccinaleDTO> findByVaccino(Long id);
-
     List<CentroVaccinaleDTO> findByProvincia(Long id);
 
     List<CentroVaccinaleDTO> findByRegione(String regione);

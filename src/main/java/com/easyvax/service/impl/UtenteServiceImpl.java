@@ -1,6 +1,5 @@
 package com.easyvax.service.impl;
 
-import com.auth0.jwt.algorithms.Algorithm;
 import com.easyvax.dto.UtenteDTO;
 import com.easyvax.exception.enums.RoleEnum;
 import com.easyvax.exception.enums.UtenteEnum;
@@ -11,7 +10,8 @@ import com.easyvax.repository.UtenteRepository;
 import com.easyvax.service.service.UtenteService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.utility.RandomString;
+import org.aspectj.weaver.ast.Test;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,18 +20,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.Cipher;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import java.security.Key;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.util.DigestUtils;
 
 
 @Service
@@ -79,46 +74,39 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
         String siteUrl = "http://localhost:8080";
 
-        if (!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascita(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita()) && !utenteRepository.existsByEmail(utenteDTO.getEmail()) && !utenteRepository.existsByCodFiscale(utenteDTO.getCodFiscale())) {  //campi null
-
-            Utente utente = new Utente(utenteDTO);
+        if (provinciaRepository.existsById(utenteDTO.getResidenza())) {
             Provincia provincia = provinciaRepository.findById(utenteDTO.residenza).get();
 
-            utente.setNome(utenteDTO.nome);
-            utente.setCognome(utenteDTO.cognome);
+            if (!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascita(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita()) && !utenteRepository.existsByEmail(utenteDTO.getEmail()) && !utenteRepository.existsByCodFiscale(utenteDTO.getCodFiscale())) {  //campi null
 
-            utente.setCodFiscale(utenteDTO.getCodFiscale());
+                Utente utente = new Utente(utenteDTO);
 
-            utente.setDataNascita(utenteDTO.getDataNascita());
-            utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
-            utente.setEmail(utente.getEmail());
+                utente.setNome(utenteDTO.nome);
+                utente.setCognome(utenteDTO.cognome);
 
-            utente.setProvincia(provincia);
+                utente.setCodFiscale(utenteDTO.getCodFiscale());
 
-            utente.setRuolo(RoleEnum.ROLE_USER);
+                utente.setDataNascita(utenteDTO.getDataNascita());
+                utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
+                utente.setEmail(utenteDTO.getEmail());
+
+                utente.setProvincia(provincia);
+
+                utente.setRuolo(RoleEnum.ROLE_USER);
+
+                //Codice per la verifica via email
+                //utente.setEnabled(false);
 
 
-            /*String randomCode = RandomString.make(64);
+                utenteRepository.save(utente);
 
-            utente.setVerificationCode(randomCode);*/
-
-
-            utente.setEnabled(false);
-
-
-            utente = utenteRepository.save(utente);
-
-            try {
-                sendVerificationEmail(utente, siteUrl);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                return new UtenteDTO(utente);
+            } else {
+                utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_AE");
+                throw new ApiRequestException(utenteEnum.getMessage());
             }
-
-            return new UtenteDTO(utente);
         } else {
-            utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_AE");
+            utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_PE");
             throw new ApiRequestException(utenteEnum.getMessage());
         }
     }
@@ -133,10 +121,9 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     @Override
     public UtenteDTO insertAdminUtente(UtenteDTO utenteDTO) {
 
-        String siteUrl = "http://localhost:8080";
 
         if (!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascita(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita()) && !utenteRepository.existsByEmail(utenteDTO.getEmail()) && !utenteRepository.existsByCodFiscale(utenteDTO.getCodFiscale())) {
-            ;
+
             Utente utente = new Utente(utenteDTO);
             Provincia provincia = provinciaRepository.findById(utenteDTO.residenza).get();
 
@@ -157,15 +144,8 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
             utente.setVerificationCode(randomCode);*/
 
             utente.setEnabled(false);
-            utente = utenteRepository.save(utente);
 
-            try {
-                sendVerificationEmail(utente, siteUrl);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            utenteRepository.save(utente);
 
             return new UtenteDTO(utente);
         } else {
@@ -182,7 +162,8 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
      * @throws MessagingException
      * @throws UnsupportedEncodingException
      */
-    private void sendVerificationEmail(Utente utente, String siteUrl) throws MessagingException, UnsupportedEncodingException {
+    public void sendVerificationEmail(Utente utente, String siteUrl) throws MessagingException, UnsupportedEncodingException {
+
         String toAddress = utente.getEmail();
         String fromAddress = "easyVaxNOREPLY@gmail.com";
         String senderName = "EasyVax";
@@ -202,9 +183,9 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
 
         content = content.replace("[[name]]", utente.getNome_Cognome());
-        //String verifyURL = siteUrl + "/verify?code=" + utente.getVerificationCode();
+       //String verifyURL = siteUrl + "/verify?code=" + utente.getVerificationCode();
 
-        //content = content.replace("[[URL]]", verifyURL);
+       // content = content.replace("[[URL]]", verifyURL);
 
         helper.setText(content, true);
 
@@ -247,11 +228,11 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
                 utente.setCognome(utenteDTO.cognome);
 
                 //Basic hash
-                utente.setCodFiscale(Base64.getEncoder().encodeToString(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT).getBytes()));
+                utente.setCodFiscale(utenteDTO.getCodFiscale());
 
                 utente.setDataNascita(utenteDTO.getDataNascita());
                 utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
-                utente.setEmail(utente.getEmail());
+                utente.setEmail(utenteDTO.getEmail());
 
                 utenteRepository.save(utente);
 
@@ -305,16 +286,16 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
  */
 
     /**
-     * Elimino un utente
+     * Elimino un utente se esiste, successivamente elimino e restituisco true. Altrimenti genero eccezione custom per il front-end
      *
      * @param id
      * @return List<UtenteDTO>
      */
     @Override
-    public List<UtenteDTO> deleteUtente(Long id) {
+    public Boolean deleteUtente(Long id) {
         if (utenteRepository.existsById(id)) {
             utenteRepository.deleteById(id);
-            return utenteRepository.findAll().stream().map(UtenteDTO::new).collect(Collectors.toList());
+            return true;
         } else {
             utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_NF");
             throw new ApiRequestException(utenteEnum.getMessage());

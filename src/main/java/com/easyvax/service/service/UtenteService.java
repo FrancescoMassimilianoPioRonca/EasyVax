@@ -26,7 +26,7 @@ public interface UtenteService {
     List<UtenteDTO>  findByPersonale(Boolean personale);
 */
 
-    List<UtenteDTO> deleteUtente(Long id);
+    Boolean deleteUtente(Long id);
 
 
 }

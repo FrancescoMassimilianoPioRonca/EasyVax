@@ -113,7 +113,7 @@ public class ProvinciaServiceImpl implements ProvinciaService {
             Provincia provincia = new Provincia(provinciaDTO);
             Regione regione = regioneRepository.findById(provinciaDTO.idRegione).get();
             provincia.setRegione(regione);
-            provincia = provinciaRepository.save(provincia);
+            provinciaRepository.save(provincia);
             return new ProvinciaDTO(provincia);
 
         }

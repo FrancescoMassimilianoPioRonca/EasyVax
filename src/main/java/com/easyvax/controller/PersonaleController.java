@@ -85,7 +85,7 @@ public class PersonaleController {
      * Elimina il personale dalla struttura
      */
     @DeleteMapping("/deletePersonale")
-    public List<PersonaleDTO> deletePersonale(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
+    public Boolean deletePersonale(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return personaleService.deletePersonale(id);
     }
 

@@ -18,6 +18,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -44,17 +46,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.formLogin().loginPage("/login-form.html").loginProcessingUrl("/login").
-                defaultSuccessUrl("/chat",true).permitAll();
+        http.formLogin().loginPage("/custom-login").permitAll()
+                .defaultSuccessUrl("/chat",true).failureUrl("/login?error=true").permitAll();
+        http.logout().logoutSuccessUrl("/").permitAll();
         http.cors().configurationSource(r -> getCorsConfiguration());
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers( "/login","/token/refresh/**", "/api/utente/insertUtente", "/api/regione/insertRegione", "/api/provincia/insertProvincia").permitAll();
+        http.authorizeRequests().antMatchers( "/login**","/token/refresh/**", "/api/utente/insertUtente", "/api/utente/findAll", "/api/regione/insertRegione", "/api/provincia/insertProvincia").permitAll();
         http.
                 authorizeRequests()
-                .antMatchers("/", "/public/**", "/resources/**", "/resources/public/static/chat/**")
+                .antMatchers("/", "/public/**", "/resources/static/**", "/resources/templates/**")
                 .permitAll();
 
 /*

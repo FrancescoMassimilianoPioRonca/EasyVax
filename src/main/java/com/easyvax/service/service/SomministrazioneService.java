@@ -19,7 +19,7 @@ public interface SomministrazioneService {
     SomministrazioneDTO findByCod(String cod);
 
 
-    List<SomministrazioneDTO> deletePrenotazione(Long id);
+    boolean deletePrenotazione(Long id);
 
 
 }

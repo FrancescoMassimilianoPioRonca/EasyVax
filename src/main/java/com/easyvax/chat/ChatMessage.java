@@ -3,7 +3,8 @@ package com.easyvax.chat;
 
 /**
  * Questo rappresenta il model del message della chat. Come si può notare ci sono diversi parametri
- * come il tipo del messaggio (CHAT,JOIN,LEAVE) a seconda se è un messaggio se un utente si unisce o se si è disconesso. Poi i vari setter e getter
+ * come il tipo del messaggio (CHAT,JOIN,LEAVE) a seconda  se un utente si unisce o se si disconette.
+ * Poi i vari setter e getter
  */
 
 public class ChatMessage {

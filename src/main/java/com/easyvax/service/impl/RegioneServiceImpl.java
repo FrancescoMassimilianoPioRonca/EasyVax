@@ -93,7 +93,7 @@ public class RegioneServiceImpl implements RegioneService {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_EF");
             throw new ApiRequestException(regioneEnum.getMessage());
         } else {
-            regione = regioneRepository.save(regione);
+             regioneRepository.save(regione);
             return new RegioneDTO(regione);
         }
     }

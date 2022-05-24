@@ -10,9 +10,9 @@ public interface RichiestaService {
 
     List<RichiestaDTO> getRichiesteUtente(Long idUtente);
 
-    void accettaRichiesta(Long id);
+    boolean accettaRichiesta(Long id);
 
-    void rifiutaRichiesta(Long id);
+    boolean rifiutaRichiesta(Long id);
 
     List<RichiestaDTO> deleteRichiesta(Long idUtente);
 

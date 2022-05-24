@@ -19,7 +19,7 @@ public interface PersonleService {
     PersonaleDTO findByCodFiscale(String cf);
 
 
-    List<PersonaleDTO> deletePersonale(Long id);
+    Boolean deletePersonale(Long id);
 
     List<PersonaleDTO> updatePersonale(PersonaleDTO personale);
 

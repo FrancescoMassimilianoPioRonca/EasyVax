@@ -8,6 +8,7 @@ public enum UtenteEnum {
     UTENTE_DELETE_ERROR("UTE_DLE", "Errore durante l'eliminazione dell'utente"),
     UTENTE_CAP_ERROR("UTE_CAP_NF", "Non sono presenti utenti per il cap selezionato"),
     UTENTE_ID_NOT_EXIST("UTE_IDNE", "l'utente che stai cercando non esiste"),
+    UTENTE_PROV_ERROR("UTE_PE", "Errore durantel'inserimento della provincia"),
     UTENTE_EMPTY_FIELD("UTE_EF", "Alcuni campi sono vuoti");
 
     private final String messageCode;

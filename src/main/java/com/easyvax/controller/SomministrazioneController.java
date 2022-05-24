@@ -1,13 +1,20 @@
 package com.easyvax.controller;
 
 import com.easyvax.dto.SomministrazioneDTO;
+import com.easyvax.dto.UtenteDTO;
+import com.easyvax.model.Utente;
+import com.easyvax.service.impl.SomministrazioneServiceImpl;
+import com.easyvax.service.impl.UtenteServiceImpl;
 import com.easyvax.service.service.SomministrazioneService;
+import com.easyvax.service.service.UtenteService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,6 +34,8 @@ import java.util.List;
 public class SomministrazioneController {
 
     private final SomministrazioneService somministrazioneService;
+    private final SomministrazioneServiceImpl somministrazioneServiceImpl;
+    private final UtenteServiceImpl utenteServiceImpl;
 
     @GetMapping("/findAll")
     public List<SomministrazioneDTO> findAll() {
@@ -50,12 +59,14 @@ public class SomministrazioneController {
     }
 
     @PostMapping("/insertSomministrazione")
-    public SomministrazioneDTO insertSomministrazione(@NonNull @RequestBody SomministrazioneDTO somministrazioneDTO) {
+    public SomministrazioneDTO insertSomministrazione(@NonNull @RequestBody SomministrazioneDTO somministrazioneDTO) throws MessagingException, UnsupportedEncodingException {
+        UtenteDTO utenteDTO = utenteServiceImpl.getDetails(somministrazioneDTO.getIdUtente());
+        somministrazioneServiceImpl.sendEmail(somministrazioneDTO.getCode(),utenteDTO.getEmail());
         return somministrazioneService.insertSomministrazione(somministrazioneDTO);
     }
 
     @DeleteMapping("/deleteSomministrazione")
-    public List<SomministrazioneDTO> deleteSomministrazione(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
+    public boolean deleteSomministrazione(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return somministrazioneService.deletePrenotazione(id);
     }
 

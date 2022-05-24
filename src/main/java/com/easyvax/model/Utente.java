@@ -63,6 +63,7 @@ public class Utente {
         this.dataNascita = utenteDTO.getDataNascita();
         this.password = utenteDTO.getPassword();
         this.cognome = utenteDTO.cognome;
+        this.codFiscale= utenteDTO.getCodFiscale();
         this.email = utenteDTO.getEmail();
         this.enabled = utenteDTO.isEnabled();
         this.ruolo = utenteDTO.getRuolo();
@@ -70,5 +71,9 @@ public class Utente {
 
     public String getNome_Cognome() {
         return this.getCognome().toUpperCase() + " " + this.getNome().toUpperCase();
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

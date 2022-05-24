@@ -27,7 +27,6 @@ public class PersonaleServiceImpl implements PersonleService {
 
     private final PersonaleRepository personaleRepository;
     private final UtenteRepository utenteRepository;
-    private final ProvinciaRepository provinciaRepository;
     private final CentroVaccinaleRepository centroVaccinaleRepository;
     private static PersonaleEnum personaleEnum;
     private static CentroVaccinaleEnum centroVaccinaleEnum;
@@ -48,7 +47,7 @@ public class PersonaleServiceImpl implements PersonleService {
             personale.setUtente(utente);
             personale.setCentroVaccinale(cv);
             utente.setRuolo(RoleEnum.ROLE_PERSONALE);
-            personale = personaleRepository.save(personale);
+            personaleRepository.save(personale);
 
             return new PersonaleDTO(personale);
         } else {
@@ -135,17 +134,26 @@ public class PersonaleServiceImpl implements PersonleService {
     }*/
 
     /**
-     * Elimino il personale
+     * Elimino il personale se esiste, successivamente elimino e restituisco true. Altrimenti genero eccezione custom per il front-end
+     * Resetto anche i privilegi a quello di USER fino a quando non riceve una nuova assegnazione da personale
      *
      * @param id
      * @return List<PersonaleDTO>
      */
     @Override
-    public List<PersonaleDTO> deletePersonale(Long id) {
+    public Boolean deletePersonale(Long id) {
 
         if (personaleRepository.existsById(id)) {
+
+            //Per resettare il ruolo
+           /*
+            Personale personale = personaleRepository.findById(id).get();
+            Utente utente = utenteRepository.findById(personale.getUtente().getId()).get();
+            utente.setRuolo(RoleEnum.ROLE_USER);
+            utenteRepository.save(utente);*/
+
             personaleRepository.deleteById(id);
-            return personaleRepository.findAll().stream().map(PersonaleDTO::new).collect(Collectors.toList());
+            return true;
         } else {
             personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_DLE");
             throw new ApiRequestException(personaleEnum.getMessage());

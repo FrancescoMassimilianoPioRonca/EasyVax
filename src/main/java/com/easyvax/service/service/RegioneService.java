@@ -16,5 +16,5 @@ public interface RegioneService {
 
     List<RegioneDTO> updateRegione(RegioneDTO regioneDTO);
 
-    List<RegioneDTO> deleteRegione(Long id);
+    boolean deleteRegione(Long id);
 }

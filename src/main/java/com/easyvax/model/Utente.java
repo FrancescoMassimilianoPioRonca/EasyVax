@@ -3,6 +3,7 @@ package com.easyvax.model;
 import com.easyvax.dto.UtenteDTO;
 import com.easyvax.exception.enums.RoleEnum;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class Utente {
     @NonNull
     private String codFiscale;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataNascita;
 
     @NonNull

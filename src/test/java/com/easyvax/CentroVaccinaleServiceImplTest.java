@@ -55,6 +55,10 @@ public class CentroVaccinaleServiceImplTest {
     }
 
 
+    /**
+     * In questo metodo testo la corretta ricerca del centro vaccinale in base
+     * alla provincia che digita l'utente
+     */
     @Test
     void findByProvincia(){
 
@@ -75,6 +79,9 @@ public class CentroVaccinaleServiceImplTest {
 
     }
 
+    /**
+     * In questo metodo testo il corretto inserimento del centro vaccinale
+     */
     @Test
     void insertCentro(){
 
@@ -95,6 +102,58 @@ public class CentroVaccinaleServiceImplTest {
 
         reset(centroVaccinaleRepository);
         reset(provinciaRepository);
+    }
+
+    /**
+     * In questo metodo testo l'update del centroVaccinale.
+     * Come negli altri update, simulo la presenza d più centri nella base di dati
+     * per poi verificare che quello che modifico sia quello corretto
+     */
+    @Test
+    void updatecentroVaccinale(){
+        Long id = 0L;
+        Provincia provincia = Provincia.builder().nome("Molise").id(1L).cap("86170").build();
+        CentroVaccinale cv = CentroVaccinale.builder().id(id).nome("prova1").indirizzo("testIndirizzo").provincia(provincia).build();
+        CentroVaccinale cv1 = CentroVaccinale.builder().id(1L).nome("prova2").indirizzo("testIndirizzoBis").provincia(provincia).build();
+
+        lenient().when(centroVaccinaleRepository.existsById(id)).thenReturn(true);
+        lenient().when(provinciaRepository.existsById(provincia.getId())).thenReturn(true);
+
+        lenient().when(centroVaccinaleRepository.findById(id)).thenReturn(Optional.of(cv));
+        lenient().when(provinciaRepository.findById(provincia.getId())).thenReturn(Optional.of(provincia));
+
+        CentroVaccinaleDTO centroVaccinaleDTO = CentroVaccinaleDTO.builder().id(id).nome("TEST").indirizzo("test").idProvincia(provincia.getId()).build();
+
+        lenient().when(centroVaccinaleRepository.existsByNomeAndProvincia_Id(centroVaccinaleDTO.getNome(),centroVaccinaleDTO.getIdProvincia())).thenReturn(false);
+
+        cv.setNome(centroVaccinaleDTO.nome);
+        cv.setIndirizzo(centroVaccinaleDTO.indirizzo);
+
+        lenient().when(centroVaccinaleRepository.save(cv)).thenReturn(cv);
+
+        List<CentroVaccinale> list = List.of(cv,cv1);
+
+        lenient().when(centroVaccinaleRepository.findAll()).thenReturn(list);
+
+        assertEquals(list.get(0).getNome(),centroVaccinaleServiceImpl.updateCentro(centroVaccinaleDTO).get(0).getNome());
+
+        reset(centroVaccinaleRepository);
+        reset(provinciaRepository);
+
+    }
+
+    /**
+     * In questo metodo testo la corretta cancellazione di un
+     * centro vaccinale in base all'id
+     */
+    @Test
+    void deleteCentro(){
+        Long id = 0L;
+
+        lenient().when(centroVaccinaleRepository.existsById(id)).thenReturn(true);
+        Assertions.assertTrue(centroVaccinaleServiceImpl.deleteCentro(id));
+        reset(centroVaccinaleRepository);
+
     }
 
 }

@@ -55,7 +55,7 @@ public class ProvinciaController {
     }
 
     @DeleteMapping("/deleteProvincia")
-    public List<ProvinciaDTO> deleteProvincia(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
+    public boolean deleteProvincia(@Valid @NotNull @RequestParam Long id) {
         return provinciaService.deleteProvincia(id);
     }
 

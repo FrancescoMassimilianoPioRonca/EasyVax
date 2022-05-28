@@ -18,5 +18,5 @@ public interface ProvinciaService {
 
     List<ProvinciaDTO> updateProvincia(ProvinciaDTO provinciaDTO);
 
-    List<ProvinciaDTO> deleteProvincia(Long id);
+    boolean deleteProvincia(Long id);
 }

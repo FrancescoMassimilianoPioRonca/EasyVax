@@ -29,14 +29,25 @@ public class Richiesta {
 
     private LocalDate newData;
 
-    private Long IdCentroVacc;
+
+    private Long newCentro;
+
+
+    @ManyToOne
+    @JoinColumn(name = "old_CentroVacc")
+    private CentroVaccinale oldCentroVacc;
 
     /***Nel caso di cambio sede
      *
      */
     private Boolean approvedOp1;
+    private Long idOp1;
     private Boolean approvedOp2;
+    private Long idOp2;
 
+    /**
+     * Attributo che indica il responso finale
+     */
     private Boolean approved;
 
 
@@ -44,8 +55,10 @@ public class Richiesta {
         this.id = richiestaDTO.getId();
         this.newData = richiestaDTO.getData();
         this.approved = richiestaDTO.getApproved();
-        this.IdCentroVacc = richiestaDTO.getIdCentroVaccinale();
+        this.newCentro=richiestaDTO.getIdNewcentro();
         this.approvedOp1 = richiestaDTO.getApprovedOp1();
+        this.idOp1=richiestaDTO.getIdOp1();
+        this.idOp2=richiestaDTO.getIdOp2();
         this.approvedOp2 = richiestaDTO.getApprovedOp2();
     }
 

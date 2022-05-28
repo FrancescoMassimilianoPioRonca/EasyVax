@@ -58,6 +58,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         return authenticationManager.authenticate(authenticationToken);
+
     }
 
 
@@ -89,7 +90,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access-token", access_token);
         tokens.put("token_expiration", token_expiration.toString());
-        //response.setContentType(APPLICATION_JSON_VALUE);
+        response.setContentType(APPLICATION_JSON_VALUE);
 
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }

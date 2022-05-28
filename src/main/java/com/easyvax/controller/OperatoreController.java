@@ -2,6 +2,11 @@ package com.easyvax.controller;
 
 import com.easyvax.dto.OperatoreDTO;
 import com.easyvax.dto.PersonaleDTO;
+import com.easyvax.model.Personale;
+import com.easyvax.model.Utente;
+import com.easyvax.repository.PersonaleRepository;
+import com.easyvax.repository.UtenteRepository;
+import com.easyvax.service.impl.PersonaleServiceImpl;
 import com.easyvax.service.service.OperatoreService;
 import com.easyvax.service.service.PersonleService;
 import lombok.AllArgsConstructor;
@@ -28,6 +33,8 @@ import java.util.List;
 public class OperatoreController {
 
     private final OperatoreService operatoreService;
+    private final PersonleService personleService;
+    private final PersonaleRepository personaleRepository;
 
     /**
      * Restituisce tutti gli operatori
@@ -60,10 +67,14 @@ public class OperatoreController {
     }
 
     /**
-     * Registra un operatore ad un centrovaccinale
+     * Registra un operatore ad un centrovaccinale e, se era registrato come personale lo elimino
      */
     @PostMapping("/insertOperatore")
-    public OperatoreDTO insertOperatore(@NonNull @RequestBody OperatoreDTO operatoreDTO) {
+    public OperatoreDTO insertOperatore(@NonNull OperatoreDTO operatoreDTO) {
+        if(personaleRepository.existsByUtente_Id(operatoreDTO.getIdUtente())){
+            Personale personale = personaleRepository.findByUtente_Id(operatoreDTO.getIdUtente());
+            personleService.deletePersonale(personale.getId());
+        }
         return operatoreService.insertOperatore(operatoreDTO);
     }
 

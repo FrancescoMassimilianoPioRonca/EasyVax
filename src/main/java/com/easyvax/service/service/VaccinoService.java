@@ -14,7 +14,7 @@ public interface VaccinoService {
 
     VaccinoDTO insertVaccino(VaccinoDTO vaccinoDTO);
 
-    List<VaccinoDTO> deleteVaccino(Long id);
+    boolean deleteVaccino(Long id);
 
     List<VaccinoDTO> updateVaccino(VaccinoDTO vaccino);
 

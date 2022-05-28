@@ -108,6 +108,7 @@ public class OperatoreServiceImpl implements OperatoreService {
     /**
      * Controllo se l'operatorre esiste, successivamente elimino e restituisco true. Altrimenti genero eccezione custom per il front-end
      * Resetto anche i privilegi a quello di USER fino a quando non riceve una nuova assegnazione da operatore
+     *
      * @param id
      * @return List<OperatoreDTO>
      */
@@ -140,17 +141,16 @@ public class OperatoreServiceImpl implements OperatoreService {
     @Override
     public List<OperatoreDTO> updateOperatore(OperatoreDTO operatoreDTO) {
         if (operatoreRepository.existsById(operatoreDTO.id)) {
-            Utente utente = utenteRepository.findById(operatoreDTO.getIdUtente()).get();
-            CentroVaccinale cv = centroVaccinaleRepository.findById(operatoreDTO.getIdCentro()).get();
-
-            if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId())) {
+            if (centroVaccinaleRepository.existsById(operatoreDTO.getIdCentro()) && utenteRepository.existsById(operatoreDTO.getIdUtente())) {
+                CentroVaccinale cv = centroVaccinaleRepository.findById(operatoreDTO.getIdCentro()).get();
+                Utente utente = utenteRepository.findById(operatoreDTO.getIdUtente()).get();
 
                 Operatore operatore = new Operatore(operatoreDTO);
 
                 operatore.setCentroVaccinale(cv);
                 operatore.setUtente(utente);
 
-               operatoreRepository.save(operatore);
+                operatoreRepository.save(operatore);
 
                 return operatoreRepository.findAll().stream().map(OperatoreDTO::new).collect(Collectors.toList());
             } else {

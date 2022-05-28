@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>0930b557-f771-4126-af10-94675d49c472.SCHEMA:EasyVax</OriginalElement>
+  <nodes>
+    <node x="582.1556372549019" y="296.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente</node>
+    <node x="0.0" y="1129.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.hibernate_sequence</node>
+    <node x="34.33333333333326" y="640.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.somministrazione</node>
+    <node x="510.9056372549019" y="0.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.regione</node>
+    <node x="919.5306372549019" y="395.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.role</node>
+    <node x="358.5575980392156" y="695.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.personale</node>
+    <node x="10.593137254901876" y="384.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.vaccino</node>
+    <node x="919.9950980392156" y="706.5">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente_roles</node>
+    <node x="390.1556372549019" y="373.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.centro_vaccinale</node>
+    <node x="583.5575980392156" y="695.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.operatore</node>
+    <node x="510.9056372549019" y="126.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.provincia</node>
+    <node x="61.83333333333326" y="898.0">0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.richiesta</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.operatore" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente" relationship="REFERENCES">
+      <point x="4.0196078441567806E-4" y="-49.0" />
+      <point x="686.058" y="587.5" />
+      <point x="328.0" y="587.5" />
+      <point x="328.0" y="355.5" />
+      <point x="-115.49963725490193" y="-77.5" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente_roles" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.role" relationship="REFERENCES">
+      <point x="15.0" y="-37.5" />
+      <point x="5.964460784313701" y="38.0" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.personale" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente" relationship="REFERENCES">
+      <point x="-102.49959803921558" y="0.0" />
+      <point x="328.0" y="744.0" />
+      <point x="328.0" y="355.5" />
+      <point x="-115.49963725490193" y="-77.5" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.centro_vaccinale" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.provincia" relationship="REFERENCES">
+      <point x="78.5" y="-60.0" />
+      <point x="-32.25" y="60.0" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.provincia" relationship="REFERENCES">
+      <point x="-108.0" y="-137.0" />
+      <point x="2.75" y="60.0" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente_roles" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente" relationship="REFERENCES">
+      <point x="0.0" y="-37.5" />
+      <point x="986.4950980392156" y="488.5" />
+      <point x="115.5" y="55.5" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.provincia" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.regione" relationship="REFERENCES">
+      <point x="0.0" y="-60.0" />
+      <point x="0.0" y="38.0" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.richiesta" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.somministrazione" relationship="REFERENCES">
+      <point x="0.0" y="-93.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.somministrazione" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.vaccino" relationship="REFERENCES">
+      <point x="-33.24019607843138" y="-104.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.somministrazione" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.utente" relationship="REFERENCES">
+      <point x="130.99966666666677" y="0.0" />
+      <point x="328.0" y="744.0" />
+      <point x="328.0" y="355.5" />
+      <point x="-115.49963725490193" y="-77.5" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.personale" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.centro_vaccinale" relationship="REFERENCES">
+      <point x="4.0196078441567806E-4" y="-49.0" />
+      <point x="461.058" y="642.0" />
+      <point x="476.156" y="642.0" />
+      <point x="3.6274509812983524E-4" y="60.0" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.somministrazione" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.centro_vaccinale" relationship="REFERENCES">
+      <point x="105.75980392156862" y="-104.0" />
+      <point x="271.0931372549019" y="433.0" />
+      <point x="-86.0" y="0.0" />
+    </edge>
+    <edge source="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.operatore" target="0930b557-f771-4126-af10-94675d49c472.TABLE:EasyVax.centro_vaccinale" relationship="REFERENCES">
+      <point x="-14.999598039215584" y="-49.0" />
+      <point x="671.058" y="642.0" />
+      <point x="476.156" y="642.0" />
+      <point x="3.6274509812983524E-4" y="60.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.7579034941763727" showDependencies="false" x="536.0" y="591.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -16,14 +17,19 @@ import java.util.List;
  */
 public interface RichiestaRepository extends JpaRepository<Richiesta, Long> {
 
-    @Query("select distinct(r) from Richiesta r JOIN Somministrazione s On r.somministrazione.id=s.id JOIN CentroVaccinale cv ON cv.id=s.centro.id JOIN Operatore o ON o.centroVaccinale.id=r.IdCentroVacc OR o.centroVaccinale.id=s.centro.id WHERE  r.approved is NULL AND r.approvedOp2 is NULL AND o.id=:id")
+    @Query("select distinct(r) from Richiesta r WHERE r.id IN (select r from Richiesta where r.newCentro=:id OR r.oldCentroVacc=:id) AND r.approved is null ")
     List<Richiesta> getRichieste(@Param("id") Long id);
 
-    @Query("select distinct(r) from Richiesta r JOIN Somministrazione s On r.somministrazione.id=s.id WHERE s.utente.id=:cod AND r.approved is NULL")
+    @Query("select distinct(r) from Richiesta r  WHERE r.somministrazione.utente.id=:cod AND r.approved is NULL ")
     List<Richiesta> getRichiesteUtente(@Param("cod") Long cod);
 
     boolean existsById(Long id);
 
-    boolean existsBySomministrazione_Id(Long id);
+
+    @Query("select count(r) from Richiesta r JOIN Somministrazione s On r.somministrazione.id=:id WHERE r.approved is NULL")
+    int findBySomministrazione_IdAndApproved(@Param("id") Long id);
+
+    Richiesta findBySomministrazione_Id(Long id);
+
 
 }

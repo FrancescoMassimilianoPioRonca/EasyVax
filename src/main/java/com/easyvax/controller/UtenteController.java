@@ -95,8 +95,14 @@ public class UtenteController {
         }
     }
 
+    /**
+     * Si prega di notare che non è presente il @RequestBody perchè thymeleaf non supporta le post in JSON
+     * Un qualsiasi front-end del tipo react o vue supporterebbe le post con axios
+     * @param utenteDTO
+     * @return
+     */
     @PostMapping("/insertUtente")
-    public UtenteDTO insertUtente(@NonNull @RequestBody UtenteDTO utenteDTO) throws MessagingException, UnsupportedEncodingException {
+    public UtenteDTO insertUtente(@NonNull UtenteDTO utenteDTO) throws MessagingException, UnsupportedEncodingException {
 
         UtenteDTO utenteIns =  utenteService.insertUtente(utenteDTO);
         Utente utente = new Utente(utenteIns);
@@ -105,8 +111,14 @@ public class UtenteController {
         return utenteIns;
     }
 
+    /**
+     * Si prega di notare che non è presente il @RequestBody perchè thymeleaf non supporta le post in JSON
+     * Un qualsiasi front-end del tipo react o vue supporterebbe le post con axios
+     * @param utenteDTO
+     * @return
+     */
     @PostMapping("/insertAdmin")
-    public UtenteDTO insertAdmin(@NonNull @RequestBody UtenteDTO utenteDTO) {
+    public UtenteDTO insertAdmin(@NonNull  UtenteDTO utenteDTO) {
         return utenteService.insertAdminUtente(utenteDTO);
     }
 

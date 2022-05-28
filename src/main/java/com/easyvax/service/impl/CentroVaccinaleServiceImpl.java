@@ -188,11 +188,11 @@ public class CentroVaccinaleServiceImpl implements CentroVaccinaleService {
      * @return List<CentroVaccinaleDTO>
      */
     @Override
-    public List<CentroVaccinaleDTO> deleteCentro(Long id) {
+    public boolean deleteCentro(Long id) {
 
         if (centroVaccinaleRepository.existsById(id)) {
             centroVaccinaleRepository.deleteById(id);
-            return centroVaccinaleRepository.findAll().stream().map(CentroVaccinaleDTO::new).collect(Collectors.toList());
+            return true;
         } else {
             centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_DLE");
             throw new ApiRequestException(centroVaccinaleEnum.getMessage());

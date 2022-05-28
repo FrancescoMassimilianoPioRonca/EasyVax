@@ -134,10 +134,10 @@ public class RegioneServiceImpl implements RegioneService {
      * @return List<RegioneDTO>
      */
     @Override
-    public List<RegioneDTO> deleteRegione(Long id) {
+    public boolean deleteRegione(Long id) {
         if (regioneRepository.existsById(id)) {
             regioneRepository.deleteById(id);
-            return regioneRepository.findAll().stream().map(RegioneDTO::new).collect(Collectors.toList());
+            return true;
         } else {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_NF");
             throw new ApiRequestException(regioneEnum.getMessage());

@@ -8,9 +8,11 @@ public interface RichiestaService {
 
     List<RichiestaDTO> getRichiesteOperatore(Long idOperatore);
 
+    List<RichiestaDTO> findAll();
+
     List<RichiestaDTO> getRichiesteUtente(Long idUtente);
 
-    boolean accettaRichiesta(Long id);
+    boolean accettaRichiesta(Long idC,Long idO);
 
     boolean rifiutaRichiesta(Long id);
 

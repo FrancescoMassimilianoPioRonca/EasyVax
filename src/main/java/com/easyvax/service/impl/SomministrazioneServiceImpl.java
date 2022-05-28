@@ -21,6 +21,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -147,15 +148,11 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
 
         if (somministrazioneRepository.existsByCodiceSomm(code) && somministrazioneDTO.inAttesa != Boolean.TRUE && today.isBefore(somministrazioneDTO.getData())) {
             Somministrazione somministrazione = somministrazioneRepository.findByCodiceSomm(code);
-
             if (somministrazioneDTO.getData() != somministrazione.getDataSomministrazione() || somministrazioneDTO.getOra() != somministrazione.getOraSomministrazione()) {
-
                 if (ChronoUnit.DAYS.between(today, giornoSomm) >= 2 && today.isBefore(somministrazione.getDataSomministrazione())) {
                     somministrazione.setDataSomministrazione(somministrazioneDTO.getData());
                     somministrazione.setOraSomministrazione(somministrazioneDTO.getOra());
-
-                    somministrazione = somministrazioneRepository.save(somministrazione);
-
+                    somministrazioneRepository.save(somministrazione);
                     return new SomministrazioneDTO(somministrazione);
                 } else {
                     somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_DE");
@@ -211,8 +208,8 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
      */
     @Override
     public List<SomministrazioneDTO> findByUtente(String cf) {
-        if (cf != null && utenteRepository.existsByCodFiscale(cf)) {
-            return somministrazioneRepository.findbyUtente(cf).stream().map(SomministrazioneDTO::new).collect(Collectors.toList());
+        if (cf != null && utenteRepository.existsByCodFiscale(cf.toUpperCase(Locale.ROOT))) {
+            return somministrazioneRepository.findbyUtente(cf.toUpperCase(Locale.ROOT)).stream().map(SomministrazioneDTO::new).collect(Collectors.toList());
         } else {
             somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IDNE");
             throw new ApiRequestException(somministrazioneEnum.getMessage());

@@ -48,7 +48,7 @@ public class RegioneController {
     }
 
     @DeleteMapping("/deleteRegione")
-    public List<RegioneDTO> deleteVaccino(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
+    public boolean deleteVaccino(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return regioneService.deleteRegione(id);
     }
 

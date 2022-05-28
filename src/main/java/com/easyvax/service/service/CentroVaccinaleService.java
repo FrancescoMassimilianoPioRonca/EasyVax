@@ -21,5 +21,5 @@ public interface CentroVaccinaleService {
 
     List<CentroVaccinaleDTO> updateCentro(CentroVaccinaleDTO centro);
 
-    List<CentroVaccinaleDTO> deleteCentro(Long id);
+    boolean deleteCentro(Long id);
 }

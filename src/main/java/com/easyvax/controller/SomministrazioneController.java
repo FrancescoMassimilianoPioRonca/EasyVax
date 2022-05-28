@@ -2,6 +2,7 @@ package com.easyvax.controller;
 
 import com.easyvax.dto.SomministrazioneDTO;
 import com.easyvax.dto.UtenteDTO;
+import com.easyvax.model.Somministrazione;
 import com.easyvax.model.Utente;
 import com.easyvax.service.impl.SomministrazioneServiceImpl;
 import com.easyvax.service.impl.UtenteServiceImpl;
@@ -59,10 +60,11 @@ public class SomministrazioneController {
     }
 
     @PostMapping("/insertSomministrazione")
-    public SomministrazioneDTO insertSomministrazione(@NonNull @RequestBody SomministrazioneDTO somministrazioneDTO) throws MessagingException, UnsupportedEncodingException {
+    public SomministrazioneDTO insertSomministrazione(@NonNull SomministrazioneDTO somministrazioneDTO) throws MessagingException, UnsupportedEncodingException {
         UtenteDTO utenteDTO = utenteServiceImpl.getDetails(somministrazioneDTO.getIdUtente());
-        somministrazioneServiceImpl.sendEmail(somministrazioneDTO.getCode(),utenteDTO.getEmail());
-        return somministrazioneService.insertSomministrazione(somministrazioneDTO);
+        SomministrazioneDTO somministrazioneDTOGenerated = somministrazioneService.insertSomministrazione(somministrazioneDTO);
+        somministrazioneServiceImpl.sendEmail(somministrazioneDTOGenerated.getCode(),utenteDTO.getEmail());
+        return somministrazioneDTOGenerated;
     }
 
     @DeleteMapping("/deleteSomministrazione")

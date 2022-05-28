@@ -105,11 +105,11 @@ public class VaccinoServiceImpl implements VaccinoService {
      * @return List<VaccinoDTO>
      */
     @Override
-    public List<VaccinoDTO> deleteVaccino(Long id) {
+    public boolean deleteVaccino(Long id) {
 
         if (vaccinoRepository.existsById(id)) {
             vaccinoRepository.deleteById(id);
-            return vaccinoRepository.findAll().stream().map(VaccinoDTO::new).collect(Collectors.toList());
+            return true;
         } else {
             vaccinoEnum = VaccinoEnum.getVaccinoEnumByMessageCode("VACC_DLE");
             throw new ApiRequestException(vaccinoEnum.getMessage());

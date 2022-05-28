@@ -46,23 +46,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.formLogin().loginPage("/custom-login").permitAll()
-                .defaultSuccessUrl("/chat",true).failureUrl("/login?error=true").permitAll();
-        http.logout().logoutSuccessUrl("/").permitAll();
+       /*http.formLogin().loginPage("/custom-login").defaultSuccessUrl("/chat.html").permitAll()
+                .failureUrl("/login?error=true").permitAll();
+        http.logout().logoutSuccessUrl("/").permitAll();*/
         http.cors().configurationSource(r -> getCorsConfiguration());
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers( "/login**","/token/refresh/**", "/api/utente/insertUtente", "/api/utente/findAll", "/api/regione/insertRegione", "/api/provincia/insertProvincia").permitAll();
+        http.authorizeRequests().antMatchers( "/login**","/token/refresh/**","/api/utente/insertAdmin", "/api/utente/insertUtente","/api/utente/findAll","/api/utente/deleteUtente",
+                "/api/personale/insertPersonale",  "/api/somministrazione/insertSomministrazione","/api/somministrazione/findByUtente","/api/operatore/insertOperatore",
+                "/api/richiesta/insertRichiesta","/api/richiesta/getRichiesteUtente").permitAll();
         http.
                 authorizeRequests()
-                .antMatchers("/", "/public/**", "/resources/static/**", "/resources/templates/**")
+                .antMatchers("/", "/public/**", "/resources/static/**")
                 .permitAll();
 
 /*
         //UTENTE
-        http.authorizeRequests().antMatchers(POST, "api/utente/insertUtente").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "/api/utente/insertUtente").permitAll();
         http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/utente/getDetails").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findAll").hasAnyAuthority("ROLE_USER");
@@ -93,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "api/utente/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(POST, "api/centroVaccinale/insertCentro").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(PUT, "api/centroVaccinale/updateCentoVaccinale").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE, "api/centroVaccinale/deletecetroVaccinale").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(DELETE, "api/centroVaccinale/deletecentroVaccinale").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "api/pdf/generate").hasAnyAuthority("ROLE_ADMIN");
         //http.authorizeRequests().antMatchers(POST, "api/regione/insertRegione").hasAnyAuthority("ROLE_ADMIN");
@@ -125,9 +127,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "api/richieste/getRichiestePersonale").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(PUT, "api/richieste/accettaRichiesta").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(PUT, "api/richieste/rejectRichiesta").hasAnyAuthority("ROLE_PERSONALE");
+
 */
 
+
         http.authorizeRequests().anyRequest().authenticated();
+
         http.addFilter(customAuthenticationFilter);
 
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -141,7 +146,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/chat.html/**", "/css/**", "/js/**", "/app/**", "/topic/public", "/ws/**", "/img/**", "/static/**", "/login-form.html");
+        web.ignoring().antMatchers( "/richiesta.html/**","/somministrazioniUser.html/**","/homepageUser.html/**","/registrazioneOperatore.html/**","/registrazionePersonale.html/**","/registrazioneAdmin.html/**","/registrazioneUser.html/**","/chat.html","/css/**", "/js/**", "/app/**", "/topic/public", "/ws/**", "/img/**", "/static/**", "/login-form.html/**");
     }
 
 

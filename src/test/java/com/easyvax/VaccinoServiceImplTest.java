@@ -33,6 +33,10 @@ public class VaccinoServiceImplTest {
         vaccinoServiceImpl = new VaccinoServiceImpl(vaccinoRepository);
     }
 
+    /**
+     * In questo metodo testo la funzionalità di ricerca del vaccino
+     * in base al nome che l'utente inserisce.
+     */
     @Test
     void findByNome(){
 
@@ -52,6 +56,10 @@ public class VaccinoServiceImplTest {
         reset(vaccinoRepository);
     }
 
+    /**
+     * In questo metodo testo il corretto inserimento di un vaccino
+     * nella base di dati
+     */
     @Test
     void insertVaccino(){
         Long idVaccino = 0L;
@@ -69,4 +77,51 @@ public class VaccinoServiceImplTest {
         reset(vaccinoRepository);
 
     }
+
+
+    /**
+     * In questo metodo testo il corretto update del vaccino in base all'id
+     * Ho simulato di avere più vaccini nella base di dati crendo una lista di 2 vaccini.
+     * Ho poi verificato che il vaccino che modifico sia quello corretto.
+     */
+    @Test
+    void updateVaccino(){
+
+        Long id = 0L;
+        Vaccino vaccino = Vaccino.builder().id(id).casaFarmaceutica("test").nome("test").build();
+        Vaccino vaccino1 = Vaccino.builder().id(2L).casaFarmaceutica("test").nome("test").build();
+
+        lenient().when(vaccinoRepository.existsById(id)).thenReturn(true);
+        lenient().when(vaccinoRepository.findById(id)).thenReturn(Optional.of(vaccino));
+
+        VaccinoDTO vaccinoDTO = VaccinoDTO.builder().id(id).nome("test1").casaFarmaceutica("test1").build();
+
+        lenient().when(vaccinoRepository.existsByNomeAndCasaFarmaceutica(vaccinoDTO.getNome(), vaccinoDTO.getCasaFarmaceutica())).thenReturn(false);
+
+        vaccino.setNome(vaccinoDTO.nome);
+        vaccino.setCasaFarmaceutica(vaccinoDTO.getCasaFarmaceutica());
+
+        List<Vaccino> list = List.of(vaccino,vaccino1);
+
+        lenient().when(vaccinoRepository.save(vaccino)).thenReturn(vaccino);
+        lenient().when(vaccinoRepository.findAll()).thenReturn(list);
+
+        assertEquals(list.get(0).getNome(),vaccinoServiceImpl.updateVaccino(vaccinoDTO).get(0).getNome());
+
+        reset(vaccinoRepository);
+
+    }
+
+    /**
+     * Questo metodo testa la corretta eliminazione
+     * del vaccino con relativi controlli
+     */
+    @Test
+    void deleteVaccino(){
+        Long id = 0L;
+        lenient().when(vaccinoRepository.existsById(id)).thenReturn(true);
+        Assertions.assertTrue(vaccinoServiceImpl.deleteVaccino(id));
+        reset(vaccinoRepository);
+    }
+
 }

@@ -38,10 +38,16 @@ public class RichiestaController {
     private final RichiestaService richiestaService;
     private final RichiestaServiceImpl richiestaServiceImpl;
     private final RichiestaRepository richiestaRepository;
+    private final SomministrazioneRepository somministrazioneRepository;
 
     @GetMapping("/getRichiesteUtente")
     public List<RichiestaDTO> getDetails(@Valid @NotNull() @RequestParam Long id) {
         return richiestaService.getRichiesteUtente(id);
+    }
+
+    @GetMapping("/findAll")
+    public List<RichiestaDTO> findAll() {
+        return richiestaService.findAll();
     }
 
     @GetMapping("/getRichiesteOperatore")
@@ -55,18 +61,20 @@ public class RichiestaController {
     }
 
     @PostMapping("/insertRichiesta")
-    public RichiestaDTO insertRichiesta(@NonNull @RequestBody RichiestaDTO richiestaDTO) throws MessagingException, UnsupportedEncodingException {
-        Somministrazione somministrazione = richiestaRepository.findById(richiestaDTO.id).get().getSomministrazione();
-        richiestaServiceImpl.sendEmail(richiestaDTO.id,somministrazione);
+    public RichiestaDTO insertRichiesta(@NonNull RichiestaDTO richiestaDTO) throws MessagingException, UnsupportedEncodingException {
+        Somministrazione somministrazione = somministrazioneRepository.findById(richiestaDTO.idSomministrazione).get();
+        richiestaServiceImpl.sendEmail(somministrazione.getCodiceSomm(),somministrazione);
 
         return richiestaService.insertRichiesta(richiestaDTO);
     }
 
     @PutMapping("/accettaRichiesta")
-    public void accettaRichiesta(@NonNull @RequestParam Long id) throws MessagingException, UnsupportedEncodingException {
-        richiestaService.accettaRichiesta(id);
-        Somministrazione somministrazione = richiestaRepository.findById(id).get().getSomministrazione();
-        richiestaServiceImpl.acceptEmail(id,somministrazione);
+    public void accettaRichiesta(@NonNull @RequestParam Long idR,Long idO) throws MessagingException, UnsupportedEncodingException {
+        richiestaService.accettaRichiesta(idR,idO);
+        Somministrazione somministrazione = richiestaRepository.findById(idR).get().getSomministrazione();
+
+        if(somministrazione.getInAttesa()==false)
+            richiestaServiceImpl.acceptEmail(idR,somministrazione);
     }
 
     @PutMapping("/rejectRichiesta")

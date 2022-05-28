@@ -49,7 +49,7 @@ public class VaccinoController {
     }
 
     @DeleteMapping("/deleteVaccino")
-    public List<VaccinoDTO> deleteVaccino(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
+    public boolean deleteVaccino(@Valid @NotNull(message = "Il campo non deve essere vuoto") @RequestParam Long id) {
         return vaccinoService.deleteVaccino(id);
     }
 

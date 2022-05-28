@@ -8,6 +8,7 @@ import com.easyvax.repository.SomministrazioneRepository;
 import com.easyvax.repository.UtenteRepository;
 import com.easyvax.repository.VaccinoRepository;
 import com.easyvax.service.impl.SomministrazioneServiceImpl;
+import org.hibernate.validator.constraints.ModCheck;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,12 +43,19 @@ public class SomministrazioneServiceImplTest {
     @Mock
     private JavaMailSender javaMailSender;
 
+    @Mock
+    private ChronoUnit clock;
+
 
     @BeforeEach
     void setUp() {
         somministrazioneServiceImpl = new SomministrazioneServiceImpl(somministrazioneRepository,vaccinoRepository, centroVaccinaleRepository, utenteRepository,javaMailSender);
     }
 
+    /**
+     * Con questo metodo, testo la ricerca della vaccinazione per codice.
+     * E' essenziale per l'utente sia per scaricare il pdf della vaccnazione sia per conoscerne i dettagli
+     */
     @Test
     void findByCodice(){
 
@@ -74,6 +82,11 @@ public class SomministrazioneServiceImplTest {
         reset(somministrazioneRepository);
     }
 
+    /**
+     * Con questo metodo, testo la corretta cancellazione di una prenotazione
+     * Eseguendo tutti i check
+     */
+
     @Test
     void deletePrentazione(){
         Long id = 3L;
@@ -94,7 +107,9 @@ public class SomministrazioneServiceImplTest {
 
     /**
      * Con questo metodo testo il corretto inserimento della prenotazione di una vaccinazione
-     * con tutti i controlli relativi alle date
+     * con tutti i controlli relativi alle date.
+     * Si noti che sccome Mockito non riesce a mockare la classe ChronoUnit non riesce nanche ad eseguire il check sulla data
+     * Per cui viene restituita un'eccezione custom
      */
     @Test
     void insertPrenotazione(){
@@ -123,8 +138,8 @@ public class SomministrazioneServiceImplTest {
         lenient().when(somministrazioneRepository.existsByCodiceSomm(somministrazioneDTO.code)).thenReturn(false);
 
         /**
-         * Mockito non supporta il testing di final class per cui ChronoUnit non è testabile.
-         * Per questo l'errore generato dal test è voluto , perchè non riesce a controllare la data
+         *
+         * L'errore generato dal test è voluto , perchè non riesce a controllare la data
          */
         /*lenient().when(ChronoUnit.DAYS.between(LocalDate.now(),date)>=2).thenReturn(true);
         lenient().when(date.isBefore(somministrazioneDTO.getData())).thenReturn(true);
@@ -139,6 +154,55 @@ public class SomministrazioneServiceImplTest {
         reset(centroVaccinaleRepository);
         reset(vaccinoRepository);
         reset(utenteRepository);
+
+    }
+
+    /**
+     * Con questo metodo testo il corretto update della prenotazione di una vaccinazione
+     * con tutti i controlli relativi alle date.
+     * Si noti che siccome Mockito non riesce a mockare la classe ChronoUnit non riesce nanche ad eseguire il check sulla data
+     * Per cui viene restituita un'eccezione custom
+     */
+    @Test
+    void updatePrenotazione(){
+
+        String code = "test";
+        LocalDate today = LocalDate.now();
+        Vaccino vaccino = Vaccino.builder().id(1L).nome("test").casaFarmaceutica("Pfizer").build();
+        Regione regione = Regione.builder().id(7L).nome("Lazio").build();
+        Provincia provincia = Provincia.builder().id(5l).nome("Roma").cap("00159").regione(regione).build();
+        CentroVaccinale cv1 = CentroVaccinale.builder().id(2L).nome("prova1").provincia(provincia).indirizzo("prova").build();
+        Utente utente = Utente.builder().id(3l).nome("Francesco").cognome("Ronca").codFiscale("test").email("test@test.test").ruolo(RoleEnum.ROLE_USER).provincia(provincia).password("abcde").build();
+        SomministrazioneDTO somministrazioneDTO = SomministrazioneDTO.builder().id(0L).code(code).data(today.plusDays(3)).idCentro(2L).idUtente(3L).ora("16:00").inAttesa(false).build();
+
+        LocalDate giornoSomm = somministrazioneDTO.getData();
+
+        lenient().when(somministrazioneRepository.existsByCodiceSomm(code)).thenReturn(true);
+        assertEquals(false,somministrazioneDTO.getInAttesa());
+        assertTrue(today.isBefore(somministrazioneDTO.getData()));
+
+        Somministrazione somministrazione = Somministrazione.builder().id(0L).utente(utente).vaccino(vaccino).dataSomministrazione(today.plusDays(4)).codiceSomm(code).centro(cv1).oraSomministrazione("15:00").inAttesa(false).build();
+        lenient().when(somministrazioneRepository.findByCodiceSomm(somministrazioneDTO.getCode())).thenReturn(somministrazione);
+
+        assertNotEquals(somministrazioneDTO.getData(),somministrazione.getDataSomministrazione());
+        assertNotEquals(somministrazioneDTO.getOra(),somministrazione.getOraSomministrazione());
+
+        /**
+         *
+         * L'errore generato dal test è voluto , perchè non riesce a controllare la data
+         */
+        //lenient().when(clock.DAYS.between(today,giornoSomm)>=2 && today.isBefore(somministrazione.getDataSomministrazione())).thenReturn(true);
+
+        /*somministrazione.setDataSomministrazione(somministrazioneDTO.getData());
+        somministrazione.setOraSomministrazione(somministrazioneDTO.getOra());
+
+        lenient().when(somministrazioneRepository.save(somministrazione)).thenReturn(somministrazione);
+
+        assertEquals(somministrazione.getCodiceSomm(),somministrazioneServiceImpl.updateSomministrazione(code,somministrazioneDTO).getCode());*/
+
+        assertNotNull(somministrazioneServiceImpl.updateSomministrazione(code,somministrazioneDTO));  //se non controllo la data mi aspetto una risposta non nulla che sarebbe l'esccezione
+
+        reset(somministrazioneRepository);
 
     }
 

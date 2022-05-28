@@ -30,4 +30,6 @@ public interface PersonaleRepository extends JpaRepository<Personale, Long> {
 
     @Query("select (p) from Personale p JOIN Utente u on p.utente.id = u.id  where u.codFiscale=:cf")
     Personale findByCodFisc(@Param("cf") String cf);
+
+    Personale findByUtente_Id(Long id);
 }

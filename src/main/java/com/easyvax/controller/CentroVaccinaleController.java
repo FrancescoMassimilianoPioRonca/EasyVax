@@ -94,7 +94,7 @@ public class CentroVaccinaleController {
      * Questo controller elimina un  centroVaccinale
      */
     @DeleteMapping("/deleteCentroVaccinale")
-    public List<CentroVaccinaleDTO> deleteCentro(@Valid @NotNull @RequestParam Long id) {
+    public boolean deleteCentro(@Valid @NotNull @RequestParam Long id) {
         return centroVaccinaleService.deleteCentro(id);
     }
 

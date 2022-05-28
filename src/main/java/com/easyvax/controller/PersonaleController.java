@@ -2,6 +2,9 @@ package com.easyvax.controller;
 
 
 import com.easyvax.dto.PersonaleDTO;
+import com.easyvax.model.Operatore;
+import com.easyvax.repository.OperatoreRepository;
+import com.easyvax.service.service.OperatoreService;
 import com.easyvax.service.service.PersonleService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -27,6 +30,8 @@ import java.util.List;
 public class PersonaleController {
 
     private final PersonleService personaleService;
+    private final OperatoreService operatoreService;
+    private final OperatoreRepository operatoreRepository;
 
     /**
      * Restituisce tutto il personale
@@ -75,9 +80,15 @@ public class PersonaleController {
 
     /**
      * Associa un nuovo personale alla struttura
+     * Si prega di notare che non è presente il @RequestBody perchè thymeleaf non supporta le post in JSON
+     * Un qualsiasi front-end del tipo react o vue supporterebbe le post con axios
      */
     @PostMapping("/insertPersonale")
-    public PersonaleDTO insertPersonale(@NonNull @RequestBody PersonaleDTO personaleDTO) {
+    public PersonaleDTO insertPersonale(@NonNull PersonaleDTO personaleDTO) {
+        if(operatoreRepository.existsByUtente_Id(personaleDTO.getIdUtente())){
+            Operatore operatore = operatoreRepository.findByUtente_Id(personaleDTO.getIdUtente());
+            operatoreService.deleteOperatore(operatore.getId());
+        }
         return personaleService.insertpersonale(personaleDTO);
     }
 

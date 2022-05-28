@@ -158,11 +158,11 @@ public class ProvinciaServiceImpl implements ProvinciaService {
      * @return List<ProvinciaDTO>
      */
     @Override
-    public List<ProvinciaDTO> deleteProvincia(Long id) {
+    public boolean deleteProvincia(Long id) {
 
         if (provinciaRepository.existsById(id)) {
             provinciaRepository.deleteById(id);
-            return provinciaRepository.findAll().stream().map(ProvinciaDTO::new).collect(Collectors.toList());
+            return true;
         } else {
             provinciaEnum = ProvinciaEnum.getProvinciaByMessageCode("P_NF");
             throw new ApiRequestException(provinciaEnum.getMessage());

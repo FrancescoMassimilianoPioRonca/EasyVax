@@ -52,11 +52,11 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String cf) throws UsernameNotFoundException {
 
-        if (cf == null || !utenteRepository.existsByCodFiscale(cf)) {
+        if (cf == null || !utenteRepository.existsByCodFiscale(cf.toUpperCase(Locale.ROOT))) {
             utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_NF");
             throw new ApiRequestException(utenteEnum.getMessage());
         }
-        Utente utente = utenteRepository.findByCodFiscale(cf);
+        Utente utente = utenteRepository.findByCodFiscale(cf.toUpperCase(Locale.ROOT));
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(utente.getRuolo().toString()));
         return new org.springframework.security.core.userdetails.User(utente.getCodFiscale(), utente.getPassword(), authorities);
@@ -84,7 +84,7 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
                 utente.setNome(utenteDTO.nome);
                 utente.setCognome(utenteDTO.cognome);
 
-                utente.setCodFiscale(utenteDTO.getCodFiscale());
+                utente.setCodFiscale(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT));
 
                 utente.setDataNascita(utenteDTO.getDataNascita());
                 utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
@@ -130,7 +130,7 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
             utente.setNome(utenteDTO.nome);
             utente.setCognome(utenteDTO.cognome);
-            utente.setCodFiscale(utenteDTO.getCodFiscale());
+            utente.setCodFiscale(utenteDTO.getCodFiscale().toUpperCase(Locale.ROOT));
             utente.setDataNascita(utenteDTO.getDataNascita());
             utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
 
@@ -218,18 +218,13 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     public List<UtenteDTO> updateAnagrafica(UtenteDTO utenteDTO) {
 
         if (utenteRepository.existsById(utenteDTO.id)) {
-            Provincia provincia = provinciaRepository.findById(utenteDTO.getResidenza()).get();
-
             if (!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascita(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita()) && provinciaRepository.existsById(utenteDTO.getResidenza())) {
 
                 Utente utente = new Utente(utenteDTO);
 
                 utente.setNome(utenteDTO.nome);
                 utente.setCognome(utenteDTO.cognome);
-
-                //Basic hash
                 utente.setCodFiscale(utenteDTO.getCodFiscale());
-
                 utente.setDataNascita(utenteDTO.getDataNascita());
                 utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
                 utente.setEmail(utenteDTO.getEmail());
@@ -311,8 +306,8 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
      */
     @Override
     public UtenteDTO findByCF(String cf) {
-        if (cf != null && utenteRepository.existsByCodFiscale(cf))
-            return new UtenteDTO(utenteRepository.findByCodFiscale(cf));
+        if (cf != null && utenteRepository.existsByCodFiscale(cf.toUpperCase(Locale.ROOT)))
+            return new UtenteDTO(utenteRepository.findByCodFiscale(cf.toUpperCase(Locale.ROOT)));
         else {
             utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_NF");
             throw new ApiRequestException(utenteEnum.getMessage());

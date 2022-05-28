@@ -1,5 +1,6 @@
 package com.easyvax;
 
+import com.easyvax.dto.CentroVaccinaleDTO;
 import com.easyvax.dto.OperatoreDTO;
 import com.easyvax.dto.PersonaleDTO;
 import com.easyvax.exception.enums.RoleEnum;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,6 +43,9 @@ public class PersonaleServiceImplTest {
         personaleServiceImpl = new PersonaleServiceImpl(personaleRepository, utenteRepository, centroVaccinaleRepository);
     }
 
+    /**
+     * In questo metodo, testo la corretta icerca del personale di una struttura in base al codfis
+     */
     @Test
     void findByCodFiscale() {
         String cf = "RNCFNC030303E335M";
@@ -64,6 +69,9 @@ public class PersonaleServiceImplTest {
         reset(personaleRepository);
     }
 
+    /**
+     * In questo metodo, testo il corretto inserimento del personale con i relativi controlli
+     */
     @Test
     void insertPersonale() {
         Utente utente = Utente.builder().id(1l).nome("Francesco").cognome("Ronca").codFiscale("test").password("test").email("test@test.test").ruolo(RoleEnum.ROLE_USER).build();
@@ -88,6 +96,9 @@ public class PersonaleServiceImplTest {
         reset(personaleRepository);
     }
 
+    /**
+     * In questo metodo, testo la corretta eliminazione di un personale
+     */
     @Test
     void deletePersonale() {
 
@@ -98,6 +109,50 @@ public class PersonaleServiceImplTest {
         verify(personaleRepository, atLeastOnce()).existsById(id);
         reset(personaleRepository);
 
+
+    }
+
+    /**
+     * In questo metodo testo l'update del centroVaccinale.
+     * Come negli altri update, simulo la presenza d più centri nella base di dati
+     * per poi verificare che quello che modifico sia quello corretto
+     */
+    @Test
+    void updatePersonale(){
+        Long id = 0L;
+        Utente utente = Utente.builder().id(1l).nome("Francesco").cognome("Ronca").codFiscale("test").password("test").email("test@test.test").ruolo(RoleEnum.ROLE_USER).build();
+        Utente utente2 = Utente.builder().id(2l).nome("Test").cognome("test").codFiscale("test2").password("test").email("test2@test.test").ruolo(RoleEnum.ROLE_USER).build();
+        Regione regione = Regione.builder().id(7L).nome("Lazio").build();
+        Provincia provincia = Provincia.builder().id(5l).nome("Roma").cap("00159").regione(regione).build();
+        CentroVaccinale cv = CentroVaccinale.builder().id(3L).nome("test").indirizzo("test").provincia(provincia).build();
+        CentroVaccinale cv1 = CentroVaccinale.builder().id(4L).nome("test2").indirizzo("test2").provincia(provincia).build();
+        Personale personale = Personale.builder().id(id).utente(utente).centroVaccinale(cv).build();
+        Personale personale2 = Personale.builder().id(id).utente(utente2).centroVaccinale(cv).build();
+
+        PersonaleDTO personaleDTO = PersonaleDTO.builder().id(id).idUtente(utente2.getId()).idCentro(cv1.getId()).build();
+
+        lenient().when(personaleRepository.existsById(personaleDTO.id)).thenReturn(true);
+        lenient().when(utenteRepository.findById(personaleDTO.getIdUtente())).thenReturn(Optional.of(utente));
+        lenient().when(centroVaccinaleRepository.findById(personaleDTO.getIdCentro())).thenReturn(Optional.of(cv));
+
+        lenient().when(utenteRepository.existsById(utente.getId())).thenReturn(true);
+        lenient().when(centroVaccinaleRepository.existsById(cv.getId())).thenReturn(true);
+
+
+        personale.setUtente(utente2);
+        personale.setCentroVaccinale(cv1);
+
+        lenient().when(personaleRepository.save(personale)).thenReturn(personale);
+
+        List<Personale> list = List.of(personale,personale2);
+
+        lenient().when(personaleRepository.findAll()).thenReturn(list);
+
+        assertEquals(list.get(0).getUtente().getId(),personaleServiceImpl.updatePersonale(personaleDTO).get(0).getIdUtente());
+
+        reset(centroVaccinaleRepository);
+        reset(personaleRepository);
+        reset(utenteRepository);
 
     }
 }

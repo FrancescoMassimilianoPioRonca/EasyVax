@@ -30,6 +30,22 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
+
+    /**
+     * In questo metodo viene gestito l'accesso alle API che richiedono un autorizzazione (ruolo).
+     * Ad ogni API che lo richiede dovrà essere passato, oltre alla request richiesta dall'endpoint, anche un altro campo che è
+     * "Authorization Bearer token...". Dal token si prendono le informazioni necessarie per vedere se l'utente loggato che vuole
+     * fare l'accesso a una deteriminata API ha l'autorizzazione o meno. Inoltre si controlla anche se il token è scaduto.
+     * In caso di errore, cioe se l'utente non è autorizzato o il token è scaduto verrà restituito un messaggio d'errore che
+     * specifica il motivo dell'interruzione della chiamata API.
+     * In caso positivo invece si continua con l'esecuzione della richiesta.
+     *
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getServletPath().equals("/login") || request.getServletPath().equals("/token/refresh/**")) {
@@ -53,15 +69,15 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {
-                    log.error("Error loggin in : {}",exception.getMessage());
-                    response.setHeader("error",exception.getMessage());
+                    log.error("Error loggin in : {}", exception.getMessage());
+                    response.setHeader("error", exception.getMessage());
                     response.setStatus(FORBIDDEN.value());
                     //response.sendError(FORBIDDEN.value());
-                    Map<String,String> error = new HashMap<>();
-                    error.put("error_message",exception.getMessage());
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error_message", exception.getMessage());
                     response.setContentType(APPLICATION_JSON_VALUE);
-                    new ObjectMapper().writeValue(response.getOutputStream(),error);
-                }
+                    new ObjectMapper().writeValue(response.getOutputStream(), error);
+               }
             } else {
                 filterChain.doFilter(request, response);
             }

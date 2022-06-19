@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Personale {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -23,7 +23,6 @@ public class Personale {
     @ManyToOne
     @JoinColumn(name = "id_utente")
     private Utente utente;
-
 
 
     public Personale(PersonaleDTO personaleDTO) {

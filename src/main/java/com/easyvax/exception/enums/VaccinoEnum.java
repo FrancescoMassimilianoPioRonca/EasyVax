@@ -9,7 +9,7 @@ public enum VaccinoEnum {
     VACCINI_NOT_FOUND("VAXS_NF", "Attualmente non ci sono vaccini"),
     VACCINO_NOT_UPDATED("VCC_NU", "Impossibile aggiornare il vaccino"),
     VACCINO_FAIL_INSERT("VCC_FI", "Impossibile aggiungere al db campi vuoti"),
-    VACCINO_CASA_NOT_EXIST("VACC_CASA_NF","La casa farmaceutica che stai cercando non esiste");
+    VACCINO_CASA_NOT_EXIST("VACC_CASA_NF", "La casa farmaceutica che stai cercando non esiste");
 
 
     private final String messageCode;

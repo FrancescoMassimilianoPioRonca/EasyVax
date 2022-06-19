@@ -12,6 +12,7 @@ import com.easyvax.repository.SomministrazioneRepository;
 import com.easyvax.repository.VaccinoRepository;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
+import com.lowagie.text.Image;
 import com.lowagie.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,11 @@ import java.io.*;
 
 public class PdfGeneratorServiceImpl {
 
+
+    /**
+     * Qui genero il pdf con i detagli della prenotazione, controllando che il codice della prenotazione non sia invalido
+     */
+
     private final SomministrazioneRepository somministrazioneRepository;
     private final CentroVaccinaleRepository centroVaccinaleRepository;
     private final ProvinciaRepository provinciaRepository;
@@ -35,7 +41,7 @@ public class PdfGeneratorServiceImpl {
 
     public void export(String cod, HttpServletResponse response) throws IOException {
 
-        if(somministrazioneRepository.existsByCodiceSomm(cod)){
+        if (somministrazioneRepository.existsByCodiceSomm(cod)) {
 
             Somministrazione somministrazione = somministrazioneRepository.findByCodiceSomm(cod);
             CentroVaccinale centroVaccinale = centroVaccinaleRepository.findById(somministrazione.getCentro().getId()).get();
@@ -43,13 +49,19 @@ public class PdfGeneratorServiceImpl {
             Provincia provincia = provinciaRepository.findById(centroVaccinale.getProvincia().getId()).get();
 
             Document document = new Document(PageSize.A4);
-            PdfWriter.getInstance(document,response.getOutputStream());
+            PdfWriter.getInstance(document, response.getOutputStream());
 
             document.open();
 
+
+            Image img = Image.getInstance("./src/main/resources/static/img/logo.png");
+            img.setAlignment(Element.ALIGN_CENTER);
+            img.scaleAbsolute(200,200);
+
+
             Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLDOBLIQUE);
             fontTitle.setSize(20);
-            fontTitle.setColor(Color.red);
+            fontTitle.setColor(Color.blue);
 
             Paragraph titolo = new Paragraph("EasyVax cod." + somministrazione.getCodiceSomm() + "\n \n", fontTitle);
             titolo.setAlignment(Element.ALIGN_CENTER);
@@ -57,17 +69,16 @@ public class PdfGeneratorServiceImpl {
             Font fontParagraph = FontFactory.getFont(FontFactory.COURIER);
             fontParagraph.setSize(12);
 
-            Paragraph corpo = new Paragraph("Ecco la ricevuta per la tua richiesta di vaccinazione. Di seguito tutti i dettagli: \n Hai scelto il seguente centro vaccinale: " + centroVaccinale.getNome() + " sito in " + centroVaccinale.getIndirizzo() + " nella provincia di " + provincia.getNome() + ". \n Hai scelto il seguente vaccino : " + vaccino.getNome() + "\n Hai scelto le seguenti data e ora : " + somministrazione.getDataSomministrazione() + " alle ore " + somministrazione.getOraSomministrazione() + "\n \n \n Ti ricordiamo che puoi modificare la data e ora fino al giorno antecedenta la vaccinazione. \n\n\n\n Mostra questa ricevuta il giorno della somministrazione.\n\n\n\n Ti ringraziamo per esserti affidato ad EasyVax.", fontParagraph);
+            Paragraph corpo = new Paragraph("Ecco la ricevuta per la tua richiesta di vaccinazione. Di seguito tutti i dettagli: \n Hai scelto il seguente centro vaccinale: " + centroVaccinale.getNome() + " sito in " + centroVaccinale.getIndirizzo() + " nella provincia di " + provincia.getNome() + ". \n Hai scelto il seguente vaccino : " + vaccino.getNome() + "\n Hai scelto le seguenti data e ora : " + somministrazione.getDataSomministrazione() + " alle ore " + somministrazione.getOraSomministrazione() + "\n \n \n Ti ricordiamo che puoi modificare la data e ora fino a due giorni antecedenti la vaccinazione. \n\n\n\n Mostra questa ricevuta il giorno della somministrazione.\n\n\n\n Ti ringraziamo per esserti affidato ad EasyVax.", fontParagraph);
 
             corpo.setAlignment(Element.ALIGN_LEFT);
 
+            document.add(img);
             document.add(titolo);
             document.add(corpo);
 
             document.close();
-        }
-        else
-        {
+        } else {
             somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_NF");
             throw new ApiRequestException(somministrazioneEnum.getMessage());
         }

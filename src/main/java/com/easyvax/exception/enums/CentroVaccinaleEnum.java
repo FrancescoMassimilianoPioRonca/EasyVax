@@ -7,11 +7,11 @@ public enum CentroVaccinaleEnum {
     CENTROVACCINALE_DELETE_ERROR("CV_DLE", "Errore durante l'eliminazione del centro vaccinale"),
     CENTROVACCINALE_ID_NOT_EXIST("CV_IDNE", "Il centro vaccinale che stai cercando non esiste"),
     CENTROVACCINALE_REGIONE_NOT_EXIST("CV_RNE", "Non esistono centri vaccinali per la regione selezionata"),
-    CENTROVACCINALES_NOT_FOUND("CVS_NF","Non sono presenti centri vaccinali nel db"),
-    CENTROVACCINALE_VACCINO_NOT_FOUND("CVV_NF","Non sono state effettuate somministrazioni del vaccino selezionato in nessun centro vaccinale"),
-    CENTROVACCINALE_CAP_NOT_EXITS("CVS_CNF","Non sono presenti centri vaccinali per il cap inserito"),
-    CENTROVACCINALE_PROVINCIA_ALREADY_EXITS("CVP_AE","Il centro vaccinale per la provincia immessa esite già"),
-    CENTROVACCINALE_NOT_UPDATED("CV_NU","Impossibil aggiornare il centro vaccinale"),
+    CENTROVACCINALES_NOT_FOUND("CVS_NF", "Non sono presenti centri vaccinali nel db"),
+    CENTROVACCINALE_VACCINO_NOT_FOUND("CVV_NF", "Non sono state effettuate somministrazioni del vaccino selezionato in nessun centro vaccinale"),
+    CENTROVACCINALE_CAP_NOT_EXITS("CVS_CNF", "Non sono presenti centri vaccinali per il cap inserito"),
+    CENTROVACCINALE_PROVINCIA_ALREADY_EXITS("CVP_AE", "Il centro vaccinale per la provincia immessa esite già"),
+    CENTROVACCINALE_NOT_UPDATED("CV_NU", "Impossibil aggiornare il centro vaccinale"),
     CENTROVACCINALE_EMPTY_FIELD("CV_EF", "Alcuni campi sono vuoti");
 
     private final String messageCode;

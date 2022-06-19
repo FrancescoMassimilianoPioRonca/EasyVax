@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Operatore {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -24,7 +24,6 @@ public class Operatore {
     @ManyToOne
     @JoinColumn(name = "id_utente")
     private Utente utente;
-
 
 
     public Operatore(OperatoreDTO operatoreDTO) {

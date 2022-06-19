@@ -17,18 +17,18 @@ import java.util.List;
 public class Regione {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NonNull
     private String nome;
 
-    @OneToMany(mappedBy="regione", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "regione", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Provincia> province = new ArrayList<>();
 
-    public Regione(RegioneDTO regioneDTO){
+    public Regione(RegioneDTO regioneDTO) {
         this.id = regioneDTO.id;
-        this.nome=regioneDTO.nome;
+        this.nome = regioneDTO.nome;
     }
 
 }

@@ -18,8 +18,8 @@ public class ProvinciaDTO {
 
     public ProvinciaDTO(Provincia provincia) {
         this.id = provincia.getId();
-        this.nome= provincia.getNome();
-        this.cap= provincia.getCap();
-       this.idRegione=provincia.getRegione().getId();
+        this.nome = provincia.getNome();
+        this.cap = provincia.getCap();
+        this.idRegione = provincia.getRegione().getId();
     }
 }

@@ -2,9 +2,10 @@ package com.easyvax.exception.enums;
 
 public enum RichiestaEnum {
 
-    RICHIESTE_NE("RS_NE","Nel db non sono presenti richieste"),
-    RICHIESTE_E("RS_E","Errore nell'inserire la rchiesta. Controllare i parametri"),
-    RICHIESTA_NF("RS_NF","La richiesta non è stata trovata");
+    RICHIESTE_NE("RS_NE", "Nel db non sono presenti richieste"),
+    RICHIESTE_E("RS_E", "Errore nell'inserimento della richiesta. Controllare i parametri"),
+    RICHIESTA_NF("RS_NF", "La richiesta non è stata trovata"),
+    RICHIESTA_AA("RS_AA", "Errore generico. Potresti non essere abilitato per accettare questa richiesta");
 
 
     private final String messageCode;

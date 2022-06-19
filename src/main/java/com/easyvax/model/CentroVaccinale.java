@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CentroVaccinale {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NonNull
@@ -28,11 +28,11 @@ public class CentroVaccinale {
     @OneToMany(mappedBy = "centroVaccinale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Personale> personale = new ArrayList<>();
 
-    @OneToMany(mappedBy="centro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "centro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Somministrazione> somministrazioni = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name="id_provincia")
+    @JoinColumn(name = "id_provincia")
     private Provincia provincia;
 
 

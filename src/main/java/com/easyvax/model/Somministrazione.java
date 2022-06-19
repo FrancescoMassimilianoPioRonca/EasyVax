@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 public class Somministrazione {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NonNull
@@ -28,28 +28,26 @@ public class Somministrazione {
     private String codiceSomm;
 
     @ManyToOne
-    @JoinColumn(name="id_utente")
+    @JoinColumn(name = "id_utente")
     private Utente utente;
 
     @ManyToOne
-    @JoinColumn(name="id_vaccino")
+    @JoinColumn(name = "id_vaccino")
     private Vaccino vaccino;
 
     @ManyToOne
-    @JoinColumn(name="id_centro")
+    @JoinColumn(name = "id_centro")
     private CentroVaccinale centro;
 
     private Boolean inAttesa;
 
 
-    public Somministrazione(SomministrazioneDTO somministrazioneDTO)
-    {
+    public Somministrazione(SomministrazioneDTO somministrazioneDTO) {
         this.id = somministrazioneDTO.getId();
         this.oraSomministrazione = somministrazioneDTO.getOra();
         this.dataSomministrazione = somministrazioneDTO.getData();
-        this.inAttesa=somministrazioneDTO.getInAttesa();
+        this.inAttesa = somministrazioneDTO.getInAttesa();
     }
-
 
 
 }

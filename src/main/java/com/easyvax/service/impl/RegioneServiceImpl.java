@@ -24,9 +24,14 @@ public class RegioneServiceImpl implements RegioneService {
     private final ProvinciaRepository provinciaRepository;
     private static RegioneEnum regioneEnum;
 
+    /**
+     * Cerco tutte le regioni
+     *
+     * @return List<RegioneDTO>
+     */
     @Override
     public List<RegioneDTO> findAll() {
-        if(!regioneRepository.findAll().isEmpty())
+        if (!regioneRepository.findAll().isEmpty())
             return regioneRepository.findAll().stream().map(RegioneDTO::new).collect(Collectors.toList());
         else {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("RI_NE");
@@ -34,10 +39,17 @@ public class RegioneServiceImpl implements RegioneService {
         }
     }
 
+    /**
+     * Cerco la regione in base al nome
+     *
+     * @param nome
+     * @return RegioneDTO
+     */
+
     @Override
     public RegioneDTO findByNome(String nome) {
 
-        if(nome != null && (regioneRepository.existsByNome(nome)))
+        if (nome != null && (regioneRepository.existsByNome(nome)))
             return new RegioneDTO(regioneRepository.findByNome(nome));
         else {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_NF");
@@ -46,10 +58,16 @@ public class RegioneServiceImpl implements RegioneService {
 
     }
 
+    /**
+     * Cerco la regione in base alla provincia
+     *
+     * @param provincia
+     * @return List<RegioneDTO>
+     */
     @Override
     public List<RegioneDTO> findByProvincia(String provincia) {
 
-        if(provincia != null && (provinciaRepository.existsByNome(provincia)))
+        if (provincia != null && (provinciaRepository.existsByNome(provincia)))
             return regioneRepository.findByProvincia(provincia).stream().map(RegioneDTO::new).collect(Collectors.toList());
         else {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_NF");
@@ -57,44 +75,51 @@ public class RegioneServiceImpl implements RegioneService {
         }
     }
 
+    /**
+     * Inserisco una nuova regione
+     *
+     * @param regioneDTO
+     * @return RegioneDTO
+     */
     @Override
     public RegioneDTO insertRegione(RegioneDTO regioneDTO) {
 
-         Regione regione = new Regione(regioneDTO);
+        Regione regione = new Regione(regioneDTO);
 
-        if(regioneRepository.existsByNome(regioneDTO.nome)) {
+        if (regioneRepository.existsByNome(regioneDTO.nome)) {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_AE");
             throw new ApiRequestException(regioneEnum.getMessage());
-        }else if (regioneDTO.nome == null) {
+        } else if (regioneDTO.nome == null) {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_EF");
             throw new ApiRequestException(regioneEnum.getMessage());
-        }
-        else {
-            regione = regioneRepository.save(regione);
+        } else {
+             regioneRepository.save(regione);
             return new RegioneDTO(regione);
         }
     }
 
+    /**
+     * Modifico una regione esistente
+     *
+     * @param regioneDTO
+     * @return List<RegioneDTO>
+     */
     @Override
     public List<RegioneDTO> updateRegione(RegioneDTO regioneDTO) {
         if (regioneRepository.existsById(regioneDTO.id)) {
             Regione regione = regioneRepository.findById(regioneDTO.getId()).get();
 
-            if(!regioneRepository.existsByNome(regioneDTO.nome)) {
+            if (!regioneRepository.existsByNome(regioneDTO.nome)) {
 
                 regione.setNome(regioneDTO.nome);
 
 
                 regioneRepository.save(regione);
-            }
-
-            else{
+            } else {
                 regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_AE");
                 throw new ApiRequestException(regioneEnum.getMessage());
             }
-        }
-        else
-        {
+        } else {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_NF");
             throw new ApiRequestException(regioneEnum.getMessage());
         }
@@ -102,13 +127,18 @@ public class RegioneServiceImpl implements RegioneService {
         return regioneRepository.findAll().stream().map(RegioneDTO::new).collect(Collectors.toList());
     }
 
+    /**
+     * Elimino una regione
+     *
+     * @param id
+     * @return List<RegioneDTO>
+     */
     @Override
-    public List<RegioneDTO> deleteRegione(Long id) {
-        if(regioneRepository.existsById(id)) {
+    public boolean deleteRegione(Long id) {
+        if (regioneRepository.existsById(id)) {
             regioneRepository.deleteById(id);
-            return regioneRepository.findAll().stream().map(RegioneDTO::new).collect(Collectors.toList());
-        }
-        else {
+            return true;
+        } else {
             regioneEnum = RegioneEnum.getRegioneEnumByMessageCode("R_NF");
             throw new ApiRequestException(regioneEnum.getMessage());
         }

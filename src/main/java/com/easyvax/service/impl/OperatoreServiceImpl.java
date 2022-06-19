@@ -1,15 +1,12 @@
 package com.easyvax.service.impl;
 
 import com.easyvax.dto.OperatoreDTO;
-import com.easyvax.dto.PersonaleDTO;
 import com.easyvax.exception.enums.CentroVaccinaleEnum;
 import com.easyvax.exception.enums.OperatoreEnum;
-import com.easyvax.exception.enums.PersonaleEnum;
 import com.easyvax.exception.enums.RoleEnum;
 import com.easyvax.exception.handler.ApiRequestException;
 import com.easyvax.model.CentroVaccinale;
 import com.easyvax.model.Operatore;
-import com.easyvax.model.Personale;
 import com.easyvax.model.Utente;
 import com.easyvax.repository.*;
 import com.easyvax.service.service.OperatoreService;
@@ -29,11 +26,16 @@ public class OperatoreServiceImpl implements OperatoreService {
 
     private final OperatoreRepository operatoreRepository;
     private final UtenteRepository utenteRepository;
-    private final ProvinciaRepository provinciaRepository;
     private final CentroVaccinaleRepository centroVaccinaleRepository;
     private static OperatoreEnum operatoreEnum;
     private static CentroVaccinaleEnum centroVaccinaleEnum;
 
+    /**
+     * Associo un nuovo operatore presso la struttura
+     *
+     * @param operatoreDTO
+     * @return OperatoreDTO
+     */
     @Override
     public OperatoreDTO insertOperatore(OperatoreDTO operatoreDTO) {
 
@@ -44,7 +46,7 @@ public class OperatoreServiceImpl implements OperatoreService {
             operatore.setUtente(utente);
             operatore.setCentroVaccinale(cv);
             utente.setRuolo(RoleEnum.ROLE_OPERATOR);
-            operatore = operatoreRepository.save(operatore);
+            operatoreRepository.save(operatore);
 
             return new OperatoreDTO(operatore);
         } else {
@@ -54,7 +56,11 @@ public class OperatoreServiceImpl implements OperatoreService {
 
     }
 
-
+    /**
+     * Cerco tutti gli operatori
+     *
+     * @return List<OperatoreDTO>
+     */
     @Override
     public List<OperatoreDTO> findAll() {
         if (!operatoreRepository.findAll().isEmpty())
@@ -65,6 +71,12 @@ public class OperatoreServiceImpl implements OperatoreService {
         }
     }
 
+    /**
+     * Cerco gli operatoi in base al centro vaccinale
+     *
+     * @param id
+     * @return List<OperatoreDTO>
+     */
     @Override
     public List<OperatoreDTO> findByCentroVaccinale(Long id) {
 
@@ -76,6 +88,12 @@ public class OperatoreServiceImpl implements OperatoreService {
         }
     }
 
+    /**
+     * Cerco l'operatore in base al codice fiscale
+     *
+     * @param cf
+     * @return OperatoreDTO
+     */
     @Override
     public OperatoreDTO findByCodFiscale(String cf) {
         if (cf != null && (utenteRepository.existsByCodFiscale(cf))) {
@@ -86,43 +104,53 @@ public class OperatoreServiceImpl implements OperatoreService {
         }
     }
 
-/*
-    @Override
-    public List<PersonaleDTO> findByRuolo(String ruolo) {
-        if(ruolo != null && (operatoreRepository.existsByRuolo(ruolo)))
-            return operatoreRepository.findByRuolo(ruolo).stream().map(PersonaleDTO::new).collect(Collectors.toList());
-        else {
-            personaleEnum = PersonaleEnum.getPersonaleEnumByMessageCode("PERS_NF");
-            throw new ApiRequestException(personaleEnum.getMessage());
-        }
-    }*/
 
+    /**
+     * Controllo se l'operatorre esiste, successivamente elimino e restituisco true. Altrimenti genero eccezione custom per il front-end
+     * Resetto anche i privilegi a quello di USER fino a quando non riceve una nuova assegnazione da operatore
+     *
+     * @param id
+     * @return List<OperatoreDTO>
+     */
     @Override
-    public List<OperatoreDTO> deleteOperatore(Long id) {
+    public boolean deleteOperatore(Long id) {
 
         if (operatoreRepository.existsById(id)) {
+
+            //Per resettare il ruolo
+           /*
+            Operatore operatore = operatoreReository.findById(id).get();
+            Utente utente = utenteRepository.findById(operatore.getUtente().getId()).get();
+            utente.setRuolo(RoleEnum.ROLE_USER);
+            utenteRepository.save(utente);*/
+
             operatoreRepository.deleteById(id);
-            return operatoreRepository.findAll().stream().map(OperatoreDTO::new).collect(Collectors.toList());
+            return true;
         } else {
             operatoreEnum = OperatoreEnum.getOperatoreEnumByMessageCode("OP_DLE");
             throw new ApiRequestException(operatoreEnum.getMessage());
         }
     }
 
+    /**
+     * Modifico un operatore
+     *
+     * @param operatoreDTO
+     * @return List<OperatoreDTO>
+     */
     @Override
     public List<OperatoreDTO> updateOperatore(OperatoreDTO operatoreDTO) {
         if (operatoreRepository.existsById(operatoreDTO.id)) {
-            Utente utente = utenteRepository.findById(operatoreDTO.getIdUtente()).get();
-            CentroVaccinale cv = centroVaccinaleRepository.findById(operatoreDTO.getIdCentro()).get();
-
-            if (utenteRepository.existsById(utente.getId()) && centroVaccinaleRepository.existsById(cv.getId())) {
+            if (centroVaccinaleRepository.existsById(operatoreDTO.getIdCentro()) && utenteRepository.existsById(operatoreDTO.getIdUtente())) {
+                CentroVaccinale cv = centroVaccinaleRepository.findById(operatoreDTO.getIdCentro()).get();
+                Utente utente = utenteRepository.findById(operatoreDTO.getIdUtente()).get();
 
                 Operatore operatore = new Operatore(operatoreDTO);
 
                 operatore.setCentroVaccinale(cv);
                 operatore.setUtente(utente);
 
-                operatore = operatoreRepository.save(operatore);
+                operatoreRepository.save(operatore);
 
                 return operatoreRepository.findAll().stream().map(OperatoreDTO::new).collect(Collectors.toList());
             } else {

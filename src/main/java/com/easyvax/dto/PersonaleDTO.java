@@ -18,7 +18,7 @@ public class PersonaleDTO {
 
     public PersonaleDTO(Personale personale) {
         this.id = personale.getId();
-        this.idUtente=personale.getUtente().getId();
-        this.idCentro=personale.getCentroVaccinale().getId();
+        this.idUtente = personale.getUtente().getId();
+        this.idCentro = personale.getCentroVaccinale().getId();
     }
 }

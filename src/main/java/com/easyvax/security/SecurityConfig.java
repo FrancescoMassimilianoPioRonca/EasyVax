@@ -59,14 +59,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers( "/login**","/token/refresh/**" ,"/api/utente/insertUtente","/api/pdf/generate",
-                "/api/**/**").permitAll();
+        http.authorizeRequests().antMatchers( "/login**","/token/refresh/**" ,"/api/utente/insertUtente","/api/pdf/generate").permitAll();
         http.
                 authorizeRequests()
                 .antMatchers("/", "/public/**", "/resources/static/**")
                 .permitAll();
 
-/*
+
         //UTENTE
         http.authorizeRequests().antMatchers(POST, "/api/utente/insertUtente").permitAll();
         http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_USER");
@@ -161,10 +160,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(POST, "api/richieste/insertRichiesta").hasAnyAuthority("ROLE_OPERATOR");
         http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findByName").hasAnyAuthority("ROLE_OPERATOR");
         http.authorizeRequests().antMatchers(PUT, "api/operatore/updateOperatore").hasAnyAuthority("ROLE_OPERATOR");
-        http.authorizeRequests().antMatchers(GET, "api/provincia/**").hasAnyAuthority("ROLE_OPERATOR");
-        http.authorizeRequests().antMatchers(GET, "api/regione/**").hasAnyAuthority("ROLE_OPERATOR");
 
- */
+
+
 
         http.authorizeRequests().anyRequest().authenticated();
 

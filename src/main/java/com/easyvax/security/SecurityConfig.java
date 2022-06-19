@@ -162,7 +162,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(PUT, "api/operatore/updateOperatore").hasAnyAuthority("ROLE_OPERATOR");
 
 
-
         http.authorizeRequests().anyRequest().authenticated();
 
         http.addFilter(customAuthenticationFilter);

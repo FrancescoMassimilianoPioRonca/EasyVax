@@ -53,6 +53,10 @@ public class RichiesteServiceimplTest {
     }
 
 
+    /**
+     * Questo metodo testa la corretta visualizzazione delle richieste non ancora smarcate
+     * nel centro vaccinale in cui lavora l'operatore
+     */
     @Test
     public void getRichiesteOperatoreTest(){
 
@@ -86,6 +90,10 @@ public class RichiesteServiceimplTest {
 
     }
 
+    /**
+     * Questo metodo testa il corretto inserimento di una richiesta per cambio data.
+     * Siccome il metodo del service era molto complesso l'ho suddiviso in più metodi da testare
+     */
     @Test
     public void insertRichiestaCambioData(){
 
@@ -121,6 +129,9 @@ public class RichiesteServiceimplTest {
 
     }
 
+    /**
+     * Questo metodo testa l'inserimento della richiesta per cambio sede
+     */
     @Test
     public void insertRichiestaCambioSede(){
 
@@ -157,6 +168,9 @@ public class RichiesteServiceimplTest {
 
     }
 
+    /**
+     * Questo metodo testa l'accettazione da parte dell'operatore di una richiesta per cambio data.
+     */
     @Test
     public void accettaRichiestaNewData(){
 
@@ -168,8 +182,8 @@ public class RichiesteServiceimplTest {
         CentroVaccinale cv1 = CentroVaccinale.builder().id(3L).nome("prova1").provincia(provincia).indirizzo("prova").build();
         Vaccino vaccino = Vaccino.builder().id(1L).nome("test").casaFarmaceutica("Pfizer").build();
         Somministrazione somministrazione = Somministrazione.builder().id(6L).utente(utente).vaccino(vaccino).dataSomministrazione(date).centro(cv1).oraSomministrazione("15:00").codiceSomm("test").build();
-
-        Richiesta richiesta = Richiesta.builder().id(10L).somministrazione(somministrazione).newData(date).oldCentroVacc(cv1).build();
+        Operatore op1 = Operatore.builder().id(idOperator).centroVaccinale(cv1).build();
+        Richiesta richiesta = Richiesta.builder().id(10L).somministrazione(somministrazione).newData(date).oldCentroVacc(cv1).idOp1(1L).build();
 
         lenient().when(richiestaRepository.existsById(richiesta.getId())).thenReturn(true);
         lenient().when(operatoreRepository.existsById(idOperator)).thenReturn(true);
@@ -212,6 +226,7 @@ public class RichiesteServiceimplTest {
     @Test
     public void accettaRichiestaNewCentroOP2(){
 
+        Long idOperatore = 3L;
         LocalDate date = LocalDate.now();
         Regione regione = Regione.builder().id(7L).nome("Lazio").build();
         Provincia provincia = Provincia.builder().id(5l).nome("Roma").cap("00159").regione(regione).build();
@@ -221,33 +236,38 @@ public class RichiesteServiceimplTest {
         Vaccino vaccino = Vaccino.builder().id(1L).nome("test").casaFarmaceutica("Pfizer").build();
         Somministrazione somministrazione = Somministrazione.builder().id(6L).utente(utente).vaccino(vaccino).dataSomministrazione(date).centro(cv1).oraSomministrazione("15:00").codiceSomm("test").build();
 
-        Richiesta richiesta = Richiesta.builder().id(10L).somministrazione(somministrazione).newCentro(cv2.getId()).approvedOp1(true).oldCentroVacc(cv1).build();
+        Richiesta richiesta = Richiesta.builder().id(10L).somministrazione(somministrazione).newCentro(cv1.getId()).oldCentroVacc(cv2).approvedOp1(true).idOp1(1L).build();
+        RichiestaDTO richiestaDTO = new RichiestaDTO(richiesta);
 
-        lenient().when(richiestaRepository.existsById(richiesta.getId())).thenReturn(true);
-        lenient().when(richiestaRepository.findById(richiesta.getId())).thenReturn(Optional.of(richiesta));
+        Assertions.assertNotNull(richiestaDTO.id);
+        lenient().when(richiestaRepository.existsById(richiestaDTO.id)).thenReturn(true);
+        lenient().when(operatoreRepository.existsById(idOperatore)).thenReturn(true);
+
+        lenient().when(richiestaRepository.findById(richiestaDTO.id)).thenReturn(Optional.ofNullable(richiesta));
+
         lenient().when(somministrazioneRepository.existsById(richiesta.getSomministrazione().getId())).thenReturn(true);
-        lenient().when(somministrazioneRepository.findById(richiesta.getSomministrazione().getId())).thenReturn(Optional.of(somministrazione));
 
-        Assertions.assertNotNull(richiesta.getNewCentro());
-        Assertions.assertNull(richiesta.getNewData());
+        lenient().when(somministrazioneRepository.findById(somministrazione.getId())).thenReturn(Optional.of(somministrazione));
 
-        Assertions.assertNotNull(richiesta.getApprovedOp1());
-        Assertions.assertNull(richiesta.getApprovedOp2());
+        Assertions.assertNotNull(richiestaDTO.getIdNewcentro());
+        Assertions.assertNull(richiestaDTO.getData());
+        Assertions.assertNotNull(richiestaDTO.getIdOp1());
+        Assertions.assertNull(richiestaDTO.approvedOp2);
+        Assertions.assertNotEquals(richiestaDTO.idOp2,idOperatore);
+        lenient().when(operatoreRepository.checkOperatore(richiestaDTO.getIdNewcentro(),idOperatore)).thenReturn(1);
 
-        //richiesta.setApprovedOp2(true);
-        richiesta.setApproved(true);
-        somministrazione.setInAttesa(false);
+        lenient().when(centroVaccinaleRepository.findById(richiestaDTO.getIdNewcentro())).thenReturn(Optional.of(cv1));
+
 
         lenient().when(somministrazioneRepository.save(somministrazione)).thenReturn(somministrazione);
         lenient().when(richiestaRepository.save(richiesta)).thenReturn(richiesta);
 
-        RichiestaDTO richiestaDTO = new RichiestaDTO(richiesta);
+        assertEquals(true, richiestaServiceImpl.accettaRichiesta(richiestaDTO.getId(),idOperatore));
 
-       // assertEquals(true,richiestaServiceImpl.accettaRichiesta(richiestaDTO.getId()));
-
-        reset(richiestaRepository);
         reset(somministrazioneRepository);
-
+        reset(operatoreRepository);
+        reset(centroVaccinaleRepository);
+        reset(richiestaRepository);
 
     }
 
@@ -257,6 +277,7 @@ public class RichiesteServiceimplTest {
     @Test
     public void accettaRichiestaNewCentroOP1(){
 
+        Long idOperatore=8L;
         LocalDate date = LocalDate.now();
         Regione regione = Regione.builder().id(7L).nome("Lazio").build();
         Provincia provincia = Provincia.builder().id(5l).nome("Roma").cap("00159").regione(regione).build();
@@ -266,28 +287,29 @@ public class RichiesteServiceimplTest {
         Vaccino vaccino = Vaccino.builder().id(1L).nome("test").casaFarmaceutica("Pfizer").build();
         Somministrazione somministrazione = Somministrazione.builder().id(6L).utente(utente).vaccino(vaccino).dataSomministrazione(date).centro(cv1).oraSomministrazione("15:00").codiceSomm("test").build();
 
-        Richiesta richiesta = Richiesta.builder().id(10L).somministrazione(somministrazione).newCentro(cv1.getId()).approvedOp1(true).oldCentroVacc(cv2).build();
+        Richiesta richiesta = Richiesta.builder().id(10L).somministrazione(somministrazione).newCentro(cv1.getId()).oldCentroVacc(cv2).idOp1(idOperatore).build();
 
-        lenient().when(richiestaRepository.existsById(richiesta.getId())).thenReturn(true);
-        lenient().when(richiestaRepository.findById(richiesta.getId())).thenReturn(Optional.of(richiesta));
-        lenient().when(somministrazioneRepository.existsById(richiesta.getSomministrazione().getId())).thenReturn(true);
-        lenient().when(somministrazioneRepository.findById(richiesta.getSomministrazione().getId())).thenReturn(Optional.of(somministrazione));
+        RichiestaDTO richiestaDTO = new RichiestaDTO(richiesta);
+        richiestaDTO.approvedOp1=null;
+
+        lenient().when(richiestaRepository.existsById(richiestaDTO.getId())).thenReturn(true);
+        lenient().when(operatoreRepository.existsById(idOperatore)).thenReturn(true);
+        lenient().when(richiestaRepository.findById(richiestaDTO.getId())).thenReturn(Optional.of(richiesta));
+        lenient().when(somministrazioneRepository.existsById(richiestaDTO.idSomministrazione)).thenReturn(true);
+        lenient().when(somministrazioneRepository.findById(richiestaDTO.idSomministrazione)).thenReturn(Optional.of(somministrazione));
 
         Assertions.assertNotNull(richiesta.getNewCentro());
         Assertions.assertNull(richiesta.getNewData());
+        assertNull(richiesta.getApprovedOp1());
+        lenient().when(centroVaccinaleRepository.existsById(somministrazione.getCentro().getId())).thenReturn(true);
+        //Assertions.assertNull(richiesta.get());
+        lenient().when(operatoreRepository.checkOperatore(somministrazione.getCentro().getId(),richiestaDTO.idOp1)).thenReturn(1);
 
-        lenient().when(centroVaccinaleRepository.existsById(richiesta.getNewCentro())).thenReturn(true);
-        lenient().when(centroVaccinaleRepository.findById(richiesta.getNewCentro())).thenReturn(Optional.of(cv1));
-
-        somministrazione.setCentro(cv1);
-        richiesta.setApprovedOp1(true);
 
         lenient().when(somministrazioneRepository.save(somministrazione)).thenReturn(somministrazione);
         lenient().when(richiestaRepository.save(richiesta)).thenReturn(richiesta);
 
-        RichiestaDTO richiestaDTO = new RichiestaDTO(richiesta);
-
-        //assertEquals(true,richiestaServiceImpl.accettaRichiesta(richiestaDTO.getId()));
+        assertEquals(true,richiestaServiceImpl.accettaRichiesta(richiestaDTO.getId(),idOperatore));
 
 
         reset(richiestaRepository);
@@ -302,6 +324,7 @@ public class RichiesteServiceimplTest {
     @Test
     public void rifiutaRichiesta(){
 
+        Long idOperatore=3L;
         LocalDate date = LocalDate.now();
         Regione regione = Regione.builder().id(7L).nome("Lazio").build();
         Provincia provincia = Provincia.builder().id(5l).nome("Roma").cap("00159").regione(regione).build();
@@ -310,12 +333,14 @@ public class RichiesteServiceimplTest {
         Vaccino vaccino = Vaccino.builder().id(1L).nome("test").casaFarmaceutica("Pfizer").build();
         Somministrazione somministrazione = Somministrazione.builder().id(6L).utente(utente).vaccino(vaccino).dataSomministrazione(date).centro(cv1).oraSomministrazione("15:00").codiceSomm("test").build();
 
-        Richiesta richiesta = Richiesta.builder().id(10L).somministrazione(somministrazione).build();
+        Richiesta richiesta = Richiesta.builder().id(10L).somministrazione(somministrazione).oldCentroVacc(cv1).build();
+        RichiestaDTO richiestaDTO = new RichiestaDTO(richiesta);
 
-        lenient().when(richiestaRepository.existsById(richiesta.getId())).thenReturn(true);
-        lenient().when(richiestaRepository.findById(richiesta.getId())).thenReturn(Optional.of(richiesta));
+        lenient().when(richiestaRepository.existsById(richiestaDTO.getId())).thenReturn(true);
+        lenient().when(operatoreRepository.existsById(idOperatore)).thenReturn(true);
+        lenient().when(richiestaRepository.findById(richiestaDTO.getId())).thenReturn(Optional.of(richiesta));
 
-        richiesta.setApproved(false);
+       lenient().when(operatoreRepository.checkOperatore(richiestaDTO.idOldCentro,idOperatore)).thenReturn(1);
 
         lenient().when(richiestaRepository.save(richiesta)).thenReturn(richiesta);
 
@@ -325,7 +350,8 @@ public class RichiesteServiceimplTest {
 
         lenient().when(somministrazioneRepository.save(somministrazione)).thenReturn(somministrazione);
 
-        assertEquals(true,richiestaServiceImpl.rifiutaRichiesta(richiesta.getId()));
+
+        assertEquals(true,richiestaServiceImpl.rifiutaRichiesta(richiestaDTO.getId(),idOperatore));
 
         reset(richiestaRepository);
         reset(somministrazioneRepository);

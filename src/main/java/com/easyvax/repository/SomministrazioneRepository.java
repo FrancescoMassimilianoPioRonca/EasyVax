@@ -4,6 +4,7 @@ import com.easyvax.model.Somministrazione;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -31,7 +32,12 @@ public interface SomministrazioneRepository extends JpaRepository<Somministrazio
 
     boolean existsById(Long id);
 
+
     @Query("select count(s) from Somministrazione s JOIN Utente u on s.utente.id=u.id WHERE u.id=:id AND s.dataSomministrazione >= :data")
     int checkVaccini(@Param("id") Long id, @Param("data") LocalDate data);
+
+
+    @Query("select count(s) from Somministrazione s WHERE s.centro.id=:centro AND s.dataSomministrazione=:date")
+    int somministrazioniOdierne(@Param("centro") Long id,@Param("date") LocalDate date);
 
 }

@@ -12,9 +12,9 @@ public interface RichiestaService {
 
     List<RichiestaDTO> getRichiesteUtente(Long idUtente);
 
-    boolean accettaRichiesta(Long idC,Long idO);
+    boolean accettaRichiesta(Long idR,Long idO);
 
-    boolean rifiutaRichiesta(Long id);
+    boolean rifiutaRichiesta(Long idR, Long idO);
 
     List<RichiestaDTO> deleteRichiesta(Long idUtente);
 

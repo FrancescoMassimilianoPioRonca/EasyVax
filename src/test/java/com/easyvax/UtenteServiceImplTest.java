@@ -134,7 +134,7 @@ public class UtenteServiceImplTest implements PasswordEncoder {
 
         lenient().when(utenteRepository.save(utente)).thenReturn(utente);
 
-        assertEquals(utente.getCodFiscale(), utenteServiceImpl.insertUtente(utenteDTO).getCodFiscale());
+        assertEquals(utente.getCodFiscale().toUpperCase(Locale.ROOT), utenteServiceImpl.insertUtente(utenteDTO).getCodFiscale().toUpperCase(Locale.ROOT));
 
 
         reset(utenteRepository);
@@ -157,18 +157,7 @@ public class UtenteServiceImplTest implements PasswordEncoder {
         UtenteDTO utenteDTO = UtenteDTO.builder().id(1L).nome("test").cognome("wer").email("testDto@test.com").password(password).codFiscale("testdto").dataNascita(dataNascita).ruolo(RoleEnum.ROLE_USER).residenza(6L).build();
 
         lenient().when(utenteRepository.existsById(utente.getId())).thenReturn(true);
-
-        lenient().when(utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascita(utenteDTO.getNome(),utenteDTO.getCognome(),utenteDTO.getCodFiscale(),utenteDTO.getDataNascita())).thenReturn(false);
-        lenient().when(provinciaRepository.existsById(utenteDTO.getResidenza())).thenReturn(true);
-
-        utente.setNome(utenteDTO.nome);
-        utente.setCognome(utenteDTO.cognome);
-
-        utente.setCodFiscale(utenteDTO.getCodFiscale());
-
-        utente.setDataNascita(utenteDTO.getDataNascita());
-        utente.setEmail(utenteDTO.getEmail());
-
+        lenient().when(utenteRepository.findById(utenteDTO.id)).thenReturn(Optional.of(utente));
 
         lenient().when(utenteRepository.save(utente)).thenReturn(utente);
 

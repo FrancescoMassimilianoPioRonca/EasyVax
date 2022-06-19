@@ -2,11 +2,9 @@ package com.easyvax;
 
 import com.easyvax.dto.SomministrazioneDTO;
 import com.easyvax.exception.enums.RoleEnum;
+import com.easyvax.exception.handler.ApiException;
 import com.easyvax.model.*;
-import com.easyvax.repository.CentroVaccinaleRepository;
-import com.easyvax.repository.SomministrazioneRepository;
-import com.easyvax.repository.UtenteRepository;
-import com.easyvax.repository.VaccinoRepository;
+import com.easyvax.repository.*;
 import com.easyvax.service.impl.SomministrazioneServiceImpl;
 import org.hibernate.validator.constraints.ModCheck;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
@@ -41,6 +43,9 @@ public class SomministrazioneServiceImplTest {
     private UtenteRepository utenteRepository;
 
     @Mock
+    private PersonaleRepository personaleRepository;
+
+    @Mock
     private JavaMailSender javaMailSender;
 
     @Mock
@@ -49,7 +54,7 @@ public class SomministrazioneServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        somministrazioneServiceImpl = new SomministrazioneServiceImpl(somministrazioneRepository,vaccinoRepository, centroVaccinaleRepository, utenteRepository,javaMailSender);
+        somministrazioneServiceImpl = new SomministrazioneServiceImpl(somministrazioneRepository,vaccinoRepository, centroVaccinaleRepository, utenteRepository,personaleRepository,javaMailSender);
     }
 
     /**
@@ -148,14 +153,13 @@ public class SomministrazioneServiceImplTest {
 
         assertEquals(somministrazione.getCodiceSomm(),somministrazioneServiceImpl.insertSomministrazione(somministrazioneDTO).getCode());*/
 
-        assertNull(somministrazioneServiceImpl.insertSomministrazione(somministrazioneDTO)); //l'ho inserito per generare l'errore
-
         reset(somministrazioneRepository);
         reset(centroVaccinaleRepository);
         reset(vaccinoRepository);
         reset(utenteRepository);
 
     }
+
 
     /**
      * Con questo metodo testo il corretto update della prenotazione di una vaccinazione

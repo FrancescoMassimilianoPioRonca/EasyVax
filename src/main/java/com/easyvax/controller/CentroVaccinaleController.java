@@ -19,10 +19,11 @@ import java.util.List;
 
 /**
  * -Nella classe CentroVaccinaleController vengono gestiti e organizzati tutti gli endpoint relativi al centrovaccinale.
- * -I path delle api, ovvero delle attività che si possono svolgere relative all'amministratore, iniziano con:
+ * -I path delle api, ovvero delle attività che si possono svolgere iniziano con:
  * "http://localhost:8080/api/centroVaccinale/...".
- * -Nei metodi presenti in questa classe vengono semplicemente richiamati i metodi dela classe CentroVaccinaleService
- * per il controllo e la validità dei dati in input delle request dal front-end.
+ * -Nei metodi presenti in questa classe vengono richiamati i metodi dela classe CentroVaccinaleService
+ * per il controllo e la validità dei dati in input delle request dal front-end, nonchè per lo svolgimento
+ * dell'algoritmo implementato nel service.
  * -Infine tutte le response ricevute dal livello "service" verranno inviare al front-end.
  */
 

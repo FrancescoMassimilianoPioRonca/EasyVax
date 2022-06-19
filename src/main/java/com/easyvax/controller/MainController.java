@@ -16,21 +16,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * Questo Controller è più "esterno" al progetto in quanto serve escusivamente per
+ * gestire la visualizzazione delle pagine in html.
+ * A regime, quando il front end verrà sviluppato il mainController può essere eliminato
+ */
 @Controller
 public class MainController {
 
+    //Ritorna la pagina di login
     @GetMapping(value = "/custom-login")
     public void login(HttpServletResponse response) throws IOException {
 
         response.sendRedirect("/login-form.html");
     }
 
+    //Ritorna la pagina di registrazione per USER
     @GetMapping(value = "/registrazioneUser")
     public String registrazioneUser(HttpServletResponse response) {
 
         return "registrazioneUser.html";
     }
 
+    //Ritorna la pagina di registrazione per ADMIN
     @GetMapping(value = "/registrazioneAdmin")
     public String registrazioneAdmin(HttpServletResponse response) {
 

@@ -35,7 +35,8 @@ public class RichiestaServiceImpl implements RichiestaService {
 
 
     /**
-     * Con questo metodo, l'operatore, in base al suo id, riceve tutte le richieste generate dagli utenti non ancora smarcate, relative
+     * Con questo metodo, l'operatore, in base al suo id,
+     * riceve tutte le richieste generate dagli utenti non ancora smarcate, relative
      * al centro vaccinale in cui lavora
      *
      * @param idOperatore
@@ -85,7 +86,8 @@ public class RichiestaServiceImpl implements RichiestaService {
      * Si occupa di accettare le richieste. Se approved è true, è stato autorizzato il cambio data
      * Se invece op1, op2 e quindi approved sono true allora è sato autrizzato il cambio sede
      * Viene inviata una email quando viene accettata ogni richiesta
-     * Gli attributi op1 e op2 si riferiscono all'operatore della sede vecchia e op2 l'operatore della nuova sede. Entrambi devono essere a true per poter cambiare sede
+     * Gli attributi op1 si riferisce all'operatore della sede vecchia e op2 l'operatore della nuova sede.
+     * Entrambi (approved1 e approved2) devono essere a true per poter cambiare sede
      *
      * @param idRichiesta,idOperatore
      */
@@ -100,7 +102,7 @@ public class RichiestaServiceImpl implements RichiestaService {
                 Somministrazione somministrazione = somministrazioneRepository.findById(richiesta.getSomministrazione().getId()).get();
 
                 if (richiesta.getNewData() != null && richiesta.getNewCentro() == null) {
-                    if(richiesta.getIdOp1()!=idOperatore && (operatoreRepository.checkOperatore(somministrazione.getCentro().getId(),idOperatore)!=0)) {
+                    if (richiesta.getIdOp1() != idOperatore && (operatoreRepository.checkOperatore(somministrazione.getCentro().getId(), idOperatore) != 0)) {
                         somministrazione.setDataSomministrazione(richiesta.getNewData());
                         somministrazione.setInAttesa(Boolean.FALSE);
                         richiesta.setApproved(Boolean.TRUE);
@@ -108,8 +110,7 @@ public class RichiestaServiceImpl implements RichiestaService {
                         somministrazioneRepository.save(somministrazione);
                         richiestaRepository.save(richiesta);
                         return true;
-                    }
-                    else{
+                    } else {
                         richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
                         throw new ApiRequestException(richiestaEnum.getMessage());
                     }
@@ -117,7 +118,7 @@ public class RichiestaServiceImpl implements RichiestaService {
                 } else if (richiesta.getNewData() == null && richiesta.getNewCentro() != null) {
 
                     if (richiesta.getApprovedOp1() != null && richiesta.getApprovedOp2() == null) {
-                        if(richiesta.getIdOp2()!=idOperatore && (operatoreRepository.checkOperatore(richiesta.getNewCentro(),idOperatore))!=0) {
+                        if (richiesta.getIdOp2() != idOperatore && (operatoreRepository.checkOperatore(richiesta.getNewCentro(), idOperatore)) != 0) {
                             richiesta.setApprovedOp2(true);
                             richiesta.setIdOp2(idOperatore);
                             CentroVaccinale cv = centroVaccinaleRepository.findById(richiesta.getNewCentro()).get();
@@ -127,21 +128,20 @@ public class RichiestaServiceImpl implements RichiestaService {
                             somministrazioneRepository.save(somministrazione);
                             richiestaRepository.save(richiesta);
                             return true;
-                        }
-                        else{
+                        } else {
                             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
                             throw new ApiRequestException(richiestaEnum.getMessage());
                         }
                     }
-                    if (centroVaccinaleRepository.existsById(richiesta.getNewCentro())) {
-                        if(richiesta.getIdOp1()==null && (operatoreRepository.checkOperatore(somministrazione.getCentro().getId(),idOperatore))!=0) {
+                    else if (richiesta.getApprovedOp1() == null && richiesta.getNewCentro() != null && centroVaccinaleRepository.existsById(somministrazione.getCentro().getId())) {
+
+                        if  (operatoreRepository.checkOperatore(somministrazione.getCentro().getId(), idOperatore) != 0) {
                             richiesta.setApprovedOp1(true);
                             richiesta.setIdOp1(idOperatore);
                             somministrazioneRepository.save(somministrazione);
                             richiestaRepository.save(richiesta);
                             return true;
-                        }
-                        else{
+                        } else {
                             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
                             throw new ApiRequestException(richiestaEnum.getMessage());
                         }
@@ -151,8 +151,12 @@ public class RichiestaServiceImpl implements RichiestaService {
                     }
                 }
             }
+            else {
+                richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
+                throw new ApiRequestException(richiestaEnum.getMessage());
+            }
         } else {
-            richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NF");
+            richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
             throw new ApiRequestException(richiestaEnum.getMessage());
         }
         return false;
@@ -161,26 +165,30 @@ public class RichiestaServiceImpl implements RichiestaService {
     /**
      * Rifiuto una richiesta
      *
-     * @param id
+     * @param idRichiesta,idOperatore
      */
     @Override
-    public boolean rifiutaRichiesta(Long id) {
+    public boolean rifiutaRichiesta(Long idRichiesta, Long idOperatore) {
 
-        if (id != null && richiestaRepository.existsById(id)) {
-            Richiesta richiesta = richiestaRepository.findById(id).get();
+        if (idRichiesta != null && richiestaRepository.existsById(idRichiesta) && operatoreRepository.existsById(idOperatore)) {
+            Richiesta richiesta = richiestaRepository.findById(idRichiesta).get();
 
-            richiesta.setApproved(Boolean.FALSE);
+            if(operatoreRepository.checkOperatore(richiesta.getOldCentroVacc().getId(),idOperatore)!=0) {
+                richiesta.setApproved(Boolean.FALSE);
+                richiesta.setIdOp1(idOperatore);
+                richiestaRepository.save(richiesta);
 
-            richiestaRepository.save(richiesta);
+                Somministrazione somministrazione = somministrazioneRepository.findById(richiesta.getSomministrazione().getId()).get();
 
-            Somministrazione somministrazione = somministrazioneRepository.findById(richiesta.getSomministrazione().getId()).get();
+                somministrazione.setInAttesa(Boolean.FALSE);
 
-            somministrazione.setInAttesa(Boolean.FALSE);
+                somministrazioneRepository.save(somministrazione);
 
-            somministrazioneRepository.save(somministrazione);
-
-            return true;
-
+                return true;
+            }else{
+                richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
+                throw new ApiRequestException(richiestaEnum.getMessage());
+            }
         } else {
             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_NF");
             throw new ApiRequestException(richiestaEnum.getMessage());
@@ -206,12 +214,15 @@ public class RichiestaServiceImpl implements RichiestaService {
     }
 
     /**
-     * Questo metodo gestisce sia le richieste di cambio data (generabile dagli utenti se per motivi validi devono per forza spostare la lor prenotazione anche
+     * Questo metodo gestisce sia le richieste di cambio data
+     * (generabile dagli utenti se per motivi validi devono per forza spostare la lor prenotazione anche
      * dopo il limite imposto di 2 giorni antecedenti) sia le richieste di cambio sede mantendendo la stessa prenotazione.
-     * Abbiamo utilizzato una logica abbastanza semplice ma efficace ovvero: se la richiesta contiene l'attributo newData != null e i due flag op1 e op2 a null, allora vuol dire che
-     * si intende cambiare la data. Se invece l'attributo newData ==null ma l'attributo centrovacc != null allora si intende cambiare la sede.
+     * Ho utilizzato una logica abbastanza semplice ma efficace ovvero:
+     * se la richiesta contiene l'attributo newData != null e i due flag op1 e op2 a null, allora vuol dire che
+     * si intende cambiare la data. Se invece l'attributo newData ==null ma l'attributo centrovacc != null
+     * allora si intende cambiare la sede.
      * Tutto questo è poi gestito tramite una logica di flag approved (nel caso di cambio data) e op1 e op2 nel caso di cambio sede.
-     * <p>
+     *
      * Appena si inserisce una richiestaviene poi inviata una email informativa con il codice della richiesta
      **/
     @Override

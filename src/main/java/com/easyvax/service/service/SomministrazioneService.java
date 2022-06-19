@@ -2,6 +2,7 @@ package com.easyvax.service.service;
 
 import com.easyvax.dto.SomministrazioneDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SomministrazioneService {
@@ -18,7 +19,7 @@ public interface SomministrazioneService {
 
     SomministrazioneDTO findByCod(String cod);
 
-
+    int somministrazioniOdierne(Long id);
     boolean deletePrenotazione(Long id);
 
 

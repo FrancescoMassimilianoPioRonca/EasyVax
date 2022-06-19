@@ -27,11 +27,11 @@ public class CentroVaccinaleServiceImpl implements CentroVaccinaleService {
     private final ProvinciaRepository provinciaRepository;
     private static CentroVaccinaleEnum centroVaccinaleEnum;
 
-    public CentroVaccinaleServiceImpl(CentroVaccinaleRepository centroVaccinaleRepository,VaccinoRepository vaccinoRepository, RegioneRepository regioneRepository, ProvinciaRepository provinciaRepository) {
-        this.vaccinoRepository=vaccinoRepository;
-        this.regioneRepository=regioneRepository;
-        this.provinciaRepository=provinciaRepository;
-        this.centroVaccinaleRepository=centroVaccinaleRepository;
+    public CentroVaccinaleServiceImpl(CentroVaccinaleRepository centroVaccinaleRepository, VaccinoRepository vaccinoRepository, RegioneRepository regioneRepository, ProvinciaRepository provinciaRepository) {
+        this.vaccinoRepository = vaccinoRepository;
+        this.regioneRepository = regioneRepository;
+        this.provinciaRepository = provinciaRepository;
+        this.centroVaccinaleRepository = centroVaccinaleRepository;
 
     }
 
@@ -137,7 +137,7 @@ public class CentroVaccinaleServiceImpl implements CentroVaccinaleService {
         if (!centroVaccinaleRepository.existsByNomeAndProvincia_Id(centro.nome, provincia.getId())) {
             if (centro.nome != null && centro.indirizzo != null && provinciaRepository.existsById(provincia.getId())) {
                 centroVaccinale.setProvincia(provincia);
-                 centroVaccinaleRepository.save(centroVaccinale);
+                centroVaccinaleRepository.save(centroVaccinale);
                 return new CentroVaccinaleDTO(centroVaccinale);
             } else {
                 centroVaccinaleEnum = CentroVaccinaleEnum.getCentroVaccinaleEnumByMessageCode("CV_EF");

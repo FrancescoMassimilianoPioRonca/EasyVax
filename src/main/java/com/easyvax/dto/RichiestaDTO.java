@@ -25,7 +25,6 @@ public class RichiestaDTO {
     public Long idOldCentro;
     public Long idSomministrazione;
 
-    @NonNull
     public Long idOp1;
 
     public Long idOp2;

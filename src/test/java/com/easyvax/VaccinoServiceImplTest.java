@@ -72,7 +72,7 @@ public class VaccinoServiceImplTest {
 
         lenient().when(vaccinoRepository.existsByNomeAndCasaFarmaceutica(nome,casaFarmaceutica)).thenReturn(false);
         lenient().when(vaccinoRepository.save(vaccino)).thenReturn(vaccino);
-        assertEquals(vaccinoDTO.id,vaccinoServiceImpl.insertVaccino(vaccinoDTO).getId());
+        assertEquals(vaccinoDTO.getNome(),vaccinoServiceImpl.insertVaccino(vaccinoDTO).getNome());
 
         reset(vaccinoRepository);
 

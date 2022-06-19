@@ -2,7 +2,7 @@ package com.easyvax.chat;
 
 
 /**
- * Questo rappresenta il model del message della chat. Come si può notare ci sono diversi parametri
+ * Questo rappresenta la "struttura" del message della chat. Come si può notare ci sono diversi parametri
  * come il tipo del messaggio (CHAT,JOIN,LEAVE) a seconda  se un utente si unisce o se si disconette.
  * Poi i vari setter e getter
  */

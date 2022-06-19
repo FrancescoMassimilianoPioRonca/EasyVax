@@ -34,12 +34,16 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
     private final VaccinoRepository vaccinoRepository;
     private final CentroVaccinaleRepository centroVaccinaleRepository;
     private final UtenteRepository utenteRepository;
+
+    private final PersonaleRepository personaleRepository;
     private static SomministrazioneEnum somministrazioneEnum;
     private JavaMailSender mailSender;
 
     /**
-     * Inserisco una nuova somministrazione, controllando che la data sia valida quindi che non infranga il limite dei 2 giorni prima e che l'utente non abbia fatto
-     * qualsiasi altra vaccinazione nell'arco dei 6 mesi precedenti. Inserendo una somministrazione viene inviata una email riepilogativa
+     * Inserisco una nuova somministrazione,
+     * controllando che la data sia valida quindi che non infranga il limite dei 2 giorni prima e che l'utente non abbia fatto
+     * qualsiasi altra vaccinazione nell'arco dei 6 mesi precedenti.
+     * Inserendo una somministrazione viene inviata una email riepilogativa
      *
      * @param somministrazioneDTO
      * @return SomministrazioneDTO
@@ -228,6 +232,25 @@ public class SomministrazioneServiceImpl implements SomministrazioneService {
             return new SomministrazioneDTO(somministrazioneRepository.findByCodiceSomm(cod));
         } else {
             somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("SOMM_IDNE");
+            throw new ApiRequestException(somministrazioneEnum.getMessage());
+        }
+    }
+
+    /**
+     * Ritorna il numero di somministrazioni del giorno
+     * @param id
+     * @return int
+     */
+    @Override
+    public int somministrazioniOdierne(Long id) {
+        LocalDate today = LocalDate.now();
+        if(somministrazioneRepository.existsById(id)){
+            Personale personale = personaleRepository.findById(id).get();
+            CentroVaccinale centroVaccinale = centroVaccinaleRepository.findById(personale.getCentroVaccinale().getId()).get();
+            return somministrazioneRepository.somministrazioniOdierne(centroVaccinale.getId(),today);
+        }
+        else {
+            somministrazioneEnum = SomministrazioneEnum.getSomministrazioneEnumByMessageCode("PERS_ERR");
             throw new ApiRequestException(somministrazioneEnum.getMessage());
         }
     }

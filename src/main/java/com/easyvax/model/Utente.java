@@ -78,4 +78,8 @@ public class Utente {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setRuolo(RoleEnum ruolo) {
+        this.ruolo = ruolo;
+    }
 }

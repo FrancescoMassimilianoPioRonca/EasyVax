@@ -37,9 +37,6 @@ public class Richiesta {
     @JoinColumn(name = "old_CentroVacc")
     private CentroVaccinale oldCentroVacc;
 
-    /***Nel caso di cambio sede
-     *
-     */
     private Boolean approvedOp1;
     private Long idOp1;
     private Boolean approvedOp2;

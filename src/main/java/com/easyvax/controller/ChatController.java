@@ -32,6 +32,8 @@ public class ChatController {
         return chatMessage;
     }
 
+    //Gestisce la visualizzazione delle pagine in html
+    // (Verrà eliminato quando sarà fatto il front end)
     @RequestMapping(path = "/chat", method = RequestMethod.GET)
     public String chat()
     {

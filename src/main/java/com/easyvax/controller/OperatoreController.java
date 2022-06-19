@@ -24,10 +24,10 @@ import java.util.List;
 
 /**
  * -Nella classe OpertoreController vengono gestiti e organizzati tutti gli endpoint relativi all'operatore.
- * -I path delle api, ovvero delle attività che si possono svolgere relative all'amministratore, iniziano con:
+ * -I path delle api, ovvero delle attività che si possono svolgere iniziano con:
  * "http://localhost:8080/api/operatore/...".
  * -Nei metodi presenti in questa classe vengono semplicemente richiamati i metodi dela classe OperatoreService
- * per il controllo e la validità dei dati in input delle request dal front-end.
+ * per il controllo e la validità dei dati in input delle request dal front-end, nonchè l'implementazione dell'algoritmo.
  * -Infine tutte le response ricevute dal livello "service" verranno inviare al front-end.
  */
 public class OperatoreController {

@@ -23,4 +23,6 @@ public interface PersonleService {
 
     List<PersonaleDTO> updatePersonale(PersonaleDTO personale);
 
+
+
 }

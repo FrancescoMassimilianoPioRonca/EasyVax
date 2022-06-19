@@ -72,7 +72,7 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     @Override
     public UtenteDTO insertUtente(UtenteDTO utenteDTO) {
 
-        String siteUrl = "http://localhost:8080";
+        //String siteUrl = "http://localhost:8080";
 
         if (provinciaRepository.existsById(utenteDTO.getResidenza())) {
             Provincia provincia = provinciaRepository.findById(utenteDTO.residenza).get();
@@ -209,7 +209,8 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     }
 
     /**
-     * Modifico l'anagrafica di un utente
+     * Modifico l'anagrafica di un utente.
+     * Per ragioni di sicurezza, è possibile modificare solo l'anagrafica (nome,cognome,password,email)
      *
      * @param utenteDTO
      * @return List<UtenteDTO>
@@ -218,23 +219,16 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
     public List<UtenteDTO> updateAnagrafica(UtenteDTO utenteDTO) {
 
         if (utenteRepository.existsById(utenteDTO.id)) {
-            if (!utenteRepository.existsByNomeAndCognomeAndCodFiscaleAndDataNascita(utenteDTO.getNome(), utenteDTO.getCognome(), utenteDTO.getCodFiscale(), utenteDTO.getDataNascita()) && provinciaRepository.existsById(utenteDTO.getResidenza())) {
 
-                Utente utente = new Utente(utenteDTO);
+            Utente old = utenteRepository.findById(utenteDTO.id).get();
 
-                utente.setNome(utenteDTO.nome);
-                utente.setCognome(utenteDTO.cognome);
-                utente.setCodFiscale(utenteDTO.getCodFiscale());
-                utente.setDataNascita(utenteDTO.getDataNascita());
-                utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
-                utente.setEmail(utenteDTO.getEmail());
+            old.setNome(utenteDTO.nome);
+            old.setCognome(utenteDTO.cognome);
+            old.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
+            old.setEmail(utenteDTO.getEmail());
 
-                utenteRepository.save(utente);
+            utenteRepository.save(old);
 
-            } else {
-                utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_AE");
-                throw new ApiRequestException(utenteEnum.getMessage());
-            }
         } else {
             utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_NF");
             throw new ApiRequestException(utenteEnum.getMessage());

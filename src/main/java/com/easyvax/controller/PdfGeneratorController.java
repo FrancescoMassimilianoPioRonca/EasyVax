@@ -15,7 +15,7 @@ import java.text.DateFormat;
 @CrossOrigin("*")
 
 /**
- * Questo controller genera il pdf che sarà poi inviato tramite email in fase di inseriemnto di una nuova prenotazione.
+ * Questo controller genera il pdf che sarà poi visualizzabile tramite email in fase di inseriemnto di una nuova prenotazione.
  * In questo controller, si vanno a settare quelli che sono gli HTTP-Header necessari quali il content-type e il content-disposition per settare il nome di default.
  * Prende come paramentro il codice della sommministrazione
  */

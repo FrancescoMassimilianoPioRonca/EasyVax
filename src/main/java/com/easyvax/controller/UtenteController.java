@@ -114,6 +114,8 @@ public class UtenteController {
      * Si prega di notare che non è presente il @RequestBody perchè le pagine statiche non supportano le post in JSON
      * Un qualsiasi front-end del tipo react o vue supporterebbe le post con axios
      *
+     * N.B. dal 30/05 Google ha disattivato l'accesso da app meno sicure (developers)
+     *
      * Inserisce un nuovo utente
      * @param utenteDTO
      * @return UtenteDTO
@@ -123,7 +125,7 @@ public class UtenteController {
 
         UtenteDTO utenteIns =  utenteService.insertUtente(utenteDTO);
         Utente utente = new Utente(utenteIns);
-        utenteServiceImpl.sendVerificationEmail(utente,"http://localhost:8080");
+        //utenteServiceImpl.sendVerificationEmail(utente,"http://localhost:8080");
 
         return utenteIns;
     }

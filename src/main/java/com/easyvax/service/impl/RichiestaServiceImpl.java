@@ -132,10 +132,9 @@ public class RichiestaServiceImpl implements RichiestaService {
                             richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
                             throw new ApiRequestException(richiestaEnum.getMessage());
                         }
-                    }
-                    else if (richiesta.getApprovedOp1() == null && richiesta.getNewCentro() != null && centroVaccinaleRepository.existsById(somministrazione.getCentro().getId())) {
+                    } else if (richiesta.getApprovedOp1() == null && richiesta.getNewCentro() != null && centroVaccinaleRepository.existsById(somministrazione.getCentro().getId())) {
 
-                        if  (operatoreRepository.checkOperatore(somministrazione.getCentro().getId(), idOperatore) != 0) {
+                        if (operatoreRepository.checkOperatore(somministrazione.getCentro().getId(), idOperatore) != 0) {
                             richiesta.setApprovedOp1(true);
                             richiesta.setIdOp1(idOperatore);
                             somministrazioneRepository.save(somministrazione);
@@ -150,8 +149,7 @@ public class RichiestaServiceImpl implements RichiestaService {
                         throw new ApiRequestException(centroVaccinaleEnum.getMessage());
                     }
                 }
-            }
-            else {
+            } else {
                 richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
                 throw new ApiRequestException(richiestaEnum.getMessage());
             }
@@ -173,9 +171,10 @@ public class RichiestaServiceImpl implements RichiestaService {
         if (idRichiesta != null && richiestaRepository.existsById(idRichiesta) && operatoreRepository.existsById(idOperatore)) {
             Richiesta richiesta = richiestaRepository.findById(idRichiesta).get();
 
-            if(operatoreRepository.checkOperatore(richiesta.getOldCentroVacc().getId(),idOperatore)!=0) {
+            if (operatoreRepository.checkOperatore(richiesta.getOldCentroVacc().getId(), idOperatore) != 0) {
                 richiesta.setApproved(Boolean.FALSE);
                 richiesta.setIdOp1(idOperatore);
+                richiesta.setApprovedOp1(Boolean.FALSE);
                 richiestaRepository.save(richiesta);
 
                 Somministrazione somministrazione = somministrazioneRepository.findById(richiesta.getSomministrazione().getId()).get();
@@ -185,7 +184,20 @@ public class RichiestaServiceImpl implements RichiestaService {
                 somministrazioneRepository.save(somministrazione);
 
                 return true;
-            }else{
+            } else if (operatoreRepository.checkOperatore(richiesta.getNewCentro(), idOperatore) != 0) {
+                richiesta.setApproved(Boolean.FALSE);
+                richiesta.setIdOp2(idOperatore);
+                richiesta.setApprovedOp2(Boolean.FALSE);
+                richiestaRepository.save(richiesta);
+
+                Somministrazione somministrazione = somministrazioneRepository.findById(richiesta.getSomministrazione().getId()).get();
+
+                somministrazione.setInAttesa(Boolean.FALSE);
+
+                somministrazioneRepository.save(somministrazione);
+
+                return true;
+            } else {
                 richiestaEnum = RichiestaEnum.getRichiestEnumByMessageCode("RS_AA");
                 throw new ApiRequestException(richiestaEnum.getMessage());
             }
@@ -222,7 +234,7 @@ public class RichiestaServiceImpl implements RichiestaService {
      * si intende cambiare la data. Se invece l'attributo newData ==null ma l'attributo centrovacc != null
      * allora si intende cambiare la sede.
      * Tutto questo è poi gestito tramite una logica di flag approved (nel caso di cambio data) e op1 e op2 nel caso di cambio sede.
-     *
+     * <p>
      * Appena si inserisce una richiestaviene poi inviata una email informativa con il codice della richiesta
      **/
     @Override

@@ -67,12 +67,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         //UTENTE
-        http.authorizeRequests().antMatchers(POST, "/api/utente/insertUtente").permitAll();
         http.authorizeRequests().antMatchers(PUT, "api/utente/updateUtente").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/richieste/getRichiesteUtente").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "api/richieste/insertRichiesta").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/utente/getDetails").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findAll").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findByName").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findByCap").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/finByVaccino").hasAnyAuthority("ROLE_USER");
@@ -140,13 +138,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         //PERSONALE
+        http.authorizeRequests().antMatchers(GET, "api/vaccino/findByNome").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/vaccino/findByCasaFarmaceutica").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET,"api/operatore/findByCodiceFiscale").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/findByName").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/provincia/**").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/regione/**").hasAnyAuthority("ROLE_PERSONALE");
-        http.authorizeRequests().antMatchers(PUT, "api/personale/updatePersonale").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/somministrazione/getDetails").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(POST, "api/richiesta/insertRichiesta").hasAnyAuthority("ROLE_PERSONALE");
-        http.authorizeRequests().antMatchers(GET, "api/somministrazione/**").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/somministrazione/findByCod").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/somministrazione/findByUtente").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(POST, "api/somministrazione/insertSomministrazione").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(PUT, "api/somministrazione/updateSomministrazione").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(DELETE, "api/somministrazione/deleteSomministrazione").hasAnyAuthority("ROLE_PERSONALE");
@@ -159,7 +160,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(PUT, "api/richieste/rejectRichiesta").hasAnyAuthority("ROLE_OPERATOR");
         http.authorizeRequests().antMatchers(POST, "api/richieste/insertRichiesta").hasAnyAuthority("ROLE_OPERATOR");
         http.authorizeRequests().antMatchers(GET, "api/centroVaccinale/findByName").hasAnyAuthority("ROLE_OPERATOR");
-        http.authorizeRequests().antMatchers(PUT, "api/operatore/updateOperatore").hasAnyAuthority("ROLE_OPERATOR");
+
 
 
         http.authorizeRequests().anyRequest().authenticated();

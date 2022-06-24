@@ -144,6 +144,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET,"api/centroVaccinale/findByName").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/provincia/**").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/regione/**").hasAnyAuthority("ROLE_PERSONALE");
+        http.authorizeRequests().antMatchers(GET, "api/somministrazione/preno_odierne").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/somministrazione/getDetails").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(POST, "api/richiesta/insertRichiesta").hasAnyAuthority("ROLE_PERSONALE");
         http.authorizeRequests().antMatchers(GET, "api/somministrazione/findByCod").hasAnyAuthority("ROLE_PERSONALE");
